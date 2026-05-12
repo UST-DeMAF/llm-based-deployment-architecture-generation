@@ -31,3 +31,17 @@ rag.py            -> Main RAG-based pipeline
 no_rag.py         -> Baseline LLM-only pipeline
 batch_evaluate.py -> Batch evaluation execution
 evaluate.py       -> Semantic evaluation scripts
+```
+
+## Evaluation
+
+The evaluation compares generated EDMM models against manually constructed reference models using:
+
+- Component-level metrics
+- Relation-level metrics
+- Attribute scores
+- Graph similarity metrics
+
+## Notes
+
+This repository contains the implementation and evaluation artifacts used in the thesis experiments. Some runtime-specific resources (e.g., local vector databases and cached embeddings) are intentionally excluded from the repository.
