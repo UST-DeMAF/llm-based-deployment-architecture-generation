@@ -1,0 +1,353 @@
+components:
+- MicrosoftAzure:
+    artifacts: []
+    operations: []
+    properties: []
+    type: CloudProvider
+- t2store:
+    artifacts: []
+    operations: []
+    properties:
+    - name: t2store-aks1
+    - location: West Europe
+    - resource_group_name: t2store-resources
+    - dns_prefix: t2storeaks1
+    - default_node_pool.name: default_node
+    - default_node_pool.node_count: '1'
+    - default_node_pool.vm_size: standard_b4ms
+    - identity.type: SystemAssigned
+    - tags: '{"Environment":"Production"}'
+    type: azurerm_kubernetes_cluster
+- mongo-cart-mongodb:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/mongodb
+        name: bitnami/mongodb:latest
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - containerPort: 27017
+    - exposedPort: 27017:27017
+    type: mongodb-DatabaseSystem
+- mongo-order-mongodb:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/mongodb
+        name: bitnami/mongodb:latest
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - containerPort: 27017
+    - exposedPort: 27017:27017
+    type: mongodb-DatabaseSystem
+- kafka:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/kafka
+        name: bitnami/kafka:latest
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - containerPort: 9092
+    - exposedPort: 9092:9092
+    type: kafka-MessageBroker
+- cart:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/t2project/cart
+        name: t2project/cart:main
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - MONGO_HOST: mongo-cart-mongodb
+    - T2_CART_TTL: '0'
+    - T2_CART_TASKRATE: '0'
+    - T2_JAEGER_ENABLED: 'FALSE'
+    - T2_JAEGER_HOST: simplest-agent
+    - containerPort: 8080
+    type: cart-SoftwareApplication
+- defaultKubernetesCluster:
+    artifacts: []
+    operations: []
+    properties: []
+    type: DefaultKubernetesCluster
+- cdcservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/eventuateio/eventuate-cdc-service
+        name: eventuateio/eventuate-cdc-service:0.16.0.RELEASE
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - containerPort: 8080
+    - JAVA_OPTS: -Xmx64m
+    - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: kafka-zookeeper:2181
+    - EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE: eventuate-tram
+    - EVENTUATE_CDC_PIPELINE_PIPELINE1_READER: reader1
+    - EVENTUATE_CDC_PIPELINE_PIPELINE2_TYPE: eventuate-tram
+    - EVENTUATE_CDC_PIPELINE_PIPELINE2_READER: reader2
+    - EVENTUATE_CDC_READER_READER1_TYPE: postgres-wal
+    - EVENTUATE_CDC_READER_READER1_DATASOURCEURL: jdbc:postgresql://postgres-orchestrator/eventuate
+    - EVENTUATE_CDC_READER_READER1_DATASOURCEUSERNAME: eventuate
+    - EVENTUATE_CDC_READER_READER1_DATASOURCEPASSWORD: eventuate
+    - EVENTUATE_CDC_READER_READER1_DATASOURCEDRIVERCLASSNAME: org.postgresql.Driver
+    - EVENTUATE_CDC_READER_READER1_LEADERSHIPLOCKPATH: /eventuate/cdc/leader/orchestrator
+    - EVENTUATE_CDC_READER_READER1_OUTBOXID: '1'
+    - EVENTUATE_CDC_READER_READER2_TYPE: postgres-wal
+    - EVENTUATE_CDC_READER_READER2_DATASOURCEURL: jdbc:postgresql://postgres-inventory/inventory
+    - EVENTUATE_CDC_READER_READER2_DATASOURCEUSERNAME: inventory
+    - EVENTUATE_CDC_READER_READER2_DATASOURCEPASSWORD: inventory
+    - EVENTUATE_CDC_READER_READER2_DATASOURCEDRIVERCLASSNAME: org.postgresql.Driver
+    - EVENTUATE_CDC_READER_READER2_LEADERSHIPLOCKPATH: /eventuate/cdc/leader/inventory_service
+    - EVENTUATE_CDC_READER_READER2_OUTBOXID: '2'
+    type: eventuate-cdc-service-SoftwareApplication
+- creditinstitute:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/t2project/creditinstitute
+        name: t2project/creditinstitute:main
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - T2_JAEGER_ENABLED: 'FALSE'
+    - T2_JAEGER_HOST: simplest-agent
+    - containerPort: 8080
+    type: creditinstitute-SoftwareApplication
+- inventory:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/t2project/inventory
+        name: t2project/inventory:main
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: kafka-zookeeper:2181
+    - T2_INVENTORY_SIZE: '25'
+    - T2_INVENTORY_TASKRATE: '0'
+    - T2_INVENTORY_TTL: '0'
+    - T2_INVENTORY_SET_UNITS_TO_MAX: 'FALSE'
+    - SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+    - SPRING_DATASOURCE_PASSWORD: inventory
+    - SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-inventory/inventory
+    - SPRING_DATASOURCE_USERNAME: inventory
+    - SPRING_PROFILES_ACTIVE: saga
+    - T2_JAEGER_ENABLED: 'FALSE'
+    - T2_JAEGER_HOST: 'simplest-agent #todo'
+    - containerPort: 8080
+    type: inventory-SoftwareApplication
+- orchestrator:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/t2project/orchestrator
+        name: t2project/orchestrator:main
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: kafka-zookeeper:2181
+    - SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+    - SPRING_DATASOURCE_PASSWORD: eventuate
+    - SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-orchestrator/eventuate
+    - SPRING_DATASOURCE_USERNAME: eventuate
+    - T2_JAEGER_ENABLED: 'FALSE'
+    - T2_JAEGER_HOST: simplest-agent
+    - containerPort: 8080
+    type: orchestrator-SoftwareApplication
+- order:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/t2project/order
+        name: t2project/order:main
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: kafka-zookeeper:2181
+    - MONGO_HOST: mongo-order-mongodb
+    - SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+    - SPRING_DATASOURCE_PASSWORD: eventuate
+    - SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-orchestrator/eventuate
+    - SPRING_DATASOURCE_USERNAME: eventuate
+    - T2_JAEGER_ENABLED: 'FALSE'
+    - T2_JAEGER_HOST: simplest-agent
+    - containerPort: 8080
+    type: order-SoftwareApplication
+- payment:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/t2project/payment
+        name: t2project/payment:main
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - containerPort: 8080
+    - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: kafka-zookeeper:2181
+    - SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+    - SPRING_DATASOURCE_PASSWORD: eventuate
+    - SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-orchestrator/eventuate
+    - SPRING_DATASOURCE_USERNAME: eventuate
+    - T2_PAYMENT_PROVIDER_ENABLED: 'TRUE'
+    - T2_PAYMENT_PROVIDER_DUMMY_URL: http://creditinstitute/pay
+    - T2_PAYMENT_PROVIDER_TIMEOUT: '5'
+    - T2_JAEGER_ENABLED: 'FALSE'
+    - T2_JAEGER_HOST: simplest-agent
+    type: payment-SoftwareApplication
+- postgres-inventory-datadir-volume:
+    artifacts: []
+    operations: []
+    properties:
+    - storage_size: 1Gi
+    type: Storage
+- postgres-inventory:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/eventuateio/eventuate-tram-sagas-postgres
+        name: eventuateio/eventuate-tram-sagas-postgres:0.23.0.RELEASE
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - POSTGRES_DB: inventory
+    - POSTGRES_PASSWORD: inventory
+    - POSTGRES_USER: inventory
+    - USE_DB_ID: 'true'
+    - containerPort: 5432
+    type: postgresql-DatabaseSystem
+- postgres-orchestrator:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/eventuateio/eventuate-tram-sagas-postgres
+        name: eventuateio/eventuate-tram-sagas-postgres:0.23.0.RELEASE
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - POSTGRES_DB: eventuate
+    - POSTGRES_PASSWORD: eventuate
+    - POSTGRES_USER: eventuate
+    - USE_DB_ID: 'true'
+    - containerPort: 5432
+    type: postgresql-DatabaseSystem
+- postgres-orchestrator-datadir:
+    operations: []
+    properties:
+    - storage_size: 1Gi
+    type: Storage
+- ui:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/t2project/ui
+        name: t2project/ui:main
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - T2_UIBACKEND_URL: http://uibackend
+    - containerPort: 8080
+    type: ui-SoftwareApplication
+- uibackend:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/t2project/uibackend
+        name: t2project/uibackend:main
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - T2_ORCHESTRATOR_URL: http://orchestrator/order
+    - T2_CART_URL: http://cart/cart
+    - T2_INVENTORY_URL: http://inventory/inventory
+    - T2_RESERVATION_ENDPOINT: reservation
+    - T2_COMPUTATION_SIMULATOR_ENABLED: 'FALSE'
+    - T2_COMPUTATION_SIMULATOR_URL: http://computation-simulator/compute
+    - T2_JAEGER_ENABLED: 'FALSE'
+    - T2_JAEGER_HOST: 'simplest-agent #todo'
+    - containerPort: 8080
+    type: uibackend-SoftwareApplication
+relations:
+- mongo-cart-mongodb_HostedOn_t2store:
+    operations: []
+    properties: []
+    source: mongo-cart-mongodb
+    target: t2store
+    type: HostedOn
+- mongo-order-mongodb_HostedOn_t2store:
+    operations: []
+    properties: []
+    source: mongo-order-mongodb
+    target: t2store
+    type: HostedOn
+- kafka_HostedOn_t2store:
+    operations: []
+    properties: []
+    source: kafka
+    target: t2store
+    type: HostedOn
+- t2store_HostedOn_MicrosoftAzure:
+    operations: []
+    properties: []
+    source: t2store
+    target: MicrosoftAzure
+    type: HostedOn
+- cart_ConnectsTo_mongo-cart-mongodb:
+    description: null
+    operations: []
+    properties: []
+    source: cart
+    target: mongo-cart-mongodb
+    type: ConnectsTo
+- cdcservice_HostedOn_defaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: cdcservice
+    target: defaultKubernetesCluster
+    type: HostedOn
+- postgres-inventory_HostedOn_defaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: postgres-inventory
+    target: defaultKubernetesCluster
+    type: HostedOn
+- postgres-inventory-datadir-volume_HostedOn_defaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: postgres-inventory-datadir-volume
+    target: defaultKubernetesCluster
+    type: HostedOn
+- postgres-inventory-datadir-volume_AttachesTo_postgres-inventory:
+    operations: []
+    properties:
+    - location: /var/lib/postgresql/data
+    source: postgres-inventory-datadir-volume
+    target: postgres-inventory
+    type: AttachesTo
+- postgres-orchestrator-datadir_AttachesTo_postgres-orchestrator:
+    operations: []
+    properties:
+    - location: /var/lib/postgresql/data
+    source: postgres-orchestrator-datadir
+    target: postgres-orchestrator
+    type: AttachesTo
+- cdcservice_ConnectsTo_kafka: true
+- cdcservice_ConnectsTo_postgres-orchestrator: true
+- cdcservice_ConnectsTo_postgres-inventory: true
+- cdcservice_ConnectsTo_orchestrator: true
+- inventory_ConnectsTo_kafka: true
+- inventory_ConnectsTo_postgres-inventory: true
+- orchestrator_ConnectsTo_kafka: true
+- orchestrator_ConnectsTo_postgres-orchestrator: true
+- order_ConnectsTo_kafka: true
+- order_ConnectsTo_mongo-order-mongodb: true
+- order_ConnectsTo_postgres-orchestrator: true
+- payment_ConnectsTo_kafka: true
+- payment_ConnectsTo_postgres-orchestrator: true
+- payment_ConnectsTo_creditinstitute: true
+- ui_ConnectsTo_uibackend: true
+- uibackend_ConnectsTo_orchestrator: true
+- uibackend_ConnectsTo_cart: true
+- uibackend_ConnectsTo_inventory: true

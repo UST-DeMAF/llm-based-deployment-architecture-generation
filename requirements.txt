@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+requests
+ollama
+langchain
+langchain-community
+langchain-classic
+langchain-text-splitters
+chromadb
+sentence-transformers
+torch
+langchain_huggingface
+langchain_chroma
+python-docx
+streamlit
+networkx

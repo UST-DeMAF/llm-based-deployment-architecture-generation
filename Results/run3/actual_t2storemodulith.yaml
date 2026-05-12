@@ -1,0 +1,526 @@
+component_types:
+- BaseType:
+    description: null
+    extends: '-'
+    operations: []
+    properties: []
+- CloudProvider:
+    description: null
+    extends: BaseType
+    operations: []
+    properties: []
+- ContainerPlatform:
+    description: null
+    extends: BaseType
+    operations: []
+    properties: []
+- DatabaseSystem:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties: []
+- DefaultDockerEngine:
+    description: null
+    extends: DockerEngine
+    operations: []
+    properties: []
+- DefaultKubernetesCluster:
+    description: null
+    extends: KubernetesCluster
+    operations: []
+    properties: []
+- DockerEngine:
+    description: null
+    extends: ContainerPlatform
+    operations: []
+    properties: []
+- KubernetesCluster:
+    description: null
+    extends: ContainerPlatform
+    operations: []
+    properties: []
+- MessageBroker:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties: []
+- SoftwareApplication:
+    description: null
+    extends: BaseType
+    operations: []
+    properties: []
+- Storage:
+    description: null
+    extends: BaseType
+    operations: []
+    properties:
+    - storage_size:
+        default_value: 1Gi
+        required: true
+        type: STRING
+- azurerm_kubernetes_cluster:
+    description: null
+    extends: KubernetesCluster
+    operations: []
+    properties:
+    - default_node_pool.name:
+        default_value: default_node
+        required: true
+        type: STRING
+    - default_node_pool.node_count:
+        default_value: '1'
+        required: true
+        type: STRING
+    - default_node_pool.vm_size:
+        default_value: standard_b4ms
+        required: true
+        type: STRING
+    - dns_prefix:
+        default_value: t2storeaks1
+        required: true
+        type: STRING
+    - identity.type:
+        default_value: SystemAssigned
+        required: true
+        type: STRING
+    - location:
+        default_value: West Europe
+        required: true
+        type: STRING
+    - name:
+        default_value: t2store-aks1
+        required: true
+        type: STRING
+    - resource_group_name:
+        default_value: t2store-resources
+        required: true
+        type: STRING
+    - tags:
+        default_value: '{"Environment":"Production"}'
+        required: true
+        type: STRING
+- backend-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - MONGO_HOST:
+        default_value: mongo-mongodb
+        required: true
+        type: STRING
+    - SPRING_DATASOURCE_DRIVER_CLASS_NAME:
+        default_value: org.postgresql.Driver
+        required: true
+        type: STRING
+    - SPRING_DATASOURCE_PASSWORD:
+        default_value: postgres
+        required: true
+        type: STRING
+    - SPRING_DATASOURCE_URL:
+        default_value: jdbc:postgresql://postgres:5432/postgres
+        required: true
+        type: STRING
+    - SPRING_DATASOURCE_USERNAME:
+        default_value: postgres
+        required: true
+        type: STRING
+    - SPRING_PROFILES_ACTIVE:
+        default_value: prod
+        required: true
+        type: STRING
+    - T2_CART_TASKRATE:
+        default_value: '0'
+        required: true
+        type: STRING
+    - T2_CART_TTL:
+        default_value: '0'
+        required: true
+        type: STRING
+    - T2_COMPUTATION_SIMULATOR_ENABLED:
+        default_value: 'FALSE'
+        required: true
+        type: STRING
+    - T2_COMPUTATION_SIMULATOR_PI_TOTAL_POINTS:
+        default_value: '1000000000'
+        required: true
+        type: STRING
+    - T2_INVENTORY_SET_UNITS_TO_MAX:
+        default_value: 'FALSE'
+        required: true
+        type: STRING
+    - T2_INVENTORY_SIZE:
+        default_value: '25'
+        required: true
+        type: STRING
+    - T2_INVENTORY_TASKRATE:
+        default_value: '0'
+        required: true
+        type: STRING
+    - T2_INVENTORY_TTL:
+        default_value: '0'
+        required: true
+        type: STRING
+    - T2_PAYMENT_PROVIDER_DUMMY_URL:
+        default_value: http://creditinstitute/pay
+        required: true
+        type: STRING
+    - T2_PAYMENT_PROVIDER_ENABLED:
+        default_value: 'TRUE'
+        required: true
+        type: STRING
+    - T2_PAYMENT_PROVIDER_TIMEOUT:
+        default_value: '5'
+        required: true
+        type: STRING
+    - containerPort_backend:
+        default_value: 8080
+        required: true
+        type: INTEGER
+    - exposedPort_80:
+        default_value: 80:8080
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: Always
+        required: false
+        type: STRING
+- creditinstitute-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - T2_JAEGER_ENABLED:
+        default_value: 'FALSE'
+        required: true
+        type: STRING
+    - T2_JAEGER_HOST:
+        default_value: simplest-agent
+        required: true
+        type: STRING
+    - containerPort_creditinstitute:
+        default_value: 8080
+        required: true
+        type: INTEGER
+    - exposedPort_80:
+        default_value: 80:8080
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: Always
+        required: false
+        type: STRING
+- mongodb-DatabaseSystem:
+    description: null
+    extends: DatabaseSystem
+    operations: []
+    properties:
+    - ALLOW_EMPTY_PASSWORD:
+        default_value: 'no'
+        required: true
+        type: STRING
+    - BITNAMI_DEBUG:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - MONGODB_DISABLE_JAVASCRIPT:
+        default_value: 'no'
+        required: true
+        type: STRING
+    - MONGODB_DISABLE_SYSTEM_LOG:
+        default_value: 'no'
+        required: true
+        type: STRING
+    - MONGODB_ENABLE_DIRECTORY_PER_DB:
+        default_value: 'no'
+        required: true
+        type: STRING
+    - MONGODB_ENABLE_IPV6:
+        default_value: 'no'
+        required: true
+        type: STRING
+    - MONGODB_ENABLE_JOURNAL:
+        default_value: 'yes'
+        required: true
+        type: STRING
+    - MONGODB_PORT_NUMBER:
+        default_value: '27017'
+        required: true
+        type: STRING
+    - MONGODB_ROOT_PASSWORD_FILE:
+        default_value: /opt/bitnami/mongodb/secrets/mongodb-root-password
+        required: true
+        type: STRING
+    - MONGODB_ROOT_USER:
+        default_value: root
+        required: true
+        type: STRING
+    - MONGODB_SYSTEM_LOG_VERBOSITY:
+        default_value: '0'
+        required: true
+        type: STRING
+    - OPENSSL_FIPS:
+        default_value: 'yes'
+        required: true
+        type: STRING
+    - containerPort:
+        default_value: '27017'
+        required: true
+        type: STRING
+    - exposedPort:
+        default_value: 27017:27017
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- postgres-DatabaseSystem:
+    description: null
+    extends: DatabaseSystem
+    operations: []
+    properties:
+    - POSTGRES_PASSWORD:
+        default_value: postgres
+        required: true
+        type: STRING
+    - POSTGRES_USER:
+        default_value: postgres
+        required: true
+        type: STRING
+    - containerPort_5432:
+        default_value: 5432
+        required: true
+        type: INTEGER
+    - containerPort_postgres:
+        default_value: 5432
+        required: true
+        type: INTEGER
+    - exposedPort_5432:
+        default_value: 5432:5432
+        required: true
+        type: STRING
+    - exposedPort_tcp-5432:
+        default_value: 5432:5432
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+components:
+- MicrosoftAzure:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    type: CloudProvider
+- backend:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/t2project/modulith
+        name: t2project/modulith:main
+    description: null
+    operations: []
+    properties:
+    - MONGO_HOST: mongo-mongodb
+    - SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+    - SPRING_DATASOURCE_PASSWORD: postgres
+    - SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
+    - SPRING_DATASOURCE_USERNAME: postgres
+    - SPRING_PROFILES_ACTIVE: prod
+    - T2_CART_TASKRATE: '0'
+    - T2_CART_TTL: '0'
+    - T2_COMPUTATION_SIMULATOR_ENABLED: 'FALSE'
+    - T2_COMPUTATION_SIMULATOR_PI_TOTAL_POINTS: '1000000000'
+    - T2_INVENTORY_SET_UNITS_TO_MAX: 'FALSE'
+    - T2_INVENTORY_SIZE: '25'
+    - T2_INVENTORY_TASKRATE: '0'
+    - T2_INVENTORY_TTL: '0'
+    - T2_PAYMENT_PROVIDER_DUMMY_URL: http://creditinstitute/pay
+    - T2_PAYMENT_PROVIDER_ENABLED: 'TRUE'
+    - T2_PAYMENT_PROVIDER_TIMEOUT: '5'
+    - containerPort_backend: 8080
+    - exposedPort_80: 80:8080
+    - imagePullPolicy: Always
+    type: backend-SoftwareApplication
+- creditinstitute:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/t2project/creditinstitute
+        name: t2project/creditinstitute:main
+    description: null
+    operations: []
+    properties:
+    - T2_JAEGER_ENABLED: 'FALSE'
+    - T2_JAEGER_HOST: simplest-agent
+    - containerPort_creditinstitute: 8080
+    - exposedPort_80: 80:8080
+    - imagePullPolicy: Always
+    type: creditinstitute-SoftwareApplication
+- mongo-mongodb:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/mongodb
+        name: registry-1.docker.io/bitnami/mongodb:latest
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/mongodb
+        name: bitnami/mongodb
+    description: null
+    operations: []
+    properties:
+    - ALLOW_EMPTY_PASSWORD: 'no'
+    - BITNAMI_DEBUG: 'false'
+    - MONGODB_DISABLE_JAVASCRIPT: 'no'
+    - MONGODB_DISABLE_SYSTEM_LOG: 'no'
+    - MONGODB_ENABLE_DIRECTORY_PER_DB: 'no'
+    - MONGODB_ENABLE_IPV6: 'no'
+    - MONGODB_ENABLE_JOURNAL: 'yes'
+    - MONGODB_PORT_NUMBER: '27017'
+    - MONGODB_ROOT_PASSWORD_FILE: /opt/bitnami/mongodb/secrets/mongodb-root-password
+    - MONGODB_ROOT_USER: root
+    - MONGODB_SYSTEM_LOG_VERBOSITY: '0'
+    - OPENSSL_FIPS: 'yes'
+    - containerPort: '27017'
+    - exposedPort: 27017:27017
+    - imagePullPolicy: IfNotPresent
+    type: mongodb-DatabaseSystem
+- postgres:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/_/postgres
+        name: postgres:12.16-bullseye
+    description: null
+    operations: []
+    properties:
+    - POSTGRES_PASSWORD: postgres
+    - POSTGRES_USER: postgres
+    - containerPort_5432: 5432
+    - containerPort_postgres: 5432
+    - exposedPort_5432: 5432:5432
+    - exposedPort_tcp-5432: 5432:5432
+    - imagePullPolicy: IfNotPresent
+    type: postgres-DatabaseSystem
+- postgres-postgres-storage-volume:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - storage_size: 1Gi
+    type: Storage
+- t2store:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - default_node_pool.name: default_node
+    - default_node_pool.node_count: '1'
+    - default_node_pool.vm_size: standard_b4ms
+    - dns_prefix: t2storeaks1
+    - identity.type: SystemAssigned
+    - location: West Europe
+    - name: t2store-aks1
+    - resource_group_name: t2store-resources
+    - tags: '{"Environment":"Production"}'
+    type: azurerm_kubernetes_cluster
+properties: []
+relation_types:
+- AttachesTo:
+    description: null
+    extends: DependsOn
+    operations: []
+    properties:
+    - location:
+        default_value: ''
+        required: true
+        type: STRING
+- ConnectsTo:
+    description: null
+    extends: DependsOn
+    operations: []
+    properties: []
+- DependsOn:
+    description: null
+    extends: '-'
+    operations: []
+    properties: []
+- HostedOn:
+    description: null
+    extends: DependsOn
+    operations: []
+    properties: []
+relations:
+- backend_ConnectsTo_creditinstitute:
+    description: null
+    operations: []
+    properties: []
+    source: backend
+    target: creditinstitute
+    type: ConnectsTo
+- backend_ConnectsTo_mongo-mongodb:
+    description: null
+    operations: []
+    properties: []
+    source: backend
+    target: mongo-mongodb
+    type: ConnectsTo
+- backend_ConnectsTo_postgres:
+    description: null
+    operations: []
+    properties: []
+    source: backend
+    target: postgres
+    type: ConnectsTo
+- backend_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: backend
+    target: t2store
+    type: HostedOn
+- creditinstitute_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: creditinstitute
+    target: t2store
+    type: HostedOn
+- mongo-mongodb_HostedOn_t2store:
+    description: null
+    operations: []
+    properties: []
+    source: mongo-mongodb
+    target: t2store
+    type: HostedOn
+- postgres-postgres-storage-volume_AttachesTo_postgres:
+    description: null
+    operations: []
+    properties:
+    - location: /var/lib/postgresql/data
+    source: postgres-postgres-storage-volume
+    target: postgres
+    type: AttachesTo
+- postgres-postgres-storage-volume_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: postgres-postgres-storage-volume
+    target: t2store
+    type: HostedOn
+- postgres_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: postgres
+    target: t2store
+    type: HostedOn
+- t2store_HostedOn_MicrosoftAzure:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: t2store
+    target: MicrosoftAzure
+    type: HostedOn

@@ -1,0 +1,117 @@
+components:
+- MicrosoftAzure:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    type: CloudProvider
+- t2store:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - name: t2store-aks1
+    - location: West Europe
+    - resource_group_name: t2store-resources
+    - dns_prefix: t2storeaks1
+    - default_node_pool.name: default_node
+    - default_node_pool.node_count: '1'
+    - default_node_pool.vm_size: standard_b4ms
+    - identity.type: SystemAssigned
+    - tags: '{"Environment":"Production"}'
+    type: azurerm_kubernetes_cluster
+- mongo-mongodb:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/mongodb
+        name: bitnami/mongodb:latest
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    type: mongo-DatabaseSystem
+- backend:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/t2project/modulith
+        name: t2project/modulith:main
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - SPRING_PROFILES_ACTIVE: prod
+    - MONGO_HOST: mongo-mongodb
+    - SPRING_DATASOURCE_USERNAME: postgres
+    - SPRING_DATASOURCE_PASSWORD: postgres
+    - SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
+    - SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+    - T2_CART_TTL: '0'
+    - T2_CART_TASKRATE: '0'
+    - T2_INVENTORY_SIZE: '25'
+    - T2_INVENTORY_TASKRATE: '0'
+    - T2_INVENTORY_TTL: '0'
+    - T2_INVENTORY_SET_UNITS_TO_MAX: 'FALSE'
+    - T2_PAYMENT_PROVIDER_ENABLED: 'TRUE'
+    - T2_PAYMENT_PROVIDER_DUMMY_URL: http://creditinstitute/pay
+    - T2_PAYMENT_PROVIDER_TIMEOUT: '5'
+    - T2_COMPUTATION_SIMULATOR_ENABLED: 'FALSE'
+    - T2_COMPUTATION_SIMULATOR_PI_TOTAL_POINTS: '1000000000'
+    - containerPort: 8080
+    type: modulith-SoftwareApplication
+- creditinstitute:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/t2project/creditinstitute
+        name: t2project/creditinstitute:main
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - T2_JAEGER_ENABLED: 'FALSE'
+    - T2_JAEGER_HOST: simplest-agent
+    - containerPort: 8080
+    type: creditinstitute-SoftwareApplication
+- postgres:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/postgres
+        name: postgres:12.16-bullseye
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - POSTGRES_PASSWORD: postgres
+    - POSTGRES_USER: postgres
+    - containerPort: 5432
+    type: postgres-DatabaseSystem
+- postgres-postgres-storage-volume:
+    description: null
+    operations: []
+    properties:
+    - storage_size: 1Gi
+    type: Storage
+relations:
+- t2store_HostedOn_MicrosoftAzure:
+    description: null
+    operations: []
+    properties: []
+    source: t2store
+    target: MicrosoftAzure
+    type: HostedOn
+- mongo-mongodb_HostedOn_t2store:
+    description: null
+    operations: []
+    properties: []
+    source: mongo-mongodb
+    target: t2store
+    type: HostedOn
+- postgres-postgres-storage-volume_AttachesTo_postgres:
+    description: null
+    operations: []
+    properties:
+    - location: /var/lib/postgresql/data
+    source: postgres-postgres-storage-volume
+    target: postgres
+    type: AttachesTo
+- backend_ConnectsTo_mongo-mongodb: true
+- backend_ConnectsTo_postgres: true
+- backend_ConnectsTo_creditinstitute: true

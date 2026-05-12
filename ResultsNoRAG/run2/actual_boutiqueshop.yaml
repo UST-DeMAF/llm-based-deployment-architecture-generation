@@ -1,0 +1,226 @@
+components:
+- GoogleCloudPlatform:
+    artifacts: []
+    operations: []
+    properties: []
+    type: CloudProvider
+- my_cluster:
+    artifacts: []
+    operations: []
+    properties:
+    - name: online-boutique
+    - location: us-central1
+    - enable_autopilot: true
+    type: google_container_cluster
+- redis-cart:
+    artifacts: []
+    operations: []
+    properties:
+    - name: redis-cart
+    - memory_size_gb: 1
+    - region: us-central1
+    - redis_version: REDIS_7_0
+    - project: var.gcp_project_id
+    type: redis-DatabaseSystem
+- adservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - PORT: '9555'
+    - containerPort: 9555
+    type: adservice-SoftwareApplication
+- cartservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice:v0.10.5
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - REDIS_ADDR: redis-cart:6379
+    - containerPort: 7070
+    type: cartservice-SoftwareApplication
+- checkoutservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - PORT: '5050'
+    - PRODUCT_CATALOG_SERVICE_ADDR: productcatalogservice:3550
+    - SHIPPING_SERVICE_ADDR: shippingservice:50051
+    - PAYMENT_SERVICE_ADDR: paymentservice:50051
+    - EMAIL_SERVICE_ADDR: emailservice:5000
+    - CURRENCY_SERVICE_ADDR: currencyservice:7000
+    - CART_SERVICE_ADDR: cartservice:7070
+    - containerPort: 5050
+    type: checkoutservice-SoftwareApplication
+- currencyservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice:v0.10.5
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - PORT: '7000'
+    - DISABLE_PROFILER: '1'
+    - containerPort: 7000
+    type: currencyservice-SoftwareApplication
+- DefaultKubernetesCluster:
+    artifacts: []
+    operations: []
+    properties: []
+    type: DefaultKubernetesCluster
+- emailservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice:v0.10.5
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - PORT: '8080'
+    - DISABLE_PROFILER: '1'
+    - containerPort: 8080
+    type: emailservice-SoftwareApplication
+- frontend:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - PORT: '8080'
+    - PRODUCT_CATALOG_SERVICE_ADDR: productcatalogservice:3550
+    - CURRENCY_SERVICE_ADDR: currencyservice:7000
+    - CART_SERVICE_ADDR: cartservice:7070
+    - RECOMMENDATION_SERVICE_ADDR: recommendationservice:8080
+    - SHIPPING_SERVICE_ADDR: shippingservice:50051
+    - CHECKOUT_SERVICE_ADDR: checkoutservice:5050
+    - AD_SERVICE_ADDR: adservice:9555
+    - SHOPPING_ASSISTANT_SERVICE_ADDR: shoppingassistantservice:80
+    - ENABLE_PROFILER: '0'
+    - containerPort: 8080
+    type: frontend-SoftwareApplication
+- defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    type: DefaultKubernetesCluster
+- loadgenerator:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev/google-samples/microservices-demo
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - FRONTEND_ADDR: frontend:80
+    - USERS: '10'
+    - RATE: '1'
+    type: loadgenerator-SoftwareApplication
+- paymentservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - PORT: '50051'
+    - DISABLE_PROFILER: '1'
+    - containerPort: 50051
+    type: paymentservice-SoftwareApplication
+- productcatalogservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice:v0.10.5
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - PORT: '3550'
+    - DISABLE_PROFILER: '1'
+    - containerPort: 3550
+    type: productcatalogservice-SoftwareApplication
+- recommendationservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice:v0.10.5
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - PORT: '8080'
+    - PRODUCT_CATALOG_SERVICE_ADDR: productcatalogservice:3550
+    - DISABLE_PROFILER: '1'
+    - containerPort: 8080
+    type: recommendationservice-SoftwareApplication
+- shippingservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - containerPort: 50051
+    - PORT: '50051'
+    - DISABLE_PROFILER: '1'
+    type: shippingservice-SoftwareApplication
+relations:
+- my_cluster_HostedOn_GoogleCloudPlatform:
+    operations: []
+    properties: []
+    source: my_cluster
+    target: GoogleCloudPlatform
+    type: HostedOn
+- redis-cart_HostedOn_my_cluster:
+    operations: []
+    properties: []
+    source: redis-cart
+    target: my_cluster
+    type: HostedOn
+- emailservice_HostedOn_DefaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: emailservice
+    target: DefaultKubernetesCluster
+    type: HostedOn
+- loadgenerator_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: loadgenerator
+    target: defaultKubernetesCluster
+    type: HostedOn
+- cartservice_ConnectsTo_redis-cart: true
+- checkoutservice_ConnectsTo_cartservice: true
+- checkoutservice_ConnectsTo_currencyservice: true
+- checkoutservice_ConnectsTo_emailservice: true
+- checkoutservice_ConnectsTo_paymentservice: true
+- checkoutservice_ConnectsTo_productcatalogservice: true
+- checkoutservice_ConnectsTo_shippingservice: true
+- loadgenerator_ConnectsTo_frontend: true
+- recommendationservice_ConnectsTo_productcatalogservice: true
+- frontend_ConnectsTo_adservice: true
+- frontend_ConnectsTo_cartservice: true
+- frontend_ConnectsTo_currencyservice: true
+- frontend_ConnectsTo_checkoutservice: true
+- frontend_ConnectsTo_productcatalogservice: true
+- frontend_ConnectsTo_recommendationservice: true
+- frontend_ConnectsTo_shippingservice: true

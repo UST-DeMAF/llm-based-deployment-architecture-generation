@@ -1,0 +1,32 @@
+---
+- name: Pull the latest Docker image
+  docker_image:
+    name: "{{ image_name }}"
+    source: pull
+
+- name: Deploy Service
+  become: true
+  docker_container:
+    name: "{{ service_name }}"
+    image: "{{ image_name }}"
+    env: 
+      cluster.name: "demo-cluster"
+      node.name: "demo-node"
+      bootstrap.memory_lock: "true"
+      discovery.type: "single-node"
+      OPENSEARCH_JAVA_OPTS: "-Xms300m -Xmx300m"
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+      DISABLE_SECURITY_PLUGIN: "true"
+    ulimits: "{{ ulimits }}"
+    restart_policy: "{{ restart_policy }}"
+    memory: "{{ memory_limit }}"
+    state: "{{ state }}"
+    ports: "{{ ports }}"
+    network_mode: "{{ network_name }}"
+    networks:
+      - name: "{{ network_name }}"
+    log_driver: "{{ log_driver }}"
+    log_options:
+      max-size: "{{ log_options_max_size }}"
+      max-file: "{{ log_options_max_file }}"
+      tag: "{{ service_name }}"

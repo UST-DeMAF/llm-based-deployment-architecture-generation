@@ -1,0 +1,875 @@
+component_types:
+- BaseType:
+    description: null
+    extends: '-'
+    operations: []
+    properties: []
+- CloudProvider:
+    description: null
+    extends: BaseType
+    operations: []
+    properties: []
+- ContainerPlatform:
+    description: null
+    extends: BaseType
+    operations: []
+    properties: []
+- DatabaseSystem:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties: []
+- DefaultDockerEngine:
+    description: null
+    extends: DockerEngine
+    operations: []
+    properties: []
+- DefaultKubernetesCluster:
+    description: null
+    extends: KubernetesCluster
+    operations: []
+    properties: []
+- DockerEngine:
+    description: null
+    extends: ContainerPlatform
+    operations: []
+    properties: []
+- KubernetesCluster:
+    description: null
+    extends: ContainerPlatform
+    operations: []
+    properties: []
+- MessageBroker:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties: []
+- SoftwareApplication:
+    description: null
+    extends: BaseType
+    operations: []
+    properties: []
+- adservice-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - PORT:
+        default_value: '9555'
+        required: true
+        type: STRING
+    - containerPort_server:
+        default_value: 9555
+        required: true
+        type: INTEGER
+    - exposedPort_grpc:
+        default_value: 9555:9555
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- cartservice-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - REDIS_ADDR:
+        default_value: redis-cart:6379
+        required: true
+        type: STRING
+    - containerPort_7070:
+        default_value: 7070
+        required: true
+        type: INTEGER
+    - containerPort_server:
+        default_value: 7070
+        required: true
+        type: INTEGER
+    - exposedPort_grpc:
+        default_value: 7070:7070
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- checkoutservice-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - CART_SERVICE_ADDR:
+        default_value: cartservice:7070
+        required: true
+        type: STRING
+    - CURRENCY_SERVICE_ADDR:
+        default_value: currencyservice:7000
+        required: true
+        type: STRING
+    - EMAIL_SERVICE_ADDR:
+        default_value: emailservice:5000
+        required: true
+        type: STRING
+    - PAYMENT_SERVICE_ADDR:
+        default_value: paymentservice:50051
+        required: true
+        type: STRING
+    - PORT:
+        default_value: '5050'
+        required: true
+        type: STRING
+    - PRODUCT_CATALOG_SERVICE_ADDR:
+        default_value: productcatalogservice:3550
+        required: true
+        type: STRING
+    - SHIPPING_SERVICE_ADDR:
+        default_value: shippingservice:50051
+        required: true
+        type: STRING
+    - containerPort_server:
+        default_value: 5050
+        required: true
+        type: INTEGER
+    - exposedPort_grpc:
+        default_value: 5050:5050
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- currencyservice-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - DISABLE_PROFILER:
+        default_value: '1'
+        required: true
+        type: STRING
+    - PORT:
+        default_value: '7000'
+        required: true
+        type: STRING
+    - containerPort_grpc:
+        default_value: 7000
+        required: true
+        type: INTEGER
+    - exposedPort_grpc:
+        default_value: 7000:7000
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- emailservice-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - DISABLE_PROFILER:
+        default_value: '1'
+        required: true
+        type: STRING
+    - PORT:
+        default_value: '8080'
+        required: true
+        type: STRING
+    - containerPort_server:
+        default_value: 8080
+        required: true
+        type: INTEGER
+    - exposedPort_grpc:
+        default_value: 5000:8080
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- frontend-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - AD_SERVICE_ADDR:
+        default_value: adservice:9555
+        required: true
+        type: STRING
+    - CART_SERVICE_ADDR:
+        default_value: cartservice:7070
+        required: true
+        type: STRING
+    - CHECKOUT_SERVICE_ADDR:
+        default_value: checkoutservice:5050
+        required: true
+        type: STRING
+    - CURRENCY_SERVICE_ADDR:
+        default_value: currencyservice:7000
+        required: true
+        type: STRING
+    - ENABLE_PROFILER:
+        default_value: '0'
+        required: true
+        type: STRING
+    - PORT:
+        default_value: '8080'
+        required: true
+        type: STRING
+    - PRODUCT_CATALOG_SERVICE_ADDR:
+        default_value: productcatalogservice:3550
+        required: true
+        type: STRING
+    - RECOMMENDATION_SERVICE_ADDR:
+        default_value: recommendationservice:8080
+        required: true
+        type: STRING
+    - SHIPPING_SERVICE_ADDR:
+        default_value: shippingservice:50051
+        required: true
+        type: STRING
+    - SHOPPING_ASSISTANT_SERVICE_ADDR:
+        default_value: shoppingassistantservice:80
+        required: true
+        type: STRING
+    - containerPort_server:
+        default_value: 8080
+        required: true
+        type: INTEGER
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- google_container_cluster:
+    description: null
+    extends: KubernetesCluster
+    operations: []
+    properties:
+    - enable_autopilot:
+        default_value: 'True'
+        required: true
+        type: STRING
+    - location:
+        default_value: us-central1
+        required: true
+        type: STRING
+    - name:
+        default_value: online-boutique
+        required: true
+        type: STRING
+- loadgenerator-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - FRONTEND_ADDR:
+        default_value: frontend:80
+        required: true
+        type: STRING
+    - RATE:
+        default_value: '1'
+        required: true
+        type: STRING
+    - USERS:
+        default_value: '10'
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- paymentservice-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - DISABLE_PROFILER:
+        default_value: '1'
+        required: true
+        type: STRING
+    - PORT:
+        default_value: '50051'
+        required: true
+        type: STRING
+    - containerPort_server:
+        default_value: 50051
+        required: true
+        type: INTEGER
+    - exposedPort_grpc:
+        default_value: 50051:50051
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- productcatalogservice-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - DISABLE_PROFILER:
+        default_value: '1'
+        required: true
+        type: STRING
+    - PORT:
+        default_value: '3550'
+        required: true
+        type: STRING
+    - containerPort_3550:
+        default_value: 3550
+        required: true
+        type: INTEGER
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- recommendationservice-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - DISABLE_PROFILER:
+        default_value: '1'
+        required: true
+        type: STRING
+    - PORT:
+        default_value: '8080'
+        required: true
+        type: STRING
+    - PRODUCT_CATALOG_SERVICE_ADDR:
+        default_value: productcatalogservice:3550
+        required: true
+        type: STRING
+    - containerPort_server:
+        default_value: 8080
+        required: true
+        type: INTEGER
+    - exposedPort_grpc:
+        default_value: 8080:8080
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- redis-DatabaseSystem:
+    description: null
+    extends: DatabaseSystem
+    operations: []
+    properties:
+    - containerPort_redis:
+        default_value: 6379
+        required: true
+        type: INTEGER
+    - count:
+        default_value: '${var.memorystore ? 1 : 0}'
+        required: true
+        type: STRING
+    - exposedPort_tcp-redis:
+        default_value: 6379:6379
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+    - memory_size_gb:
+        default_value: '1'
+        required: true
+        type: STRING
+    - name:
+        default_value: redis-cart
+        required: true
+        type: STRING
+    - project:
+        default_value: ${var.gcp_project_id}
+        required: true
+        type: STRING
+    - redis_version:
+        default_value: REDIS_7_0
+        required: true
+        type: STRING
+    - region:
+        default_value: ${var.region}
+        required: true
+        type: STRING
+- shippingservice-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - DISABLE_PROFILER:
+        default_value: '1'
+        required: true
+        type: STRING
+    - PORT:
+        default_value: '50051'
+        required: true
+        type: STRING
+    - containerPort_50051:
+        default_value: 50051
+        required: true
+        type: INTEGER
+    - containerPort_server:
+        default_value: 50051
+        required: true
+        type: INTEGER
+    - exposedPort_grpc:
+        default_value: 50051:50051
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+components:
+- GoogleCloudPlatform:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    type: CloudProvider
+- adservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - PORT: '9555'
+    - containerPort_server: 9555
+    - exposedPort_grpc: 9555:9555
+    - imagePullPolicy: IfNotPresent
+    type: adservice-SoftwareApplication
+- cartservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice:v0.10.5
+    - docker_image:
+        fileURI: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - REDIS_ADDR: redis-cart:6379
+    - containerPort_7070: 7070
+    - containerPort_server: 7070
+    - exposedPort_grpc: 7070:7070
+    - imagePullPolicy: IfNotPresent
+    type: cartservice-SoftwareApplication
+- checkoutservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - CART_SERVICE_ADDR: cartservice:7070
+    - CURRENCY_SERVICE_ADDR: currencyservice:7000
+    - EMAIL_SERVICE_ADDR: emailservice:5000
+    - PAYMENT_SERVICE_ADDR: paymentservice:50051
+    - PORT: '5050'
+    - PRODUCT_CATALOG_SERVICE_ADDR: productcatalogservice:3550
+    - SHIPPING_SERVICE_ADDR: shippingservice:50051
+    - containerPort_server: 5050
+    - exposedPort_grpc: 5050:5050
+    - imagePullPolicy: IfNotPresent
+    type: checkoutservice-SoftwareApplication
+- currencyservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - DISABLE_PROFILER: '1'
+    - PORT: '7000'
+    - containerPort_grpc: 7000
+    - exposedPort_grpc: 7000:7000
+    - imagePullPolicy: IfNotPresent
+    type: currencyservice-SoftwareApplication
+- emailservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice:v0.10.5
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - DISABLE_PROFILER: '1'
+    - PORT: '8080'
+    - containerPort_server: 8080
+    - exposedPort_grpc: 5000:8080
+    - imagePullPolicy: IfNotPresent
+    type: emailservice-SoftwareApplication
+- frontend:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - AD_SERVICE_ADDR: adservice:9555
+    - CART_SERVICE_ADDR: cartservice:7070
+    - CHECKOUT_SERVICE_ADDR: checkoutservice:5050
+    - CURRENCY_SERVICE_ADDR: currencyservice:7000
+    - ENABLE_PROFILER: '0'
+    - PORT: '8080'
+    - PRODUCT_CATALOG_SERVICE_ADDR: productcatalogservice:3550
+    - RECOMMENDATION_SERVICE_ADDR: recommendationservice:8080
+    - SHIPPING_SERVICE_ADDR: shippingservice:50051
+    - SHOPPING_ASSISTANT_SERVICE_ADDR: shoppingassistantservice:80
+    - containerPort_server: 8080
+    - imagePullPolicy: IfNotPresent
+    type: frontend-SoftwareApplication
+- loadgenerator:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - FRONTEND_ADDR: frontend:80
+    - RATE: '1'
+    - USERS: '10'
+    - imagePullPolicy: IfNotPresent
+    type: loadgenerator-SoftwareApplication
+- my_cluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - enable_autopilot: 'True'
+    - location: us-central1
+    - name: online-boutique
+    type: google_container_cluster
+- paymentservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - DISABLE_PROFILER: '1'
+    - PORT: '50051'
+    - containerPort_server: 50051
+    - exposedPort_grpc: 50051:50051
+    - imagePullPolicy: IfNotPresent
+    type: paymentservice-SoftwareApplication
+- productcatalogservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - DISABLE_PROFILER: '1'
+    - PORT: '3550'
+    - containerPort_3550: 3550
+    - imagePullPolicy: IfNotPresent
+    type: productcatalogservice-SoftwareApplication
+- recommendationservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - DISABLE_PROFILER: '1'
+    - PORT: '8080'
+    - PRODUCT_CATALOG_SERVICE_ADDR: productcatalogservice:3550
+    - containerPort_server: 8080
+    - exposedPort_grpc: 8080:8080
+    - imagePullPolicy: IfNotPresent
+    type: recommendationservice-SoftwareApplication
+- redis-cart:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/_/redis
+        name: redis:alpine
+    description: null
+    operations: []
+    properties:
+    - containerPort_redis: 6379
+    - count: '${var.memorystore ? 1 : 0}'
+    - exposedPort_tcp-redis: 6379:6379
+    - imagePullPolicy: IfNotPresent
+    - memory_size_gb: '1'
+    - name: redis-cart
+    - project: ${var.gcp_project_id}
+    - redis_version: REDIS_7_0
+    - region: ${var.region}
+    type: redis-DatabaseSystem
+- shippingservice:
+    artifacts:
+    - docker_image:
+        fileURI: https://us-central1-docker.pkg.dev
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice:v0.10.5
+    - docker_image:
+        fileURI: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice
+        name: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice:v0.10.5
+    description: null
+    operations: []
+    properties:
+    - DISABLE_PROFILER: '1'
+    - PORT: '50051'
+    - containerPort_50051: 50051
+    - containerPort_server: 50051
+    - exposedPort_grpc: 50051:50051
+    - imagePullPolicy: IfNotPresent
+    type: shippingservice-SoftwareApplication
+properties: []
+relation_types:
+- AttachesTo:
+    description: null
+    extends: DependsOn
+    operations: []
+    properties:
+    - location:
+        default_value: ''
+        required: true
+        type: STRING
+- ConnectsTo:
+    description: null
+    extends: DependsOn
+    operations: []
+    properties: []
+- DependsOn:
+    description: null
+    extends: '-'
+    operations: []
+    properties: []
+- HostedOn:
+    description: null
+    extends: DependsOn
+    operations: []
+    properties: []
+relations:
+- adservice_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: adservice
+    target: my_cluster
+    type: HostedOn
+- cartservice_ConnectsTo_redis-cart:
+    description: null
+    operations: []
+    properties: []
+    source: cartservice
+    target: redis-cart
+    type: ConnectsTo
+- cartservice_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: cartservice
+    target: my_cluster
+    type: HostedOn
+- checkoutservice_ConnectsTo_cartservice:
+    description: null
+    operations: []
+    properties: []
+    source: checkoutservice
+    target: cartservice
+    type: ConnectsTo
+- checkoutservice_ConnectsTo_currencyservice:
+    description: null
+    operations: []
+    properties: []
+    source: checkoutservice
+    target: currencyservice
+    type: ConnectsTo
+- checkoutservice_ConnectsTo_emailservice:
+    description: null
+    operations: []
+    properties: []
+    source: checkoutservice
+    target: emailservice
+    type: ConnectsTo
+- checkoutservice_ConnectsTo_paymentservice:
+    description: null
+    operations: []
+    properties: []
+    source: checkoutservice
+    target: paymentservice
+    type: ConnectsTo
+- checkoutservice_ConnectsTo_productcatalogservice:
+    description: null
+    operations: []
+    properties: []
+    source: checkoutservice
+    target: productcatalogservice
+    type: ConnectsTo
+- checkoutservice_ConnectsTo_shippingservice:
+    description: null
+    operations: []
+    properties: []
+    source: checkoutservice
+    target: shippingservice
+    type: ConnectsTo
+- checkoutservice_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: checkoutservice
+    target: my_cluster
+    type: HostedOn
+- currencyservice_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: currencyservice
+    target: my_cluster
+    type: HostedOn
+- emailservice_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: emailservice
+    target: my_cluster
+    type: HostedOn
+- frontend_ConnectsTo_adservice:
+    description: null
+    operations: []
+    properties: []
+    source: frontend
+    target: adservice
+    type: ConnectsTo
+- frontend_ConnectsTo_cartservice:
+    description: null
+    operations: []
+    properties: []
+    source: frontend
+    target: cartservice
+    type: ConnectsTo
+- frontend_ConnectsTo_checkoutservice:
+    description: null
+    operations: []
+    properties: []
+    source: frontend
+    target: checkoutservice
+    type: ConnectsTo
+- frontend_ConnectsTo_currencyservice:
+    description: null
+    operations: []
+    properties: []
+    source: frontend
+    target: currencyservice
+    type: ConnectsTo
+- frontend_ConnectsTo_productcatalogservice:
+    description: null
+    operations: []
+    properties: []
+    source: frontend
+    target: productcatalogservice
+    type: ConnectsTo
+- frontend_ConnectsTo_recommendationservice:
+    description: null
+    operations: []
+    properties: []
+    source: frontend
+    target: recommendationservice
+    type: ConnectsTo
+- frontend_ConnectsTo_shippingservice:
+    description: null
+    operations: []
+    properties: []
+    source: frontend
+    target: shippingservice
+    type: ConnectsTo
+- frontend_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: frontend
+    target: my_cluster
+    type: HostedOn
+- loadgenerator_ConnectsTo_frontend:
+    description: null
+    operations: []
+    properties: []
+    source: loadgenerator
+    target: frontend
+    type: ConnectsTo
+- loadgenerator_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: loadgenerator
+    target: my_cluster
+    type: HostedOn
+- my_cluster_HostedOn_GoogleCloudPlatform:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: my_cluster
+    target: GoogleCloudPlatform
+    type: HostedOn
+- paymentservice_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: paymentservice
+    target: my_cluster
+    type: HostedOn
+- productcatalogservice_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: productcatalogservice
+    target: my_cluster
+    type: HostedOn
+- recommendationservice_ConnectsTo_productcatalogservice:
+    description: null
+    operations: []
+    properties: []
+    source: recommendationservice
+    target: productcatalogservice
+    type: ConnectsTo
+- recommendationservice_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: recommendationservice
+    target: my_cluster
+    type: HostedOn
+- redis-cart_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: redis-cart
+    target: my_cluster
+    type: HostedOn
+- shippingservice_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: shippingservice
+    target: my_cluster
+    type: HostedOn

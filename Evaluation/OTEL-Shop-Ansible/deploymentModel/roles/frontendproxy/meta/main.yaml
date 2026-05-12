@@ -1,0 +1,9 @@
+---
+dependencies:
+  - role: frontend
+  - role: jaeger
+  - role: loadgenerator
+  - role: grafana
+  - role: flagd
+  - role: imageprovider
+  - role: otelcol

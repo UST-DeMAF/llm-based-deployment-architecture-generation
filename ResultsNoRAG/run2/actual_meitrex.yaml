@@ -1,0 +1,453 @@
+components:
+- defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    type: DefaultKubernetesCluster
+- gits-course-service:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io/it-rex-platform/course_service
+        name: ghcr.io/it-rex-platform/course_service:latest
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - SPRING_DATASOURCE_URL: jdbc:postgresql://course-service-db-postgresql:5432/course-service
+    - SPRING_DATASOURCE_USERNAME: gits
+    - SPRING_DATASOURCE_PASSWORD: random_password.course_service_db_pass.result
+    type: course_service-SoftwareApplication
+- course_service_db:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/postgresql
+        name: bitnami/postgresql:16
+    description: null
+    operations: []
+    properties:
+    - global.postgresql.auth.database: course-service
+    - global.postgresql.auth.username: gits
+    - global.postgresql.auth.password: random_password.course_service_db_pass.result
+    - postgres.auth.enablePostgresUser: 'false'
+    - repository: oci://registry-1.docker.io/bitnamicharts
+    - chart: postgresql
+    - name: course-service-db
+    type: postgresql-DatabaseSystem
+- redis-redis:
+    artifacts: []
+    operations: []
+    properties: []
+    type: redis-DatabaseSystem
+- dapr-dapr:
+    artifacts: []
+    operations: []
+    properties: []
+    type: dapr-SoftwareApplication
+- flashcard-service-db-postgresql:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/postgresql
+        name: bitnami/postgresql:16
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    - containerPort: 5432
+    - exposedPort: 5432:5432
+    type: postgresql-DatabaseSystem
+- gits-flashcard-service:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io/it-rex-platform
+        name: ghcr.io/it-rex-platform/flashcard_service:latest
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - SPRING_DATASOURCE_URL: jdbc:postgresql://flashcard-service-db-postgresql:5432/flashcard-service
+    - SPRING_DATASOURCE_USERNAME: gits
+    - SPRING_DATASOURCE_PASSWORD: random_password.flashcard_service_db_pass.result
+    type: flashcard_service-SoftwareApplication
+- gits_frontend:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io/it-rex-platform/frontend
+        name: ghcr.io/it-rex-platform/frontend:latest
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - NEXT_PUBLIC_BACKEND_URL: /api
+    - NEXT_PUBLIC_OAUTH_REDIRECT_URL: http://orange.informatik.uni-stuttgart.de
+    - NEXT_PUBLIC_OAUTH_CLIENT_ID: gits-frontend
+    - NEXT_PUBLIC_OAUTH_AUTHORITY: http://orange.informatik.uni-stuttgart.de/keycloak/realms/GITS
+    - exposedPort: 80:3000
+    type: frontend-SoftwareApplication
+- gits_graphql_gateway:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io/it-rex-platform/graphql_gateway
+        name: ghcr.io/it-rex-platform/graphql_gateway:latest
+    description: null
+    operations: []
+    properties:
+    - name: gits-gateway
+    - labels.app: gits-gateway
+    - namespace: kubernetes_namespace.gits.metadata[0].name
+    - annotations.keel.sh/policy: force
+    - annotations.keel.sh/match-tag: true
+    - annotations.keel.sh/trigger: poll
+    - annotations.dapr.io/enabled: true
+    - annotations.dapr.io/app-id: gateway
+    - annotations.dapr.io/app-port: 8080
+    - annotations.dapr.io/sidecar-cpu-request: 100m
+    - annotations.dapr.io/sidecar-cpu-limit: 200m
+    - annotations.dapr.io/sidecar-memory-request: 100Mi
+    - annotations.dapr.io/sidecar-memory-limit: 200Mi
+    - annotations.dapr.io/env: GOMEMLIMIT=180MiB
+    - imagePullPolicy: Always
+    - GATEWAY_HOSTNAME: 0.0.0.0
+    - GATEWAY_PORT: 8080
+    - COURSE_SERVICE_URL: http://localhost:3500/v1.0/invoke/course-service/method/graphql
+    - MEDIA_SERVICE_URL: http://localhost:3500/v1.0/invoke/media-service/method/graphql
+    - CONTENT_SERVICE_URL: http://localhost:3500/v1.0/invoke/content-service/method/graphql
+    - USER_SERVICE_URL: http://localhost:3500/v1.0/invoke/user-service/method/graphql
+    - FLASHCARD_SERVICE_URL: http://localhost:3500/v1.0/invoke/flashcard-service/method/graphql
+    - REWARD_SERVICE_URL: http://localhost:3500/v1.0/invoke/reward-service/method/graphql
+    - QUIZ_SERVICE_URL: http://localhost:3500/v1.0/invoke/quiz-service/method/graphql
+    - SKILLLEVEL_SERVICE_URL: http://localhost:3500/v1.0/invoke/skilllevel-service/method/graphql
+    - JWKS_URL: http://keycloak:80/keycloak/realms/GITS/protocol/openid-connect/certs
+    - resources.requests.cpu: 100m
+    - resources.requests.memory: 500Mi
+    type: graphql_gateway-SoftwareApplication
+- keel:
+    artifacts: []
+    operations: []
+    properties:
+    - name: keel
+    - repository: https://charts.keel.sh
+    - namespace: kubernetes_namespace.gits.metadata[0].name
+    - chart: keel
+    - set.name: helmProvider.enabled
+    - set.value: 'false'
+    type: keel-SoftwareApplication
+- keycloak:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io/it-rex-platform/keycloak
+        name: ghcr.io/it-rex-platform/keycloak:latest
+    operations: []
+    properties:
+    - name: keycloak
+    - repository: oci://registry-1.docker.io/bitnamicharts
+    - chart: keycloak
+    - namespace: kubernetes_namespace.gits.metadata[0].name
+    - auth.adminUser: admin
+    - auth.adminPassword: var.keycloak_admin_pw
+    - production: 'true'
+    - proxy: edge
+    - httpRelativePath: /keycloak/
+    - global.imagePullSecrets.0: kubernetes_secret.image_pull.metadata[0].name
+    - image.pullPolicy: Always
+    - image.registry: ghcr.io
+    - image.repository: it-rex-platform/keycloak
+    - image.tag: latest
+    type: keycloak-SoftwareApplication
+- gits-media-service:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io/it-rex-platform/media_service
+        name: ghcr.io/it-rex-platform/media_service:latest
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - SPRING_DATASOURCE_URL: jdbc:postgresql://media-service-db-postgresql:5432/media-service
+    - SPRING_DATASOURCE_USERNAME: gits
+    - SPRING_DATASOURCE_PASSWORD: random_password.media_service_db_pass.result
+    - MINIO_URL: http://minio:9000
+    - MINIO_ACCESS_KEY: gits
+    - MINIO_ACCESS_SECRET: random_password.media_service_minio_pass.result
+    - containerPort: 3001
+    - exposedPort: 3001:3001
+    type: media_service-SoftwareApplication
+- media-service-db-postgresql:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - containerPort: 5432
+    - exposedPort: 5432:5432
+    - global.postgresql.auth.database: media-service
+    - postgres.auth.enablePostgresUser: 'false'
+    - global.postgresql.auth.username: gits
+    - global.postgresql.auth.password: random_password.media_service_db_pass.result
+    type: postgresql-DatabaseSystem
+- minio:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/minio/minio
+        name: minio/minio:latest
+    operations: []
+    properties:
+    - name: minio
+    - repository: oci://registry-1.docker.io/bitnamicharts
+    - chart: minio
+    - namespace: kubernetes_namespace.gits.metadata[0].name
+    - auth.rootUser: gits
+    - auth.rootPassword: random_password.media_service_minio_pass.result
+    - extraEnvVars[0].name: MINIO_BROWSER_REDIRECT_URL
+    type: minio-SoftwareApplication
+- gits-quiz-service:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io
+        name: ghcr.io/it-rex-platform/quiz_service:latest
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - SPRING_DATASOURCE_URL: jdbc:postgresql://quiz-service-db-postgresql:5432/quiz-service
+    - SPRING_DATASOURCE_USERNAME: gits
+    - COURSE_SERVICE_URL: http://localhost:3500/v1.0/invoke/course-service/method/graphql
+    - CONTENT_SERVICE_URL: http://localhost:3500/v1.0/invoke/content-service/method/graphql
+    type: quiz_service-SoftwareApplication
+- quiz-service-db-postgresql:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - global.postgresql.auth.database: quiz-service
+    - global.postgresql.auth.username: gits
+    - global.postgresql.auth.password: ${random_password.quiz_service_db_pass.result}
+    - repository: oci://registry-1.docker.io/bitnamicharts
+    - chart: postgresql
+    - name: quiz-service-db
+    - namespace: gits
+    type: postgresql-DatabaseSystem
+- gits_skilllevel_service:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io/it-rex-platform/skilllevel_service
+        name: ghcr.io/it-rex-platform/skilllevel_service:latest
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - SPRING_DATASOURCE_URL: jdbc:postgresql://skilllevel-service-db-postgresql:5432/skilllevel-service
+    - SPRING_DATASOURCE_USERNAME: gits
+    - COURSE_SERVICE_URL: http://localhost:3500/v1.0/invoke/course-service/method/graphql
+    - CONTENT_SERVICE_URL: http://localhost:3500/v1.0/invoke/content-service/method/graphql
+    type: skilllevel_service-SoftwareApplication
+- skilllevel_service_db-postgresql:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/postgresql
+        name: bitnami/postgresql:latest
+    description: null
+    operations: []
+    properties:
+    - name: skilllevel-service-db
+    - repository: oci://registry-1.docker.io/bitnamicharts
+    - chart: postgresql
+    - namespace: kubernetes_namespace.gits.metadata[0].name
+    - global.postgresql.auth.database: skilllevel-service
+    - postgres.auth.enablePostgresUser: 'false'
+    - global.postgresql.auth.username: gits
+    - global.postgresql.auth.password: random_password.skilllevel_service_db_pass.result
+    type: postgresql-DatabaseSystem
+- user_service_db-postgresql:
+    artifacts: []
+    operations: []
+    properties:
+    - name: user-service-db
+    - repository: oci://registry-1.docker.io/bitnamicharts
+    - chart: postgresql
+    - namespace: gits
+    - set.global.postgresql.auth.database: user-service
+    - set.postgres.auth.enablePostgresUser: 'false'
+    - set.global.postgresql.auth.username: gits
+    - set.global.postgresql.auth.password: random_password.user_service_db_pass.result
+    type: postgresql-DatabaseSystem
+- gits_user_service:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io
+        name: ghcr.io/it-rex-platform/user_service:latest
+    operations: []
+    properties:
+    - imagePullPolicy: Always
+    - SPRING_DATASOURCE_URL: jdbc:postgresql://user-service-db-postgresql:5432/user-service
+    - SPRING_DATASOURCE_USERNAME: gits
+    - SPRING_DATASOURCE_PASSWORD: random_password.user_service_db_pass.result
+    - KEYCLOAK_URL: http://keycloak:80/keycloak
+    - KEYCLOAK_PASSWORD: var.keycloak_admin_pw
+    type: user_service-SoftwareApplication
+relations:
+- gits-course-service_HostedOn_defaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: gits-course-service
+    target: defaultKubernetesCluster
+    type: HostedOn
+- course_service_db_HostedOn_defaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: course_service_db
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits-course-service_ConnectsTo_course_service_db:
+    operations: []
+    properties: []
+    source: gits-course-service
+    target: course_service_db
+    type: ConnectsTo
+- redis-redis_HostedOn_defaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: redis-redis
+    target: defaultKubernetesCluster
+    type: HostedOn
+- dapr-dapr_HostedOn_defaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: dapr-dapr
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits-flashcard-service_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: gits-flashcard-service
+    target: defaultKubernetesCluster
+    type: HostedOn
+- flashcard-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: flashcard-service-db-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits-flashcard-service_ConnectsTo_flashcard-service-db-postgresql:
+    description: null
+    operations: []
+    properties: []
+    source: gits-flashcard-service
+    target: flashcard-service-db-postgresql
+    type: ConnectsTo
+- gits_frontend_HostedOn_defaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: gits_frontend
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits_graphql_gateway_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: gits_graphql_gateway
+    target: defaultKubernetesCluster
+    type: HostedOn
+- keel_HostedOn_defaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: keel
+    target: defaultKubernetesCluster
+    type: HostedOn
+- keycloak_HostedOn_defaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: keycloak
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits-media-service_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: gits-media-service
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits-media-service_ConnectsTo_media-service-db-postgresql:
+    description: null
+    operations: []
+    properties: []
+    source: gits-media-service
+    target: media-service-db-postgresql
+    type: ConnectsTo
+- media-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: media-service-db-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- minio_HostedOn_defaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: minio
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits-quiz-service_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: gits-quiz-service
+    target: defaultKubernetesCluster
+    type: HostedOn
+- quiz-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: quiz-service-db-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits-quiz-service_ConnectsTo_quiz-service-db-postgresql:
+    description: null
+    operations: []
+    properties: []
+    source: gits-quiz-service
+    target: quiz-service-db-postgresql
+    type: ConnectsTo
+- gits_skilllevel_service_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: gits_skilllevel_service
+    target: defaultKubernetesCluster
+    type: HostedOn
+- skilllevel_service_db-postgresql_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: skilllevel_service_db-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits_skilllevel_service_ConnectsTo_skilllevel_service_db-postgresql:
+    description: null
+    operations: []
+    properties: []
+    source: gits_skilllevel_service
+    target: skilllevel_service_db-postgresql
+    type: ConnectsTo
+- gits_user_service_ConnectsTo_user_service_db-postgresql:
+    operations: []
+    properties: []
+    source: gits_user_service
+    target: user_service_db-postgresql
+    type: ConnectsTo
+- gits_user_service_HostedOn_defaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: gits_user_service
+    target: defaultKubernetesCluster
+    type: HostedOn
+- user_service_db-postgresql_HostedOn_defaultKubernetesCluster:
+    operations: []
+    properties: []
+    source: user_service_db-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits_graphql_gateway_ConnectsTo_keycloak: null
+- gits-media-service_ConnectsTo_minio: null
+- gits_user_service_ConnectsTo_user-service-db-postgresql: null
+- gits_user_service_ConnectsTo_keycloak: null

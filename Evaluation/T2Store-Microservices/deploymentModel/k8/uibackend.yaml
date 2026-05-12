@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: uibackend
+  labels:
+    app.kubernetes.io/name: uibackend
+    app.kubernetes.io/instance: uibackend
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/version: "1.3"
+    app.kubernetes.io/part-of: t2-microservices
+  annotations:
+    prometheus.io/scrape: "true"
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/instance: uibackend
+    app.kubernetes.io/part-of: t2-microservices
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uibackend
+  labels:
+    app.kubernetes.io/name: uibackend
+    app.kubernetes.io/instance: uibackend
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/version: "1.3"
+    app.kubernetes.io/part-of: t2-microservices
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: uibackend
+      app.kubernetes.io/part-of: t2-microservices
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: uibackend
+        app.kubernetes.io/instance: uibackend
+        app.kubernetes.io/component: backend
+        app.kubernetes.io/version: "1.3"
+        app.kubernetes.io/part-of: t2-microservices
+    spec:
+      containers:
+        - name: uibackend
+          imagePullPolicy: Always
+          env:
+            - name: T2_ORCHESTRATOR_URL
+              value: http://orchestrator/order
+            - name: T2_CART_URL
+              value: http://cart/cart
+            - name: T2_INVENTORY_URL
+              value: http://inventory/inventory
+            - name: T2_RESERVATION_ENDPOINT
+              value: reservation
+            - name: T2_COMPUTATION_SIMULATOR_ENABLED
+              value: "FALSE"
+            - name: T2_COMPUTATION_SIMULATOR_URL
+              value: http://computation-simulator/compute
+            - name: T2_JAEGER_ENABLED
+              value: "FALSE"
+            - name: T2_JAEGER_HOST
+              value: simplest-agent #todo
+          image: t2project/uibackend:main
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 250m
+              memory: 250Mi
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      restartPolicy: Always

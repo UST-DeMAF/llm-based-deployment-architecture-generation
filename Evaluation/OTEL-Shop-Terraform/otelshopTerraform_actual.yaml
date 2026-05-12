@@ -1,0 +1,1142 @@
+component_types:
+- BaseType:
+    description: null
+    extends: '-'
+    operations: []
+    properties: []
+- ContainerPlatform:
+    description: null
+    extends: BaseType
+    operations: []
+    properties: []
+- DatabaseSystem:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties: []
+- DefaultDockerEngine:
+    description: null
+    extends: DockerEngine
+    operations: []
+    properties: []
+- DefaultKubernetesCluster:
+    description: null
+    extends: KubernetesCluster
+    operations: []
+    properties: []
+- DockerEngine:
+    description: null
+    extends: ContainerPlatform
+    operations: []
+    properties: []
+- KubernetesCluster:
+    description: null
+    extends: ContainerPlatform
+    operations: []
+    properties: []
+- MessageBroker:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties: []
+- SoftwareApplication:
+    description: null
+    extends: BaseType
+    operations: []
+    properties: []
+- grafana-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - datasource:
+        default_value: '{''editable'': True, ''isDefault'': True, ''jsonData'': {''exemplarTraceIdDestinations'':
+          [{''datasourceUid'': ''webstore-traces'', ''name'': ''trace_id''}, {''name'':
+          ''trace_id'', ''url'': ''http://localhost:8080/jaeger/ui/trace/$${__value.raw}'',
+          ''urlDisplayLabel'': ''View in Jaeger UI''}]}, ''name'': ''Prometheus'',
+          ''type'': ''prometheus'', ''uid'': ''webstore-metrics'', ''url'': ''http://prometheus:9090''}'
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+    - name:
+        default_value: grafana
+        required: true
+        type: STRING
+- grafana-opensearch-datasource:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - access:
+        default_value: proxy
+        required: true
+        type: STRING
+    - database:
+        default_value: otel
+        required: true
+        type: STRING
+    - editable:
+        default_value: 'True'
+        required: true
+        type: STRING
+    - flavor:
+        default_value: opensearch
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+    - isDefault:
+        default_value: 'False'
+        required: true
+        type: STRING
+    - logLevelField:
+        default_value: severity
+        required: true
+        type: STRING
+    - logMessageField:
+        default_value: body
+        required: true
+        type: STRING
+    - name:
+        default_value: OpenSearch
+        required: true
+        type: STRING
+    - pplEnabled:
+        default_value: 'True'
+        required: true
+        type: STRING
+    - timeField:
+        default_value: observedTimestamp
+        required: true
+        type: STRING
+    - type:
+        default_value: grafana-opensearch-datasource
+        required: true
+        type: STRING
+    - url:
+        default_value: http://opensearch:9200/
+        required: true
+        type: STRING
+    - version:
+        default_value: 2.16.0
+        required: true
+        type: STRING
+- otelcol-ConfigFile:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - connectors:
+        default_value: None
+        required: true
+        type: STRING
+    - exporters:
+        default_value: None
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+    - processors:
+        default_value: None
+        required: true
+        type: STRING
+    - receivers:
+        default_value: None
+        required: true
+        type: STRING
+    - service:
+        default_value: None
+        required: true
+        type: STRING
+- otelcol-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - env.OTEL_COLLECTOR_HOST:
+        default_value: otelcol
+        required: true
+        type: STRING
+    - env.OTEL_COLLECTOR_PORT_GRPC:
+        default_value: '4317'
+        required: true
+        type: STRING
+    - env.OTEL_COLLECTOR_PORT_HTTP:
+        default_value: '4318'
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+    - name:
+        default_value: otelcol
+        required: true
+        type: STRING
+    - network_mode:
+        default_value: bridge
+        required: true
+        type: STRING
+    - networks_advanced.name:
+        default_value: open-telemetry-network
+        required: true
+        type: STRING
+    - ports.internal:
+        default_value: '4318'
+        required: true
+        type: STRING
+    - restart:
+        default_value: unless-stopped
+        required: true
+        type: STRING
+- prometheus-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+components:
+- DefaultDockerEngine:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    type: DockerEngine
+- OpenSearch:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - access: proxy
+    - database: otel
+    - editable: 'True'
+    - flavor: opensearch
+    - imagePullPolicy: IfNotPresent
+    - isDefault: 'False'
+    - logLevelField: severity
+    - logMessageField: body
+    - name: OpenSearch
+    - pplEnabled: 'True'
+    - timeField: observedTimestamp
+    - type: grafana-opensearch-datasource
+    - url: http://opensearch:9200/
+    - version: 2.16.0
+    type: grafana-opensearch-datasource
+- grafana:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - datasource:
+        editable: true
+        isDefault: true
+        jsonData:
+          exemplarTraceIdDestinations:
+          - datasourceUid: webstore-traces
+            name: trace_id
+          - name: trace_id
+            url: http://localhost:8080/jaeger/ui/trace/$${__value.raw}
+            urlDisplayLabel: View in Jaeger UI
+        name: Prometheus
+        type: prometheus
+        uid: webstore-metrics
+        url: http://prometheus:9090
+    - imagePullPolicy: IfNotPresent
+    - name: grafana
+    type: grafana-SoftwareApplication
+- otelcol:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/_/otel
+        name: otel/opentelemetry-collector-contrib:0.108.0
+    description: null
+    operations: []
+    properties:
+    - env.OTEL_COLLECTOR_HOST: otelcol
+    - env.OTEL_COLLECTOR_PORT_GRPC: '4317'
+    - env.OTEL_COLLECTOR_PORT_HTTP: '4318'
+    - imagePullPolicy: IfNotPresent
+    - name: otelcol
+    - network_mode: bridge
+    - networks_advanced.name: open-telemetry-network
+    - ports.internal: '4318'
+    - restart: unless-stopped
+    type: otelcol-SoftwareApplication
+- otelcol-config.yml:
+    artifacts:
+    - file:
+        fileURI: file:///app/project_folder/Evaluation/OTEL-Shop-Terraform/deploymentModel/files/otelcollector/otelcol-config.yml
+    description: null
+    operations: []
+    properties:
+    - connectors: null
+    - exporters: null
+    - imagePullPolicy: IfNotPresent
+    - processors: null
+    - receivers: null
+    - service: null
+    type: otelcol-ConfigFile
+- prometheus:
+    artifacts:
+    - docker_image:
+        fileURI: quay.io/prometheus/prometheus:v2.54.1
+        name: prometheus:v2.54.1
+    - prometheus_config:
+        fileURI: /app/project_folder/Evaluation/OTEL-Shop-Terraform/deploymentModel/files/prometheus/prometheus-config.yaml
+        name: prometheus-config.yaml
+    description: null
+    operations: []
+    properties:
+    - imagePullPolicy: IfNotPresent
+    type: prometheus-SoftwareApplication
+properties: {}
+relation_types:
+- AttachesTo:
+    description: null
+    extends: DependsOn
+    operations: []
+    properties:
+    - location:
+        default_value: ''
+        required: true
+        type: STRING
+- ConnectsTo:
+    description: null
+    extends: DependsOn
+    operations: []
+    properties: []
+- DependsOn:
+    description: null
+    extends: '-'
+    operations: []
+    properties: []
+- HostedOn:
+    description: null
+    extends: DependsOn
+    operations: []
+    properties: []
+relations:
+- DemoDashboard-HostedOn-DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: Demo Dashboard
+    target: DefaultDockerEngine
+    type: HostedOn
+- OpenSearch_ConnectsTo_grafana:
+    description: null
+    operations: []
+    properties: []
+    source: OpenSearch
+    target: grafana
+    type: ConnectsTo
+- OpenSearch_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: OpenSearch
+    target: defaultKubernetesCluster
+    type: HostedOn
+- accounting-service_ConnectsTo_kafka:
+    operations: []
+    properties: []
+    source: accounting-service
+    target: kafka
+    type: ConnectsTo
+- accounting-service_ConnectsTo_otelcol:
+    operations: []
+    properties: []
+    source: accounting-service
+    target: otelcol
+    type: ConnectsTo
+- accounting-service_HostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: accounting-service
+    target: DefaultDockerEngine
+    type: HostedOn
+- accounting-service_to_otel-col:
+    operations: []
+    properties: []
+    source: accounting-service
+    target: otel-col
+    type: ConnectsTo
+- accounting_ConnectsTo_otel-col:
+    operations: []
+    properties: []
+    source: accounting
+    target: otel-col
+    type: ConnectsTo
+- accounting_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: accounting
+    target: Default Platform Component
+    type: HostedOn
+- accountservice_ConnectsTo_otel-col:
+    operations: []
+    properties: []
+    source: accountservice
+    target: otel-col
+    type: ConnectsTo
+- accountservice_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: accountservice
+    target: Default Platform Component
+    type: HostedOn
+- ad-service_ConnectsTo_flagd:
+    operations: []
+    properties: []
+    source: ad-service
+    target: flagd
+    type: ConnectsTo
+- ad-service_ConnectsTo_otel-col:
+    operations: []
+    properties: []
+    source: ad-service
+    target: otel-col
+    type: ConnectsTo
+- ad-service_HostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: ad-service
+    target: DefaultDockerEngine
+    type: HostedOn
+- adservice_connectsTo_otelcol:
+    operations: []
+    properties: []
+    source: adservice
+    target: otelcol
+    type: ConnectsTo
+- adservice_hostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: adservice
+    target: DefaultDockerEngine
+    type: HostedOn
+- agent-db_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: agent-db
+    target: Default Platform Component
+    type: HostedOn
+- agent_ConnectsTo_otel-col:
+    operations: []
+    properties: []
+    source: agent
+    target: otel-col
+    type: ConnectsTo
+- agent_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: agent
+    target: Default Platform Component
+    type: HostedOn
+- cart-service_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: cart-service
+    target: DefaultDockerEngine
+    type: HostedOn
+- cart-service_flagd:
+    operations: []
+    properties: []
+    source: cart-service
+    target: flagd
+    type: ConnectsTo
+- cart-service_otel-col:
+    operations: []
+    properties: []
+    source: cart-service
+    target: otel-col
+    type: ConnectsTo
+- cart-service_valkey-cart:
+    operations: []
+    properties: []
+    source: cart-service
+    target: valkey-cart
+    type: ConnectsTo
+- cartservice_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: cartservice
+    target: DefaultDockerEngine
+    type: HostedOn
+- checkout-service_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: checkout-service
+    target: DefaultDockerEngine
+    type: HostedOn
+- checkout-service_cart-service:
+    operations: []
+    properties: []
+    source: checkout-service
+    target: cart-service
+    type: ConnectsTo
+- checkout-service_currency-service:
+    operations: []
+    properties: []
+    source: checkout-service
+    target: currency-service
+    type: ConnectsTo
+- checkout-service_emailservice:
+    operations: []
+    properties: []
+    source: checkout-service
+    target: emailservice
+    type: ConnectsTo
+- checkout-service_flagd:
+    operations: []
+    properties: []
+    source: checkout-service
+    target: flagd
+    type: ConnectsTo
+- checkout-service_kafka:
+    operations: []
+    properties: []
+    source: checkout-service
+    target: kafka
+    type: ConnectsTo
+- checkout-service_otel-col:
+    operations: []
+    properties: []
+    source: checkout-service
+    target: otel-col
+    type: ConnectsTo
+- checkout-service_payment-service:
+    operations: []
+    properties: []
+    source: checkout-service
+    target: payment-service
+    type: ConnectsTo
+- checkout-service_product-catalog-service:
+    operations: []
+    properties: []
+    source: checkout-service
+    target: product-catalog-service
+    type: ConnectsTo
+- checkout-service_shippingservice:
+    operations: []
+    properties: []
+    source: checkout-service
+    target: shippingservice
+    type: ConnectsTo
+- checkoutservice_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: checkoutservice
+    target: DefaultDockerEngine
+    type: HostedOn
+- currency-service_ConnectsTo_otelcol:
+    operations: []
+    properties: []
+    source: currency-service
+    target: otelcol
+    type: ConnectsTo
+- currency-service_HostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: currency-service
+    target: DefaultDockerEngine
+    type: HostedOn
+- currency-service_to_otel-col:
+    operations: []
+    properties: []
+    source: currency-service
+    target: otel-col
+    type: ConnectsTo
+- currencyservice_ConnectsTo_otelcol:
+    operations: []
+    properties: []
+    source: currencyservice
+    target: otelcol
+    type: ConnectsTo
+- currencyservice_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: currencyservice
+    target: DefaultDockerEngine
+    type: HostedOn
+- email-service_ConnectsTo_otelcol:
+    operations: []
+    properties: []
+    source: email-service
+    target: otelcol
+    type: ConnectsTo
+- email-service_HostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: email-service
+    target: DefaultDockerEngine
+    type: HostedOn
+- email-service_to_otel-col:
+    operations: []
+    properties: []
+    source: email-service
+    target: otel-col
+    type: ConnectsTo
+- emailservice_connectsTo_otelcol:
+    operations: []
+    properties: []
+    source: emailservice
+    target: otelcol
+    type: ConnectsTo
+- emailservice_hostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: emailservice
+    target: DefaultDockerEngine
+    type: HostedOn
+- flagd-ConnectsTo-otel-col:
+    operations: []
+    properties: []
+    source: flagd
+    target: otel-col
+    type: ConnectsTo
+- flagd_ConnectsTo_otelcol:
+    operations: []
+    properties: []
+    source: flagd
+    target: otelcol
+    type: ConnectsTo
+- flagd_HostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: flagd
+    target: DefaultDockerEngine
+    type: HostedOn
+- frontend-proxy-ConnectsTo-flagd:
+    operations: []
+    properties: []
+    source: frontend-proxy
+    target: flagd
+    type: ConnectsTo
+- frontend-proxy-ConnectsTo-load-generator:
+    operations: []
+    properties: []
+    source: frontend-proxy
+    target: load-generator
+    type: ConnectsTo
+- frontend-proxy_ConnectsTo_grafana:
+    operations: []
+    properties: []
+    source: frontend-proxy
+    target: grafana
+    type: ConnectsTo
+- frontend-proxy_hostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: frontend-proxy
+    target: DefaultDockerEngine
+    type: HostedOn
+- frontend-proxy_to_jaeger:
+    operations: []
+    properties: []
+    source: frontend-proxy
+    target: jaeger
+    type: ConnectsTo
+- frontend-proxy_to_otel-col:
+    operations: []
+    properties: []
+    source: frontend-proxy
+    target: otel-col
+    type: ConnectsTo
+- frontend_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: frontend
+    target: DefaultDockerEngine
+    type: HostedOn
+- frontend_adservice:
+    operations: []
+    properties: []
+    source: frontend
+    target: adservice
+    type: ConnectsTo
+- frontend_cart-service:
+    operations: []
+    properties: []
+    source: frontend
+    target: cart-service
+    type: ConnectsTo
+- frontend_cartservice:
+    operations: []
+    properties: []
+    source: frontend
+    target: cartservice
+    type: ConnectsTo
+- frontend_checkout-service:
+    operations: []
+    properties: []
+    source: frontend
+    target: checkout-service
+    type: ConnectsTo
+- frontend_checkoutservice:
+    operations: []
+    properties: []
+    source: frontend
+    target: checkoutservice
+    type: ConnectsTo
+- frontend_currency-service:
+    operations: []
+    properties: []
+    source: frontend
+    target: currency-service
+    type: ConnectsTo
+- frontend_currencyservice:
+    operations: []
+    properties: []
+    source: frontend
+    target: currencyservice
+    type: ConnectsTo
+- frontend_flagd:
+    operations: []
+    properties: []
+    source: frontend
+    target: flagd
+    type: ConnectsTo
+- frontend_otel-col:
+    operations: []
+    properties: []
+    source: frontend
+    target: otel-col
+    type: ConnectsTo
+- frontend_otelcol:
+    operations: []
+    properties: []
+    source: frontend
+    target: otelcol
+    type: ConnectsTo
+- frontend_product-catalog-service:
+    operations: []
+    properties: []
+    source: frontend
+    target: product-catalog-service
+    type: ConnectsTo
+- frontend_productcatalogservice:
+    operations: []
+    properties: []
+    source: frontend
+    target: productcatalogservice
+    type: ConnectsTo
+- frontend_recommendationservice:
+    operations: []
+    properties: []
+    source: frontend
+    target: recommendationservice
+    type: ConnectsTo
+- frontend_shippingservice:
+    operations: []
+    properties: []
+    source: frontend
+    target: shippingservice
+    type: ConnectsTo
+- frontendproxy_connectsTo_jaeger:
+    operations: []
+    properties: []
+    source: frontendproxy
+    target: jaeger
+    type: ConnectsTo
+- frontendproxy_connectsTo_loadgenerator:
+    operations: []
+    properties: []
+    source: frontendproxy
+    target: loadgenerator
+    type: ConnectsTo
+- frontendproxy_connectsTo_otelcol:
+    operations: []
+    properties: []
+    source: frontendproxy
+    target: otelcol
+    type: ConnectsTo
+- frontendproxy_flagd:
+    operations: []
+    properties: []
+    source: frontendproxy
+    target: flagd
+    type: ConnectsTo
+- frontendproxy_frontend:
+    operations: []
+    properties: []
+    source: frontendproxy
+    target: frontend
+    type: ConnectsTo
+- frontendproxy_grafana:
+    operations: []
+    properties: []
+    source: frontendproxy
+    target: grafana
+    type: ConnectsTo
+- frontendproxy_hostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: frontendproxy
+    target: DefaultDockerEngine
+    type: HostedOn
+- frontendproxy_imageprovider:
+    operations: []
+    properties: []
+    source: frontendproxy
+    target: imageprovider
+    type: ConnectsTo
+- grafana_ConnectsTo_prometheus:
+    operations: []
+    properties: []
+    source: grafana
+    target: prometheus
+    type: ConnectsTo
+- grafana_HostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: grafana
+    target: DefaultDockerEngine
+    type: HostedOn
+- grafana_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: grafana
+    target: Default Platform Component
+    type: HostedOn
+- image-provider_ConnectsTo_otelcol:
+    operations: []
+    properties: []
+    source: image-provider
+    target: otelcol
+    type: ConnectsTo
+- image-provider_HostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: image-provider
+    target: DefaultDockerEngine
+    type: HostedOn
+- imageprovider_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: imageprovider
+    target: DefaultDockerEngine
+    type: HostedOn
+- jaeger_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: jaeger
+    target: Default Platform Component
+    type: HostedOn
+- jaeger_hostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: jaeger
+    target: DefaultDockerEngine
+    type: HostedOn
+- jaeger_to_prometheus:
+    operations: []
+    properties: []
+    source: jaeger
+    target: prometheus
+    type: ConnectsTo
+- kafka_ConnectsTo_otel-col:
+    operations: []
+    properties: []
+    source: kafka
+    target: otel-col
+    type: ConnectsTo
+- kafka_ConnectsTo_otelcol:
+    operations: []
+    properties: []
+    source: kafka
+    target: otelcol
+    type: ConnectsTo
+- kafka_HostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: kafka
+    target: DefaultDockerEngine
+    type: HostedOn
+- load-generator-ConnectsTo-frontend-proxy:
+    operations: []
+    properties: []
+    source: load-generator
+    target: frontend-proxy
+    type: ConnectsTo
+- load-generator-ConnectsTo-otel-col:
+    operations: []
+    properties: []
+    source: load-generator
+    target: otel-col
+    type: ConnectsTo
+- load-generator-HostedOn-DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: load-generator
+    target: DefaultDockerEngine
+    type: HostedOn
+- loadgenerator_ConnectsTo_flagd:
+    operations: []
+    properties: []
+    source: loadgenerator
+    target: flagd
+    type: ConnectsTo
+- loadgenerator_connectsTo_frontendproxy:
+    operations: []
+    properties: []
+    source: loadgenerator
+    target: frontendproxy
+    type: ConnectsTo
+- loadgenerator_connectsTo_otelcol:
+    operations: []
+    properties: []
+    source: loadgenerator
+    target: otelcol
+    type: ConnectsTo
+- loadgenerator_hostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: loadgenerator
+    target: DefaultDockerEngine
+    type: HostedOn
+- logging-analytics_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: logging-analytics
+    target: Default Platform Component
+    type: HostedOn
+- logging_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: logging
+    target: Default Platform Component
+    type: HostedOn
+- mongo_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: mongo
+    target: DefaultDockerEngine
+    type: HostedOn
+- mongodb-agent_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: mongodb-agent
+    target: Default Platform Component
+    type: HostedOn
+- mongodb-catalog_HostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: mongodb-catalog
+    target: DefaultDockerEngine
+    type: HostedOn
+- mongodb_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: mongodb
+    target: Default Platform Component
+    type: HostedOn
+- operator_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: operator
+    target: Default Platform Component
+    type: HostedOn
+- otel-col_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: otel-col
+    target: Default Platform Component
+    type: HostedOn
+- otel-col_hostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: otel-col
+    target: DefaultDockerEngine
+    type: HostedOn
+- otelcol-config.yml_HostedOn_DefaultDockerEngine:
+    description: null
+    operations: []
+    properties: []
+    source: otelcol-config.yml
+    target: DefaultDockerEngine
+    type: HostedOn
+- otelcol_HostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: otelcol
+    target: DefaultDockerEngine
+    type: HostedOn
+- otlp-collector_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: otlp-collector
+    target: Default Platform Component
+    type: HostedOn
+- payment-service_ConnectsTo_flagd:
+    operations: []
+    properties: []
+    source: payment-service
+    target: flagd
+    type: ConnectsTo
+- payment-service_ConnectsTo_otelcol:
+    operations: []
+    properties: []
+    source: payment-service
+    target: otelcol
+    type: ConnectsTo
+- payment-service_HostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: payment-service
+    target: DefaultDockerEngine
+    type: HostedOn
+- payment-service_to_otel-col:
+    operations: []
+    properties: []
+    source: payment-service
+    target: otel-col
+    type: ConnectsTo
+- paymentservice_flagd:
+    operations: []
+    properties: []
+    source: paymentservice
+    target: flagd
+    type: ConnectsTo
+- paymentservice_hostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: paymentservice
+    target: DefaultDockerEngine
+    type: HostedOn
+- paymentservice_otelcol:
+    operations: []
+    properties: []
+    source: paymentservice
+    target: otelcol
+    type: ConnectsTo
+- product-catalog-service_ConnectsTo_flagd:
+    operations: []
+    properties: []
+    source: product-catalog-service
+    target: flagd
+    type: ConnectsTo
+- product-catalog-service_ConnectsTo_mongodb-catalog:
+    operations: []
+    properties: []
+    source: product-catalog-service
+    target: mongodb-catalog
+    type: ConnectsTo
+- product-catalog-service_ConnectsTo_otelcol:
+    operations: []
+    properties: []
+    source: product-catalog-service
+    target: otelcol
+    type: ConnectsTo
+- product-catalog-service_HostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: product-catalog-service
+    target: DefaultDockerEngine
+    type: HostedOn
+- product-catalog-service_mongo:
+    operations: []
+    properties: []
+    source: product-catalog-service
+    target: mongo
+    type: ConnectsTo
+- product-catalog-service_to_otel-col:
+    operations: []
+    properties: []
+    source: product-catalog-service
+    target: otel-col
+    type: ConnectsTo
+- productcatalogservice_connectsTo_otelcol:
+    operations: []
+    properties: []
+    source: productcatalogservice
+    target: otelcol
+    type: ConnectsTo
+- productcatalogservice_hostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: productcatalogservice
+    target: DefaultDockerEngine
+    type: HostedOn
+- prometheus_HostedOn_DefaultPlatformComponent:
+    operations: []
+    properties: []
+    source: prometheus
+    target: Default Platform Component
+    type: HostedOn
+- prometheus_hostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: prometheus
+    target: DefaultDockerEngine
+    type: HostedOn
+- quote-service_ConnectsTo_otel-col:
+    operations: []
+    properties: []
+    source: quote-service
+    target: otel-col
+    type: ConnectsTo
+- quote-service_ConnectsTo_otelcol:
+    operations: []
+    properties: []
+    source: quote-service
+    target: otelcol
+    type: ConnectsTo
+- quote-service_HostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: quote-service
+    target: DefaultDockerEngine
+    type: HostedOn
+- quoteservice_connectsTo_otelcol:
+    operations: []
+    properties: []
+    source: quoteservice
+    target: otelcol
+    type: ConnectsTo
+- quoteservice_hostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: quoteservice
+    target: DefaultDockerEngine
+    type: HostedOn
+- recommendationservice_connectsTo_otelcol:
+    operations: []
+    properties: []
+    source: recommendationservice
+    target: otelcol
+    type: ConnectsTo
+- recommendationservice_connectsTo_productcatalogservice:
+    operations: []
+    properties: []
+    source: recommendationservice
+    target: productcatalogservice
+    type: ConnectsTo
+- recommendationservice_hostedOn_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: recommendationservice
+    target: DefaultDockerEngine
+    type: HostedOn
+- shippingservice_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: shippingservice
+    target: DefaultDockerEngine
+    type: HostedOn
+- valkey-cart_DefaultDockerEngine:
+    operations: []
+    properties: []
+    source: valkey-cart
+    target: DefaultDockerEngine
+    type: HostedOn

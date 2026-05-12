@@ -1,0 +1,2669 @@
+component_types:
+- BaseType:
+    description: null
+    extends: '-'
+    operations: []
+    properties: []
+- ContainerPlatform:
+    description: null
+    extends: BaseType
+    operations: []
+    properties: []
+- DatabaseSystem:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties: []
+- DefaultDockerEngine:
+    description: null
+    extends: DockerEngine
+    operations: []
+    properties: []
+- DefaultKubernetesCluster:
+    description: null
+    extends: KubernetesCluster
+    operations: []
+    properties: []
+- DockerEngine:
+    description: null
+    extends: ContainerPlatform
+    operations: []
+    properties: []
+- KubernetesCluster:
+    description: null
+    extends: ContainerPlatform
+    operations: []
+    properties: []
+- MessageBroker:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties: []
+- SoftwareApplication:
+    description: null
+    extends: BaseType
+    operations: []
+    properties: []
+- Storage:
+    description: null
+    extends: BaseType
+    operations: []
+    properties:
+    - storage_size:
+        default_value: 8Gi
+        required: true
+        type: STRING
+- dapr-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - ACTORS_ENABLED:
+        default_value: 'true'
+        required: true
+        type: STRING
+    - ACTORS_SERVICE_ADDRESS:
+        default_value: dapr-placement-server:50005
+        required: true
+        type: STRING
+    - ACTORS_SERVICE_NAME:
+        default_value: placement
+        required: true
+        type: STRING
+    - DAPR_CONTROL_PLANE_TRUST_DOMAIN:
+        default_value: cluster.local
+        required: true
+        type: STRING
+    - DAPR_SENTRY_ADDRESS:
+        default_value: dapr-sentry.default.svc.cluster.local:443
+        required: true
+        type: STRING
+    - DAPR_TRUST_ANCHORS_FILE:
+        default_value: /var/run/secrets/dapr.io/tls/ca.crt
+        required: true
+        type: STRING
+    - ENABLE_K8S_DOWNWARD_APIS:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - IGNORE_ENTRYPOINT_TOLERATIONS:
+        default_value: '[{"effect":"NoSchedule","key":"alibabacloud.com/eci"},{"effect":"NoSchedule","key":"azure.com/aci"},{"effect":"NoSchedule","key":"aws"},{"effect":"NoSchedule","key":"huawei.com/cci"}]'
+        required: true
+        type: STRING
+    - KUBE_CLUSTER_DOMAIN:
+        default_value: cluster.local
+        required: true
+        type: STRING
+    - NAMESPACE:
+        default_value: <metadata.namespace>
+        required: true
+        type: STRING
+    - PLACEMENT_ID:
+        default_value: metadata.name
+        required: true
+        type: STRING
+    - POD_IP:
+        default_value: <status.podIP>
+        required: true
+        type: STRING
+    - SCHEDULER_ID:
+        default_value: <metadata.name>
+        required: true
+        type: STRING
+    - SIDECAR_DROP_ALL_CAPABILITIES:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - SIDECAR_IMAGE:
+        default_value: ghcr.io/dapr/daprd:1.17.3
+        required: true
+        type: STRING
+    - SIDECAR_IMAGE_PULL_POLICY:
+        default_value: IfNotPresent
+        required: true
+        type: STRING
+    - SIDECAR_READ_ONLY_ROOT_FILESYSTEM:
+        default_value: 'true'
+        required: true
+        type: STRING
+    - SIDECAR_RUN_AS_NON_ROOT:
+        default_value: 'true'
+        required: true
+        type: STRING
+    - chart:
+        default_value: dapr
+        required: true
+        type: STRING
+    - containerPort_50001:
+        default_value: 50001
+        required: true
+        type: INTEGER
+    - containerPort_50006:
+        default_value: 50006
+        required: true
+        type: INTEGER
+    - containerPort_6500:
+        default_value: 6500
+        required: true
+        type: INTEGER
+    - containerPort_api:
+        default_value: 50005
+        required: true
+        type: INTEGER
+    - containerPort_etcd-client:
+        default_value: 2379
+        required: true
+        type: INTEGER
+    - containerPort_etcd-peer:
+        default_value: 2380
+        required: true
+        type: INTEGER
+    - containerPort_https:
+        default_value: 4000
+        required: true
+        type: INTEGER
+    - containerPort_metrics:
+        default_value: 9090
+        required: true
+        type: INTEGER
+    - containerPort_raft-node:
+        default_value: 8201
+        required: true
+        type: INTEGER
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+    - namespace:
+        default_value: gits
+        required: true
+        type: STRING
+    - replicas:
+        default_value: '3'
+        required: true
+        type: STRING
+    - repository:
+        default_value: https://dapr.github.io/helm-charts
+        required: true
+        type: STRING
+    - securityContext_allowPrivilegeEscalation:
+        default_value: 'False'
+        required: true
+        type: STRING
+    - securityContext_fsGroup:
+        default_value: '65532'
+        required: true
+        type: STRING
+    - securityContext_readOnlyRootFilesystem:
+        default_value: 'True'
+        required: true
+        type: STRING
+    - securityContext_runAsNonRoot:
+        default_value: 'True'
+        required: true
+        type: STRING
+    - serviceAccountName:
+        default_value: dapr-scheduler
+        required: true
+        type: STRING
+- database.postgresql:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - chart:
+        default_value: postgresql
+        required: true
+        type: STRING
+    - global.postgresql.auth.database:
+        default_value: skilllevel-service
+        required: true
+        type: STRING
+    - global.postgresql.auth.password:
+        default_value: random_password.skilllevel_service_db_pass.result
+        required: true
+        type: STRING
+    - global.postgresql.auth.username:
+        default_value: gits
+        required: true
+        type: STRING
+    - name:
+        default_value: skilllevel-service-db
+        required: true
+        type: STRING
+    - namespace:
+        default_value: gits
+        required: true
+        type: STRING
+    - postgres.auth.enablePostgresqlUser:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - repository:
+        default_value: oci://registry-1.docker.io/bitnamicharts
+        required: true
+        type: STRING
+- db-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - key:
+        default_value: password
+        required: true
+        type: STRING
+    - value:
+        default_value: random_password.content_service_db_pass.result
+        required: true
+        type: STRING
+- deployment:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - annotations:
+        default_value: keel.sh/policy=force keel.sh/match-tag=true keel.sh/trigger=poll
+        required: true
+        type: STRING
+    - artifact:
+        default_value: '[{''image'': ''ghcr.io/it-rex-platform/flashcard_service:latest'',
+          ''pullPolicy'': ''Always'', ''type'': ''container''}]'
+        required: true
+        type: STRING
+    - env:
+        default_value: '{''MINIO_ACCESS_KEY'': ''gits'', ''MINIO_ACCESS_SECRET'':
+          ''random_password.media_service_minio_pass.result'', ''MINIO_URL'': ''http://minio:9000'',
+          ''SPRING_DATASOURCE_PASSWORD'': ''random_password.media_service_db_pass.result'',
+          ''SPRING_DATASOURCE_URL'': ''jdbc:postgresql://media-service-db-postgresql:5432/media-service'',
+          ''SPRING_DATASOURCE_USERNAME'': ''gits''}'
+        required: true
+        type: STRING
+    - image:
+        default_value: ghcr.io/it-rex-platform/media_service:latest
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: Always
+        required: false
+        type: STRING
+    - imagePullSecrets:
+        default_value: github-container-secret
+        required: true
+        type: STRING
+    - image_pull_policy:
+        default_value: Always
+        required: true
+        type: STRING
+    - image_pull_secrets:
+        default_value: github-container-secret
+        required: true
+        type: STRING
+    - labels:
+        default_value: app=gits-media-service
+        required: true
+        type: STRING
+    - liveness_probe:
+        default_value: '{''http_get'': {''path'': ''/actuator/health/liveness'', ''port'':
+          3001}, ''initial_delay_seconds'': 30, ''period_seconds'': 9}'
+        required: true
+        type: STRING
+    - name:
+        default_value: gits-media-service
+        required: true
+        type: STRING
+    - readiness_probe:
+        default_value: '{''http_get'': {''path'': ''/actuator/health/readiness'',
+          ''port'': 3001}, ''initial_delay_seconds'': 30, ''period_seconds'': 9}'
+        required: true
+        type: STRING
+    - replicas:
+        default_value: '1'
+        required: true
+        type: STRING
+    - resourceLimits:
+        default_value: '{''cpu'': ''0.5'', ''memory'': ''512Mi''}'
+        required: true
+        type: STRING
+    - resourceRequests:
+        default_value: '{''cpu'': ''50m'', ''memory'': ''50Mi''}'
+        required: true
+        type: STRING
+    - resources:
+        default_value: '{''requests'': {''cpu'': ''100m'', ''memory'': ''500Mi''}}'
+        required: true
+        type: STRING
+- gits-content-service-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - key:
+        default_value: dapr.http_port
+        required: true
+        type: STRING
+    - value:
+        default_value: '4000'
+        required: true
+        type: STRING
+- gits-quiz-service-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - dapr:
+        default_value: '{''app_id'': ''quiz-service'', ''app_port'': 9001, ''enabled'':
+          True, ''http_port'': 9000}'
+        required: true
+        type: STRING
+    - env:
+        default_value: '[{''name'': ''SPRING_DATASOURCE_URL'', ''value'': ''jdbc:postgresql://quiz-service-db-postgresql:5432/quiz-service''},
+          {''name'': ''SPRING_DATASOURCE_USERNAME'', ''value'': ''gits''}, {''name'':
+          ''SPRING_DATASOURCE_PASSWORD'', ''value'': ''random_password.quiz_service_db_pass.result''},
+          {''name'': ''COURSE_SERVICE_URL'', ''value'': ''http://localhost:3500/v1.0/invoke/course-service/method/graphql''},
+          {''name'': ''CONTENT_SERVICE_URL'', ''value'': ''http://localhost:3500/v1.0/invoke/content-service/method/graphql''}]'
+        required: true
+        type: STRING
+    - image:
+        default_value: ghcr.io/it-rex-platform/quiz_service:latest
+        required: true
+        type: STRING
+    - image_pull_policy:
+        default_value: Always
+        required: true
+        type: STRING
+    - liveness_probe:
+        default_value: '{''http_get'': {''path'': ''/actuator/health/liveness'', ''port'':
+          9001}, ''initial_delay_seconds'': 30, ''period_seconds'': 9}'
+        required: true
+        type: STRING
+    - readiness_probe:
+        default_value: '{''http_get'': {''path'': ''/actuator/health/readiness'',
+          ''port'': 9001}, ''initial_delay_seconds'': 30, ''period_seconds'': 9}'
+        required: true
+        type: STRING
+    - resources:
+        default_value: '{''limits'': {''cpu'': ''0.5'', ''memory'': ''512Mi''}, ''requests'':
+          {''cpu'': ''50m'', ''memory'': ''50Mi''}}'
+        required: true
+        type: STRING
+- helm_release:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - artifact:
+        default_value: '[{''chart'': ''postgresql'', ''repository'': ''oci://registry-1.docker.io/bitnamicharts'',
+          ''tag'': ''latest'', ''type'': ''helm chart''}]'
+        required: true
+        type: STRING
+    - chart:
+        default_value: postgresql
+        required: true
+        type: STRING
+    - name:
+        default_value: user-service-db
+        required: true
+        type: STRING
+    - namespace:
+        default_value: gits
+        required: true
+        type: STRING
+    - repository:
+        default_value: oci://registry-1.docker.io/bitnamicharts
+        required: true
+        type: STRING
+    - set:
+        default_value: '[{''name'': ''global.postgresql.auth.database'', ''value'':
+          ''flashcard-service''}, {''name'': ''postgres.auth.enablePostgresUser'',
+          ''value'': ''false''}, {''name'': ''global.postgresql.auth.username'', ''value'':
+          ''gits''}, {''name'': ''global.postgresql.auth.password'', ''value'': ''random_password.flashcard_service_db_pass.result''}]'
+        required: true
+        type: STRING
+    - set.global.postgresql.auth.database:
+        default_value: user-service
+        required: true
+        type: STRING
+    - set.global.postgresql.auth.password:
+        default_value: random_password.user_service_db_pass.result
+        required: true
+        type: STRING
+    - set.global.postgresql.auth.username:
+        default_value: gits
+        required: true
+        type: STRING
+    - set.postgres.auth.enablePostgresUser:
+        default_value: 'False'
+        required: true
+        type: STRING
+- keel-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - NAMESPACE:
+        default_value: metadata.namespace
+        required: true
+        type: STRING
+    - NOTIFICATION_LEVEL:
+        default_value: info
+        required: true
+        type: STRING
+    - POLL:
+        default_value: 'true'
+        required: true
+        type: STRING
+    - POLL_DEFAULTSCHEDULE:
+        default_value: '@every 1m'
+        required: true
+        type: STRING
+    - chart:
+        default_value: keel
+        required: true
+        type: STRING
+    - containerPort_keel:
+        default_value: 9300
+        required: true
+        type: INTEGER
+    - helmProvider.enabled:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: Always
+        required: false
+        type: STRING
+    - name:
+        default_value: keel
+        required: true
+        type: STRING
+    - namespace:
+        default_value: gits
+        required: true
+        type: STRING
+    - repository:
+        default_value: https://charts.keel.sh
+        required: true
+        type: STRING
+    - serviceAccountName:
+        default_value: keel
+        required: true
+        type: STRING
+- keycloak-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - containerPort_discovery:
+        default_value: 7800
+        required: true
+        type: INTEGER
+    - containerPort_http:
+        default_value: 8080
+        required: true
+        type: INTEGER
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+    - name:
+        default_value: image.tag
+        required: true
+        type: STRING
+    - value:
+        default_value: latest
+        required: true
+        type: STRING
+- kubernetes_deployment:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - env.KEYCLOAK_PASSWORD:
+        default_value: var.keycloak_admin_pw
+        required: true
+        type: STRING
+    - env.KEYCLOAK_URL:
+        default_value: http://keycloak:80/keycloak
+        required: true
+        type: STRING
+    - env.SPRING_DATASOURCE_PASSWORD:
+        default_value: random_password.user_service_db_pass.result
+        required: true
+        type: STRING
+    - env.SPRING_DATASOURCE_URL:
+        default_value: jdbc:postgresql://user-service-db-postgresql:5432/user-service
+        required: true
+        type: STRING
+    - env.SPRING_DATASOURCE_USERNAME:
+        default_value: gits
+        required: true
+        type: STRING
+    - image:
+        default_value: ghcr.io/it-rex-platform/user_service:latest
+        required: true
+        type: STRING
+    - image_pull_policy:
+        default_value: Always
+        required: true
+        type: STRING
+    - image_pull_secrets:
+        default_value: github-container-secret
+        required: true
+        type: STRING
+    - labels.app:
+        default_value: gits-user-service
+        required: true
+        type: STRING
+    - liveness_probe.http_get.path:
+        default_value: /actuator/health/liveness
+        required: true
+        type: STRING
+    - liveness_probe.http_get.port:
+        default_value: '5001'
+        required: true
+        type: STRING
+    - liveness_probe.initial_delay_seconds:
+        default_value: '30'
+        required: true
+        type: STRING
+    - liveness_probe.period_seconds:
+        default_value: '9'
+        required: true
+        type: STRING
+    - namespace:
+        default_value: gits
+        required: true
+        type: STRING
+    - readiness_probe.http_get.path:
+        default_value: /actuator/health/readiness
+        required: true
+        type: STRING
+    - readiness_probe.http_get.port:
+        default_value: '5001'
+        required: true
+        type: STRING
+    - readiness_probe.initial_delay_seconds:
+        default_value: '30'
+        required: true
+        type: STRING
+    - readiness_probe.period_seconds:
+        default_value: '9'
+        required: true
+        type: STRING
+    - replicas:
+        default_value: '1'
+        required: true
+        type: STRING
+    - resources.requests.cpu:
+        default_value: 100m
+        required: true
+        type: STRING
+    - resources.requests.memory:
+        default_value: 500Mi
+        required: true
+        type: STRING
+- minio-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - BITNAMI_DEBUG:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - MINIO_API_PORT_NUMBER:
+        default_value: '9000'
+        required: true
+        type: STRING
+    - MINIO_BROWSER:
+        default_value: 'off'
+        required: true
+        type: STRING
+    - MINIO_DATA_DIR:
+        default_value: /bitnami/minio/data
+        required: true
+        type: STRING
+    - MINIO_DISTRIBUTED_MODE_ENABLED:
+        default_value: 'no'
+        required: true
+        type: STRING
+    - MINIO_FORCE_NEW_KEYS:
+        default_value: 'no'
+        required: true
+        type: STRING
+    - MINIO_PROMETHEUS_AUTH_TYPE:
+        default_value: public
+        required: true
+        type: STRING
+    - MINIO_ROOT_PASSWORD_FILE:
+        default_value: /opt/bitnami/minio/secrets/root-password
+        required: true
+        type: STRING
+    - MINIO_ROOT_USER_FILE:
+        default_value: /opt/bitnami/minio/secrets/root-user
+        required: true
+        type: STRING
+    - MINIO_SCHEME:
+        default_value: http
+        required: true
+        type: STRING
+    - MINIO_SKIP_CLIENT:
+        default_value: 'yes'
+        required: true
+        type: STRING
+    - chart:
+        default_value: minio
+        required: true
+        type: STRING
+    - containerPort_api:
+        default_value: 9000
+        required: true
+        type: INTEGER
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+    - name:
+        default_value: minio
+        required: true
+        type: STRING
+    - repository:
+        default_value: oci://registry-1.docker.io/bitnamicharts
+        required: true
+        type: STRING
+    - rootPassword:
+        default_value: random_password.media_service_minio_pass.result
+        required: true
+        type: STRING
+    - rootUser:
+        default_value: gits
+        required: true
+        type: STRING
+- postgres-DatabaseSystem:
+    description: null
+    extends: DatabaseSystem
+    operations: []
+    properties:
+    - BITNAMI_DEBUG:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - PGDATA:
+        default_value: /bitnami/postgresql/data
+        required: true
+        type: STRING
+    - POSTGRESQL_CLIENT_MIN_MESSAGES:
+        default_value: error
+        required: true
+        type: STRING
+    - POSTGRESQL_ENABLE_LDAP:
+        default_value: 'no'
+        required: true
+        type: STRING
+    - POSTGRESQL_ENABLE_TLS:
+        default_value: 'no'
+        required: true
+        type: STRING
+    - POSTGRESQL_LOG_CONNECTIONS:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - POSTGRESQL_LOG_DISCONNECTIONS:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - POSTGRESQL_LOG_HOSTNAME:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - POSTGRESQL_PGAUDIT_LOG_CATALOG:
+        default_value: 'off'
+        required: true
+        type: STRING
+    - POSTGRESQL_PORT_NUMBER:
+        default_value: '5432'
+        required: true
+        type: STRING
+    - POSTGRESQL_SHARED_PRELOAD_LIBRARIES:
+        default_value: pgaudit
+        required: true
+        type: STRING
+    - POSTGRESQL_VOLUME_DIR:
+        default_value: /bitnami/postgresql
+        required: true
+        type: STRING
+    - POSTGRES_DATABASE:
+        default_value: bitnami_keycloak
+        required: true
+        type: STRING
+    - POSTGRES_PASSWORD_FILE:
+        default_value: /opt/bitnami/postgresql/secrets/password
+        required: true
+        type: STRING
+    - POSTGRES_POSTGRES_PASSWORD_FILE:
+        default_value: /opt/bitnami/postgresql/secrets/postgres-password
+        required: true
+        type: STRING
+    - POSTGRES_USER:
+        default_value: bn_keycloak
+        required: true
+        type: STRING
+    - containerPort_tcp-postgresql:
+        default_value: 5432
+        required: true
+        type: INTEGER
+    - exposedPort_tcp-postgresql:
+        default_value: 5432:5432
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- postgresql:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - chart:
+        default_value: postgresql
+        required: true
+        type: STRING
+    - database:
+        default_value: media-service
+        required: true
+        type: STRING
+    - enablePostgresUser:
+        default_value: 'False'
+        required: true
+        type: STRING
+    - name:
+        default_value: media-service-db
+        required: true
+        type: STRING
+    - password:
+        default_value: random_password.media_service_db_pass.result
+        required: true
+        type: STRING
+    - repository:
+        default_value: oci://registry-1.docker.io/bitnamicharts
+        required: true
+        type: STRING
+    - username:
+        default_value: gits
+        required: true
+        type: STRING
+- postgresql-DatabaseSystem:
+    description: null
+    extends: DatabaseSystem
+    operations: []
+    properties:
+    - BITNAMI_DEBUG:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - OPENSSL_FIPS:
+        default_value: 'yes'
+        required: true
+        type: STRING
+    - PGDATA:
+        default_value: /bitnami/postgresql/data
+        required: true
+        type: STRING
+    - POSTGRESQL_CLIENT_MIN_MESSAGES:
+        default_value: error
+        required: true
+        type: STRING
+    - POSTGRESQL_ENABLE_LDAP:
+        default_value: 'no'
+        required: true
+        type: STRING
+    - POSTGRESQL_ENABLE_TLS:
+        default_value: 'no'
+        required: true
+        type: STRING
+    - POSTGRESQL_LOG_CATALOG:
+        default_value: 'off'
+        required: true
+        type: STRING
+    - POSTGRESQL_LOG_CONNECTIONS:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - POSTGRESQL_LOG_DISCONNECTIONS:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - POSTGRESQL_LOG_HOSTNAME:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - POSTGRESQL_PGAUDIT_LOG_CATALOG:
+        default_value: 'off'
+        required: true
+        type: STRING
+    - POSTGRESQL_PORT_NUMBER:
+        default_value: '5432'
+        required: true
+        type: STRING
+    - POSTGRESQL_SHARED_PRELOAD_LIBRARIES:
+        default_value: pgaudit
+        required: true
+        type: STRING
+    - POSTGRESQL_VOLUME_DIR:
+        default_value: /bitnami/postgresql
+        required: true
+        type: STRING
+    - POSTGRES_PASSWORD_FILE:
+        default_value: /opt/bitnami/postgresql/secrets/postgres-password
+        required: true
+        type: STRING
+    - containerPort_tcp-postgresql:
+        default_value: 5432
+        required: true
+        type: INTEGER
+    - exposedPort_tcp-postgresql:
+        default_value: 5432:5432
+        required: true
+        type: STRING
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+    - replicas:
+        default_value: '1'
+        required: true
+        type: STRING
+    - serviceName:
+        default_value: user-service-db-postgresql-hl
+        required: true
+        type: STRING
+- quiz-service-db-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - chart:
+        default_value: postgresql
+        required: true
+        type: STRING
+    - database:
+        default_value: quiz-service
+        required: true
+        type: STRING
+    - namespace:
+        default_value: gits
+        required: true
+        type: STRING
+    - password:
+        default_value: random_password.quiz_service_db_pass.result
+        required: true
+        type: STRING
+    - repository:
+        default_value: oci://registry-1.docker.io/bitnamicharts
+        required: true
+        type: STRING
+    - username:
+        default_value: gits
+        required: true
+        type: STRING
+- r3-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - CONSOLE_MINIO_SERVER:
+        default_value: http://minio:9000
+        required: true
+        type: STRING
+    - containerPort_http:
+        default_value: 9090
+        required: true
+        type: INTEGER
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- redis-DatabaseSystem:
+    description: null
+    extends: DatabaseSystem
+    operations: []
+    properties:
+    - ALLOW_EMPTY_PASSWORD:
+        default_value: 'no'
+        required: true
+        type: STRING
+    - BITNAMI_DEBUG:
+        default_value: 'false'
+        required: true
+        type: STRING
+    - OPENSSL_FIPS:
+        default_value: 'yes'
+        required: true
+        type: STRING
+    - REDIS_MASTER_HOST:
+        default_value: redis-master-0.redis-headless.default.svc.cluster.local
+        required: true
+        type: STRING
+    - REDIS_MASTER_PASSWORD_FILE:
+        default_value: /opt/bitnami/redis/secrets/redis-password
+        required: true
+        type: STRING
+    - REDIS_MASTER_PORT_NUMBER:
+        default_value: '6379'
+        required: true
+        type: STRING
+    - REDIS_PASSWORD_FILE:
+        default_value: /opt/bitnami/redis/secrets/redis-password
+        required: true
+        type: STRING
+    - REDIS_PORT:
+        default_value: '6379'
+        required: true
+        type: STRING
+    - REDIS_REPLICATION_MODE:
+        default_value: replica
+        required: true
+        type: STRING
+    - REDIS_TLS_ENABLED:
+        default_value: 'no'
+        required: true
+        type: STRING
+    - containerPort_redis:
+        default_value: 6379
+        required: true
+        type: INTEGER
+    - imagePullPolicy:
+        default_value: IfNotPresent
+        required: false
+        type: STRING
+- redis-SoftwareApplication:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - auth.password:
+        default_value: ${random_password.redis.result}
+        required: true
+        type: STRING
+    - chart:
+        default_value: redis
+        required: true
+        type: STRING
+    - namespace:
+        default_value: gits
+        required: true
+        type: STRING
+    - repository:
+        default_value: https://charts.bitnami.com/bitnami
+        required: true
+        type: STRING
+- skilllevel_service:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - env:
+        default_value: '[{''name'': ''SPRING_DATASOURCE_URL'', ''value'': ''jdbc:postgresql://skilllevel-service-db-postgresql:5432/skilllevel-service''},
+          {''name'': ''SPRING_DATASOURCE_USERNAME'', ''value'': ''gits''}, {''name'':
+          ''SPRING_DATASOURCE_PASSWORD'', ''value'': ''random_password.skilllevel_service_db_pass.result''},
+          {''name'': ''COURSE_SERVICE_URL'', ''value'': ''http://localhost:3500/v1.0/invoke/course-service/method/graphql''},
+          {''name'': ''CONTENT_SERVICE_URL'', ''value'': ''http://localhost:3500/v1.0/invoke/content-service/method/graphql''}]'
+        required: true
+        type: STRING
+    - image:
+        default_value: ghcr.io/it-rex-platform/skilllevel_service:latest
+        required: true
+        type: STRING
+    - image_pull_policy:
+        default_value: Always
+        required: true
+        type: STRING
+    - liveness_probe:
+        default_value: '{''http_get'': {''path'': ''/actuator/health/liveness'', ''port'':
+          8001}, ''initial_delay_seconds'': 30, ''period_seconds'': 9}'
+        required: true
+        type: STRING
+    - name:
+        default_value: gits-skilllevel-service
+        required: true
+        type: STRING
+    - readiness_probe:
+        default_value: '{''http_get'': {''path'': ''/actuator/health/readiness'',
+          ''port'': 8001}, ''initial_delay_seconds'': 30, ''period_seconds'': 9}'
+        required: true
+        type: STRING
+    - resources:
+        default_value: '{''limits'': {''cpu'': ''0.5'', ''memory'': ''512Mi''}, ''requests'':
+          {''cpu'': ''50m'', ''memory'': ''50Mi''}}'
+        required: true
+        type: STRING
+- workload:
+    description: null
+    extends: SoftwareApplication
+    operations: []
+    properties:
+    - env:
+        default_value: '{''CONTENT_SERVICE_URL'': ''http://localhost:3500/v1.0/invoke/content-service/method/graphql'',
+          ''COURSE_SERVICE_URL'': ''http://localhost:3500/v1.0/invoke/course-service/method/graphql'',
+          ''FLASHCARD_SERVICE_URL'': ''http://localhost:3500/v1.0/invoke/flashcard-service/method/graphql'',
+          ''GATEWAY_HOSTNAME'': ''0.0.0.0'', ''GATEWAY_PORT'': ''8080'', ''JWKS_URL'':
+          ''http://keycloak:80/keycloak/realms/GITS/protocol/openid-connect/certs'',
+          ''MEDIA_SERVICE_URL'': ''http://localhost:3500/v1.0/invoke/media-service/method/graphql'',
+          ''QUIZ_SERVICE_URL'': ''http://localhost:3500/v1.0/invoke/quiz-service/method/graphql'',
+          ''REWARD_SERVICE_URL'': ''http://localhost:3500/v1.0/invoke/reward-service/method/graphql'',
+          ''SKILLLEVEL_SERVICE_URL'': ''http://localhost:3500/v1.0/invoke/skilllevel-service/method/graphql'',
+          ''USER_SERVICE_URL'': ''http://localhost:3500/v1.0/invoke/user-service/method/graphql''}'
+        required: true
+        type: STRING
+    - exposed_ports:
+        default_value: 80:8080
+        required: true
+        type: STRING
+    - image:
+        default_value: ghcr.io/it-rex-platform/graphql_gateway:latest
+        required: true
+        type: STRING
+    - image_pull_policy:
+        default_value: Always
+        required: true
+        type: STRING
+    - image_pull_secret:
+        default_value: github-container-secret
+        required: true
+        type: STRING
+    - liveness_probe:
+        default_value: '{''http_get'': {''path'': ''/graphql'', ''port'': 8080}, ''initial_delay_seconds'':
+          30, ''period_seconds'': 9}'
+        required: true
+        type: STRING
+    - readiness_probe:
+        default_value: '{''http_get'': {''path'': ''/graphql'', ''port'': 8080}, ''initial_delay_seconds'':
+          30, ''period_seconds'': 9}'
+        required: true
+        type: STRING
+    - resources:
+        default_value: '{''requests'': {''cpu'': ''100m'', ''memory'': ''500Mi''}}'
+        required: true
+        type: STRING
+components:
+- content-service-db:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - key: password
+    - value: random_password.content_service_db_pass.result
+    type: db-SoftwareApplication
+- content-service-db-postgresql:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/postgresql
+        name: registry-1.docker.io/bitnami/postgresql:latest
+    description: null
+    operations: []
+    properties:
+    - BITNAMI_DEBUG: 'false'
+    - OPENSSL_FIPS: 'yes'
+    - PGDATA: /bitnami/postgresql/data
+    - POSTGRESQL_CLIENT_MIN_MESSAGES: error
+    - POSTGRESQL_ENABLE_LDAP: 'no'
+    - POSTGRESQL_ENABLE_TLS: 'no'
+    - POSTGRESQL_LOG_CONNECTIONS: 'false'
+    - POSTGRESQL_LOG_DISCONNECTIONS: 'false'
+    - POSTGRESQL_LOG_HOSTNAME: 'false'
+    - POSTGRESQL_PGAUDIT_LOG_CATALOG: 'off'
+    - POSTGRESQL_PORT_NUMBER: '5432'
+    - POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+    - POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+    - POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+    - containerPort_tcp-postgresql: 5432
+    - imagePullPolicy: IfNotPresent
+    type: postgresql-DatabaseSystem
+- content-service-db-postgresql-data-volume:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - storage_size: 8Gi
+    type: Storage
+- course-service-db-postgresql:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/postgresql
+        name: registry-1.docker.io/bitnami/postgresql:latest
+    description: null
+    operations: []
+    properties:
+    - BITNAMI_DEBUG: 'false'
+    - OPENSSL_FIPS: 'yes'
+    - PGDATA: /bitnami/postgresql/data
+    - POSTGRESQL_CLIENT_MIN_MESSAGES: error
+    - POSTGRESQL_ENABLE_LDAP: 'no'
+    - POSTGRESQL_ENABLE_TLS: 'no'
+    - POSTGRESQL_LOG_CONNECTIONS: 'false'
+    - POSTGRESQL_LOG_DISCONNECTIONS: 'false'
+    - POSTGRESQL_LOG_HOSTNAME: 'false'
+    - POSTGRESQL_PGAUDIT_LOG_CATALOG: 'off'
+    - POSTGRESQL_PORT_NUMBER: '5432'
+    - POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+    - POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+    - POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+    - containerPort_tcp-postgresql: 5432
+    - imagePullPolicy: IfNotPresent
+    type: postgresql-DatabaseSystem
+- course-service-db-postgresql-data-volume:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - storage_size: 8Gi
+    type: Storage
+- dapr:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - chart: dapr
+    - namespace: gits
+    - repository: https://dapr.github.io/helm-charts
+    type: dapr-SoftwareApplication
+- dapr-operator:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io/dapr/operator
+        name: ghcr.io/dapr/operator:1.17.3
+    description: null
+    operations: []
+    properties:
+    - NAMESPACE: metadata.namespace
+    - containerPort_6500: 6500
+    - containerPort_metrics: 9090
+    - imagePullPolicy: IfNotPresent
+    type: dapr-SoftwareApplication
+- dapr-placement-server:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io/dapr/placement
+        name: ghcr.io/dapr/placement:1.17.3
+    description: null
+    operations: []
+    properties:
+    - NAMESPACE: metadata.namespace
+    - PLACEMENT_ID: metadata.name
+    - containerPort_api: 50005
+    - containerPort_metrics: 9090
+    - containerPort_raft-node: 8201
+    - imagePullPolicy: IfNotPresent
+    type: dapr-SoftwareApplication
+- dapr-scheduler-server:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io/dapr/scheduler
+        name: ghcr.io/dapr/scheduler:1.17.3
+    description: null
+    operations: []
+    properties:
+    - NAMESPACE: <metadata.namespace>
+    - POD_IP: <status.podIP>
+    - SCHEDULER_ID: <metadata.name>
+    - containerPort_50006: 50006
+    - containerPort_etcd-client: 2379
+    - containerPort_etcd-peer: 2380
+    - containerPort_metrics: 9090
+    - imagePullPolicy: IfNotPresent
+    - replicas: '3'
+    - securityContext_allowPrivilegeEscalation: 'False'
+    - securityContext_fsGroup: '65532'
+    - securityContext_readOnlyRootFilesystem: 'True'
+    - securityContext_runAsNonRoot: 'True'
+    - serviceAccountName: dapr-scheduler
+    type: dapr-SoftwareApplication
+- dapr-scheduler-server-dapr-scheduler-data-dir-volume:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - storage_size: 1Gi
+    type: Storage
+- dapr-sentry:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io/dapr/sentry
+        name: ghcr.io/dapr/sentry:1.17.3
+    description: null
+    operations: []
+    properties:
+    - containerPort_50001: 50001
+    - containerPort_metrics: 9090
+    - imagePullPolicy: IfNotPresent
+    type: dapr-SoftwareApplication
+- dapr-sidecar-injector:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io/dapr/injector
+        name: ghcr.io/dapr/injector:1.17.3
+    description: null
+    operations: []
+    properties:
+    - ACTORS_ENABLED: 'true'
+    - ACTORS_SERVICE_ADDRESS: dapr-placement-server:50005
+    - ACTORS_SERVICE_NAME: placement
+    - DAPR_CONTROL_PLANE_TRUST_DOMAIN: cluster.local
+    - DAPR_SENTRY_ADDRESS: dapr-sentry.default.svc.cluster.local:443
+    - DAPR_TRUST_ANCHORS_FILE: /var/run/secrets/dapr.io/tls/ca.crt
+    - ENABLE_K8S_DOWNWARD_APIS: 'false'
+    - IGNORE_ENTRYPOINT_TOLERATIONS: '[{"effect":"NoSchedule","key":"alibabacloud.com/eci"},{"effect":"NoSchedule","key":"azure.com/aci"},{"effect":"NoSchedule","key":"aws"},{"effect":"NoSchedule","key":"huawei.com/cci"}]'
+    - KUBE_CLUSTER_DOMAIN: cluster.local
+    - SIDECAR_DROP_ALL_CAPABILITIES: 'false'
+    - SIDECAR_IMAGE: ghcr.io/dapr/daprd:1.17.3
+    - SIDECAR_IMAGE_PULL_POLICY: IfNotPresent
+    - SIDECAR_READ_ONLY_ROOT_FILESYSTEM: 'true'
+    - SIDECAR_RUN_AS_NON_ROOT: 'true'
+    - containerPort_https: 4000
+    - containerPort_metrics: 9090
+    - imagePullPolicy: IfNotPresent
+    type: dapr-SoftwareApplication
+- defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    type: DefaultKubernetesCluster
+- flashcard-service-db:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - artifact:
+      - chart: postgresql
+        repository: oci://registry-1.docker.io/bitnamicharts
+        tag: latest
+        type: helm chart
+    - chart: postgresql
+    - name: flashcard-service-db
+    - namespace: gits
+    - repository: oci://registry-1.docker.io/bitnamicharts
+    - set:
+      - name: global.postgresql.auth.database
+        value: flashcard-service
+      - name: postgres.auth.enablePostgresUser
+        value: 'false'
+      - name: global.postgresql.auth.username
+        value: gits
+      - name: global.postgresql.auth.password
+        value: random_password.flashcard_service_db_pass.result
+    type: helm_release
+- flashcard-service-db-postgresql:
+    artifacts:
+    - docker_image:
+        fileURI: https://registry-1.docker.io/bitnami/postgresql
+        name: registry-1.docker.io/bitnami/postgresql:latest
+    description: null
+    operations: []
+    properties:
+    - BITNAMI_DEBUG: 'false'
+    - OPENSSL_FIPS: 'yes'
+    - PGDATA: /bitnami/postgresql/data
+    - POSTGRESQL_CLIENT_MIN_MESSAGES: error
+    - POSTGRESQL_ENABLE_LDAP: 'no'
+    - POSTGRESQL_ENABLE_TLS: 'no'
+    - POSTGRESQL_LOG_CONNECTIONS: 'false'
+    - POSTGRESQL_LOG_DISCONNECTIONS: 'false'
+    - POSTGRESQL_LOG_HOSTNAME: 'false'
+    - POSTGRESQL_PGAUDIT_LOG_CATALOG: 'off'
+    - POSTGRESQL_PORT_NUMBER: '5432'
+    - POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+    - POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+    - POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+    - containerPort_tcp-postgresql: 5432
+    - imagePullPolicy: IfNotPresent
+    type: postgresql-DatabaseSystem
+- flashcard-service-db-postgresql-data-volume:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - storage_size: 8Gi
+    type: Storage
+- gits-content-service:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - key: dapr.http_port
+    - value: '4000'
+    type: gits-content-service-SoftwareApplication
+- gits-flashcard-service:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - artifact:
+      - image: ghcr.io/it-rex-platform/flashcard_service:latest
+        pullPolicy: Always
+        type: container
+    - env:
+      - SPRING_DATASOURCE_PASSWORD: random_password.flashcard_service_db_pass.result
+      - SPRING_DATASOURCE_URL: jdbc:postgresql://flashcard-service-db-postgresql:5432/flashcard-service
+      - SPRING_DATASOURCE_USERNAME: gits
+    - image: ghcr.io/it-rex-platform/flashcard_service:latest
+    - imagePullPolicy: Always
+    - imagePullSecrets: github-container-secret
+    - replicas: '1'
+    - resourceLimits:
+        cpu: '0.5'
+        memory: 512Mi
+    - resourceRequests:
+        cpu: 50m
+        memory: 50Mi
+    type: deployment
+- gits-gateway:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - env:
+        CONTENT_SERVICE_URL: http://localhost:3500/v1.0/invoke/content-service/method/graphql
+        COURSE_SERVICE_URL: http://localhost:3500/v1.0/invoke/course-service/method/graphql
+        FLASHCARD_SERVICE_URL: http://localhost:3500/v1.0/invoke/flashcard-service/method/graphql
+        GATEWAY_HOSTNAME: 0.0.0.0
+        GATEWAY_PORT: '8080'
+        JWKS_URL: http://keycloak:80/keycloak/realms/GITS/protocol/openid-connect/certs
+        MEDIA_SERVICE_URL: http://localhost:3500/v1.0/invoke/media-service/method/graphql
+        QUIZ_SERVICE_URL: http://localhost:3500/v1.0/invoke/quiz-service/method/graphql
+        REWARD_SERVICE_URL: http://localhost:3500/v1.0/invoke/reward-service/method/graphql
+        SKILLLEVEL_SERVICE_URL: http://localhost:3500/v1.0/invoke/skilllevel-service/method/graphql
+        USER_SERVICE_URL: http://localhost:3500/v1.0/invoke/user-service/method/graphql
+    - exposed_ports: 80:8080
+    - image: ghcr.io/it-rex-platform/graphql_gateway:latest
+    - image_pull_policy: Always
+    - image_pull_secret: github-container-secret
+    - liveness_probe:
+        http_get:
+          path: /graphql
+          port: 8080
+        initial_delay_seconds: 30
+        period_seconds: 9
+    - readiness_probe:
+        http_get:
+          path: /graphql
+          port: 8080
+        initial_delay_seconds: 30
+        period_seconds: 9
+    - resources:
+        requests:
+          cpu: 100m
+          memory: 500Mi
+    type: workload
+- gits-media-service:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - annotations: keel.sh/policy=force keel.sh/match-tag=true keel.sh/trigger=poll
+    - env:
+        MINIO_ACCESS_KEY: gits
+        MINIO_ACCESS_SECRET: random_password.media_service_minio_pass.result
+        MINIO_URL: http://minio:9000
+        SPRING_DATASOURCE_PASSWORD: random_password.media_service_db_pass.result
+        SPRING_DATASOURCE_URL: jdbc:postgresql://media-service-db-postgresql:5432/media-service
+        SPRING_DATASOURCE_USERNAME: gits
+    - image: ghcr.io/it-rex-platform/media_service:latest
+    - image_pull_policy: Always
+    - image_pull_secrets: github-container-secret
+    - labels: app=gits-media-service
+    - liveness_probe:
+        http_get:
+          path: /actuator/health/liveness
+          port: 3001
+        initial_delay_seconds: 30
+        period_seconds: 9
+    - name: gits-media-service
+    - readiness_probe:
+        http_get:
+          path: /actuator/health/readiness
+          port: 3001
+        initial_delay_seconds: 30
+        period_seconds: 9
+    - resources:
+        requests:
+          cpu: 100m
+          memory: 500Mi
+    type: deployment
+- gits-quiz-service:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - dapr:
+        app_id: quiz-service
+        app_port: 9001
+        enabled: true
+        http_port: 9000
+    - env:
+      - name: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://quiz-service-db-postgresql:5432/quiz-service
+      - name: SPRING_DATASOURCE_USERNAME
+        value: gits
+      - name: SPRING_DATASOURCE_PASSWORD
+        value: random_password.quiz_service_db_pass.result
+      - name: COURSE_SERVICE_URL
+        value: http://localhost:3500/v1.0/invoke/course-service/method/graphql
+      - name: CONTENT_SERVICE_URL
+        value: http://localhost:3500/v1.0/invoke/content-service/method/graphql
+    - image: ghcr.io/it-rex-platform/quiz_service:latest
+    - image_pull_policy: Always
+    - liveness_probe:
+        http_get:
+          path: /actuator/health/liveness
+          port: 9001
+        initial_delay_seconds: 30
+        period_seconds: 9
+    - readiness_probe:
+        http_get:
+          path: /actuator/health/readiness
+          port: 9001
+        initial_delay_seconds: 30
+        period_seconds: 9
+    - resources:
+        limits:
+          cpu: '0.5'
+          memory: 512Mi
+        requests:
+          cpu: 50m
+          memory: 50Mi
+    type: gits-quiz-service-SoftwareApplication
+- gits-skilllevel-service:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - env:
+      - name: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://skilllevel-service-db-postgresql:5432/skilllevel-service
+      - name: SPRING_DATASOURCE_USERNAME
+        value: gits
+      - name: SPRING_DATASOURCE_PASSWORD
+        value: random_password.skilllevel_service_db_pass.result
+      - name: COURSE_SERVICE_URL
+        value: http://localhost:3500/v1.0/invoke/course-service/method/graphql
+      - name: CONTENT_SERVICE_URL
+        value: http://localhost:3500/v1.0/invoke/content-service/method/graphql
+    - image: ghcr.io/it-rex-platform/skilllevel_service:latest
+    - image_pull_policy: Always
+    - liveness_probe:
+        http_get:
+          path: /actuator/health/liveness
+          port: 8001
+        initial_delay_seconds: 30
+        period_seconds: 9
+    - name: gits-skilllevel-service
+    - readiness_probe:
+        http_get:
+          path: /actuator/health/readiness
+          port: 8001
+        initial_delay_seconds: 30
+        period_seconds: 9
+    - resources:
+        limits:
+          cpu: '0.5'
+          memory: 512Mi
+        requests:
+          cpu: 50m
+          memory: 50Mi
+    type: skilllevel_service
+- gits_user_service:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - env.KEYCLOAK_PASSWORD: var.keycloak_admin_pw
+    - env.KEYCLOAK_URL: http://keycloak:80/keycloak
+    - env.SPRING_DATASOURCE_PASSWORD: random_password.user_service_db_pass.result
+    - env.SPRING_DATASOURCE_URL: jdbc:postgresql://user-service-db-postgresql:5432/user-service
+    - env.SPRING_DATASOURCE_USERNAME: gits
+    - image: ghcr.io/it-rex-platform/user_service:latest
+    - image_pull_policy: Always
+    - image_pull_secrets: github-container-secret
+    - labels.app: gits-user-service
+    - liveness_probe.http_get.path: /actuator/health/liveness
+    - liveness_probe.http_get.port: '5001'
+    - liveness_probe.initial_delay_seconds: '30'
+    - liveness_probe.period_seconds: '9'
+    - namespace: gits
+    - readiness_probe.http_get.path: /actuator/health/readiness
+    - readiness_probe.http_get.port: '5001'
+    - readiness_probe.initial_delay_seconds: '30'
+    - readiness_probe.period_seconds: '9'
+    - replicas: '1'
+    - resources.requests.cpu: 100m
+    - resources.requests.memory: 500Mi
+    type: kubernetes_deployment
+- keel:
+    artifacts:
+    - docker_image:
+        fileURI: https://ghcr.io/keel-hq/keel
+        name: ghcr.io/keel-hq/keel:0.21.1
+    - helm_chart:
+        fileURI: https://charts.keel.sh/keel
+        name: keel
+    description: null
+    operations: []
+    properties:
+    - NAMESPACE: metadata.namespace
+    - NOTIFICATION_LEVEL: info
+    - POLL: 'true'
+    - POLL_DEFAULTSCHEDULE: '@every 1m'
+    - chart: keel
+    - containerPort_keel: 9300
+    - helmProvider.enabled: 'false'
+    - imagePullPolicy: Always
+    - name: keel
+    - namespace: gits
+    - repository: https://charts.keel.sh
+    - serviceAccountName: keel
+    type: keel-SoftwareApplication
+- keycloak:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/keycloak
+        name: docker.io/bitnami/keycloak:26.3.3-debian-12-r0
+    - helm_chart:
+        name: keycloak
+        repository: oci://registry-1.docker.io/bitnamicharts
+    description: null
+    operations: []
+    properties:
+    - containerPort_discovery: 7800
+    - containerPort_http: 8080
+    - imagePullPolicy: IfNotPresent
+    - name: image.tag
+    - value: latest
+    type: keycloak-SoftwareApplication
+- keycloak-postgresql:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/postgresql
+        name: docker.io/bitnami/postgresql:17.6.0-debian-12-r0
+    description: null
+    operations: []
+    properties:
+    - BITNAMI_DEBUG: 'false'
+    - PGDATA: /bitnami/postgresql/data
+    - POSTGRESQL_CLIENT_MIN_MESSAGES: error
+    - POSTGRESQL_ENABLE_LDAP: 'no'
+    - POSTGRESQL_ENABLE_TLS: 'no'
+    - POSTGRESQL_LOG_CONNECTIONS: 'false'
+    - POSTGRESQL_LOG_DISCONNECTIONS: 'false'
+    - POSTGRESQL_LOG_HOSTNAME: 'false'
+    - POSTGRESQL_PGAUDIT_LOG_CATALOG: 'off'
+    - POSTGRESQL_PORT_NUMBER: '5432'
+    - POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+    - POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+    - POSTGRES_DATABASE: bitnami_keycloak
+    - POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/password
+    - POSTGRES_POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+    - POSTGRES_USER: bn_keycloak
+    - containerPort_tcp-postgresql: 5432
+    - exposedPort_tcp-postgresql: 5432:5432
+    - imagePullPolicy: IfNotPresent
+    type: postgres-DatabaseSystem
+- keycloak-postgresql-data-volume:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - storage_size: 8Gi
+    type: Storage
+- media-service-db:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - chart: postgresql
+    - database: media-service
+    - enablePostgresUser: 'False'
+    - name: media-service-db
+    - password: random_password.media_service_db_pass.result
+    - repository: oci://registry-1.docker.io/bitnamicharts
+    - username: gits
+    type: postgresql
+- media-service-db-postgresql:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/postgresql
+        name: registry-1.docker.io/bitnami/postgresql:latest
+    description: null
+    operations: []
+    properties:
+    - BITNAMI_DEBUG: 'false'
+    - OPENSSL_FIPS: 'yes'
+    - PGDATA: /bitnami/postgresql/data
+    - POSTGRESQL_CLIENT_MIN_MESSAGES: error
+    - POSTGRESQL_ENABLE_LDAP: 'no'
+    - POSTGRESQL_ENABLE_TLS: 'no'
+    - POSTGRESQL_LOG_CATALOG: 'off'
+    - POSTGRESQL_LOG_CONNECTIONS: 'false'
+    - POSTGRESQL_LOG_DISCONNECTIONS: 'false'
+    - POSTGRESQL_LOG_HOSTNAME: 'false'
+    - POSTGRESQL_PORT_NUMBER: '5432'
+    - POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+    - POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+    - POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+    - containerPort_tcp-postgresql: 5432
+    - imagePullPolicy: IfNotPresent
+    type: postgresql-DatabaseSystem
+- media-service-db-postgresql-data-volume:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - storage_size: 8Gi
+    type: Storage
+- minio:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/minio
+        name: docker.io/bitnami/minio:2025.7.23-debian-12-r3
+    description: null
+    operations: []
+    properties:
+    - BITNAMI_DEBUG: 'false'
+    - MINIO_API_PORT_NUMBER: '9000'
+    - MINIO_BROWSER: 'off'
+    - MINIO_DATA_DIR: /bitnami/minio/data
+    - MINIO_DISTRIBUTED_MODE_ENABLED: 'no'
+    - MINIO_FORCE_NEW_KEYS: 'no'
+    - MINIO_PROMETHEUS_AUTH_TYPE: public
+    - MINIO_ROOT_PASSWORD_FILE: /opt/bitnami/minio/secrets/root-password
+    - MINIO_ROOT_USER_FILE: /opt/bitnami/minio/secrets/root-user
+    - MINIO_SCHEME: http
+    - MINIO_SKIP_CLIENT: 'yes'
+    - chart: minio
+    - containerPort_api: 9000
+    - imagePullPolicy: IfNotPresent
+    - name: minio
+    - repository: oci://registry-1.docker.io/bitnamicharts
+    - rootPassword: random_password.media_service_minio_pass.result
+    - rootUser: gits
+    type: minio-SoftwareApplication
+- minio-console:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/minio-object-browser
+        name: docker.io/bitnami/minio-object-browser:2.0.2-debian-12-r3
+    description: null
+    operations: []
+    properties:
+    - CONSOLE_MINIO_SERVER: http://minio:9000
+    - containerPort_http: 9090
+    - imagePullPolicy: IfNotPresent
+    type: r3-SoftwareApplication
+- quiz-service-db:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - chart: postgresql
+    - database: quiz-service
+    - namespace: gits
+    - password: random_password.quiz_service_db_pass.result
+    - repository: oci://registry-1.docker.io/bitnamicharts
+    - username: gits
+    type: quiz-service-db-SoftwareApplication
+- quiz-service-db-postgresql:
+    artifacts:
+    - docker_image:
+        fileURI: https://registry-1.docker.io/bitnami/postgresql
+        name: registry-1.docker.io/bitnami/postgresql:latest
+    description: null
+    operations: []
+    properties:
+    - BITNAMI_DEBUG: 'false'
+    - OPENSSL_FIPS: 'yes'
+    - PGDATA: /bitnami/postgresql/data
+    - POSTGRESQL_CLIENT_MIN_MESSAGES: error
+    - POSTGRESQL_ENABLE_LDAP: 'no'
+    - POSTGRESQL_ENABLE_TLS: 'no'
+    - POSTGRESQL_LOG_CONNECTIONS: 'false'
+    - POSTGRESQL_LOG_DISCONNECTIONS: 'false'
+    - POSTGRESQL_LOG_HOSTNAME: 'false'
+    - POSTGRESQL_PGAUDIT_LOG_CATALOG: 'off'
+    - POSTGRESQL_PORT_NUMBER: '5432'
+    - POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+    - POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+    - POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+    - containerPort_tcp-postgresql: 5432
+    - imagePullPolicy: IfNotPresent
+    type: postgresql-DatabaseSystem
+- quiz-service-db-postgresql-data-volume:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - storage_size: 8Gi
+    type: Storage
+- redis:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - auth.password: ${random_password.redis.result}
+    - chart: redis
+    - namespace: gits
+    - repository: https://charts.bitnami.com/bitnami
+    type: redis-SoftwareApplication
+- redis-master:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/redis
+        name: registry-1.docker.io/bitnami/redis:latest
+    description: null
+    operations: []
+    properties:
+    - ALLOW_EMPTY_PASSWORD: 'no'
+    - BITNAMI_DEBUG: 'false'
+    - OPENSSL_FIPS: 'yes'
+    - REDIS_PASSWORD_FILE: /opt/bitnami/redis/secrets/redis-password
+    - REDIS_PORT: '6379'
+    - REDIS_REPLICATION_MODE: master
+    - REDIS_TLS_ENABLED: 'no'
+    - containerPort_redis: 6379
+    - imagePullPolicy: IfNotPresent
+    type: redis-DatabaseSystem
+- redis-master-redis-data-volume:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - storage_size: 8Gi
+    type: Storage
+- redis-redis-data-volume:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - storage_size: 8Gi
+    type: Storage
+- redis-replicas:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/redis
+        name: registry-1.docker.io/bitnami/redis:latest
+    description: null
+    operations: []
+    properties:
+    - ALLOW_EMPTY_PASSWORD: 'no'
+    - BITNAMI_DEBUG: 'false'
+    - OPENSSL_FIPS: 'yes'
+    - REDIS_MASTER_HOST: redis-master-0.redis-headless.default.svc.cluster.local
+    - REDIS_MASTER_PASSWORD_FILE: /opt/bitnami/redis/secrets/redis-password
+    - REDIS_MASTER_PORT_NUMBER: '6379'
+    - REDIS_PASSWORD_FILE: /opt/bitnami/redis/secrets/redis-password
+    - REDIS_PORT: '6379'
+    - REDIS_REPLICATION_MODE: replica
+    - REDIS_TLS_ENABLED: 'no'
+    - containerPort_redis: 6379
+    - imagePullPolicy: IfNotPresent
+    type: redis-DatabaseSystem
+- reward-service-db-postgresql:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/postgresql
+        name: registry-1.docker.io/bitnami/postgresql:latest
+    description: null
+    operations: []
+    properties:
+    - BITNAMI_DEBUG: 'false'
+    - OPENSSL_FIPS: 'yes'
+    - PGDATA: /bitnami/postgresql/data
+    - POSTGRESQL_CLIENT_MIN_MESSAGES: error
+    - POSTGRESQL_ENABLE_LDAP: 'no'
+    - POSTGRESQL_ENABLE_TLS: 'no'
+    - POSTGRESQL_LOG_CONNECTIONS: 'false'
+    - POSTGRESQL_LOG_DISCONNECTIONS: 'false'
+    - POSTGRESQL_LOG_HOSTNAME: 'false'
+    - POSTGRESQL_PGAUDIT_LOG_CATALOG: 'off'
+    - POSTGRESQL_PORT_NUMBER: '5432'
+    - POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+    - POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+    - POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+    - containerPort_tcp-postgresql: 5432
+    - imagePullPolicy: IfNotPresent
+    type: postgresql-DatabaseSystem
+- reward-service-db-postgresql-data-volume:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - storage_size: 8Gi
+    type: Storage
+- skilllevel-service-db:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - chart: postgresql
+    - global.postgresql.auth.database: skilllevel-service
+    - global.postgresql.auth.password: random_password.skilllevel_service_db_pass.result
+    - global.postgresql.auth.username: gits
+    - name: skilllevel-service-db
+    - namespace: gits
+    - postgres.auth.enablePostgresqlUser: 'false'
+    - repository: oci://registry-1.docker.io/bitnamicharts
+    type: database.postgresql
+- skilllevel-service-db-postgresql:
+    artifacts:
+    - docker_image:
+        fileURI: https://registry-1.docker.io/bitnami/postgresql
+        name: registry-1.docker.io/bitnami/postgresql:latest
+    description: null
+    operations: []
+    properties:
+    - BITNAMI_DEBUG: 'false'
+    - OPENSSL_FIPS: 'yes'
+    - PGDATA: /bitnami/postgresql/data
+    - POSTGRESQL_CLIENT_MIN_MESSAGES: error
+    - POSTGRESQL_ENABLE_LDAP: 'no'
+    - POSTGRESQL_ENABLE_TLS: 'no'
+    - POSTGRESQL_LOG_CONNECTIONS: 'false'
+    - POSTGRESQL_LOG_DISCONNECTIONS: 'false'
+    - POSTGRESQL_LOG_HOSTNAME: 'false'
+    - POSTGRESQL_PGAUDIT_LOG_CATALOG: 'off'
+    - POSTGRESQL_PORT_NUMBER: '5432'
+    - POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+    - POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+    - POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+    - containerPort_tcp-postgresql: 5432
+    - exposedPort_tcp-postgresql: 5432:5432
+    - imagePullPolicy: IfNotPresent
+    type: postgresql-DatabaseSystem
+- skilllevel-service-db-postgresql-data-volume:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - storage_size: 8Gi
+    type: Storage
+- user-service-db-postgresql:
+    artifacts:
+    - docker_image:
+        fileURI: https://hub.docker.com/r/bitnami/postgresql
+        name: registry-1.docker.io/bitnami/postgresql:latest
+    description: null
+    operations: []
+    properties:
+    - BITNAMI_DEBUG: 'false'
+    - OPENSSL_FIPS: 'yes'
+    - PGDATA: /bitnami/postgresql/data
+    - POSTGRESQL_CLIENT_MIN_MESSAGES: error
+    - POSTGRESQL_ENABLE_LDAP: 'no'
+    - POSTGRESQL_ENABLE_TLS: 'no'
+    - POSTGRESQL_LOG_CONNECTIONS: 'false'
+    - POSTGRESQL_LOG_DISCONNECTIONS: 'false'
+    - POSTGRESQL_LOG_HOSTNAME: 'false'
+    - POSTGRESQL_PGAUDIT_LOG_CATALOG: 'off'
+    - POSTGRESQL_PORT_NUMBER: '5432'
+    - POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+    - POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+    - POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+    - containerPort_tcp-postgresql: 5432
+    - imagePullPolicy: IfNotPresent
+    - replicas: '1'
+    - serviceName: user-service-db-postgresql-hl
+    type: postgresql-DatabaseSystem
+- user-service-db-postgresql-data-volume:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - storage_size: 8Gi
+    type: Storage
+- user_service_db:
+    artifacts: []
+    description: null
+    operations: []
+    properties:
+    - chart: postgresql
+    - name: user-service-db
+    - namespace: gits
+    - repository: oci://registry-1.docker.io/bitnamicharts
+    - set.global.postgresql.auth.database: user-service
+    - set.global.postgresql.auth.password: random_password.user_service_db_pass.result
+    - set.global.postgresql.auth.username: gits
+    - set.postgres.auth.enablePostgresUser: 'False'
+    type: helm_release
+properties: []
+relation_types:
+- AttachesTo:
+    description: null
+    extends: DependsOn
+    operations: []
+    properties:
+    - location:
+        default_value: ''
+        required: true
+        type: STRING
+- ConnectsTo:
+    description: null
+    extends: DependsOn
+    operations: []
+    properties: []
+- DependsOn:
+    description: null
+    extends: '-'
+    operations: []
+    properties: []
+- HostedOn:
+    description: null
+    extends: DependsOn
+    operations: []
+    properties: []
+relations:
+- content-service-db-postgresql-data-volume_AttachesTo_content-service-db-postgresql:
+    description: null
+    operations: []
+    properties: []
+    source: content-service-db-postgresql-data-volume
+    target: content-service-db-postgresql
+    type: AttachesTo
+- content-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: content-service-db-postgresql-data-volume
+    target: defaultKubernetesCluster
+    type: HostedOn
+- content-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: content-service-db-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- content-service-db_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: content-service-db
+    target: defaultKubernetesCluster
+    type: HostedOn
+- course-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: course-service-db-postgresql-data-volume
+    target: defaultKubernetesCluster
+    type: HostedOn
+- course-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: course-service-db-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- dapr-operator_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: dapr-operator
+    target: defaultKubernetesCluster
+    type: HostedOn
+- dapr-placement-server_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: dapr-placement-server
+    target: defaultKubernetesCluster
+    type: HostedOn
+- dapr-scheduler-server-dapr-scheduler-data-dir-volume_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: dapr-scheduler-server-dapr-scheduler-data-dir-volume
+    target: defaultKubernetesCluster
+    type: HostedOn
+- dapr-scheduler-server_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: dapr-scheduler-server
+    target: defaultKubernetesCluster
+    type: HostedOn
+- dapr-sentry_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: dapr-sentry
+    target: defaultKubernetesCluster
+    type: HostedOn
+- dapr-sidecar-injector_ConnectsTo_dapr-placement-server:
+    description: null
+    operations: []
+    properties: []
+    source: dapr-sidecar-injector
+    target: dapr-placement-server
+    type: ConnectsTo
+- dapr-sidecar-injector_ConnectsTo_dapr-sentry:
+    description: null
+    operations: []
+    properties: []
+    source: dapr-sidecar-injector
+    target: dapr-sentry
+    type: ConnectsTo
+- dapr-sidecar-injector_ConnectsTo_gits-content-service:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: dapr-sidecar-injector
+    target: gits-content-service
+    type: ConnectsTo
+- dapr-sidecar-injector_ConnectsTo_gits-flashcard-service:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: dapr-sidecar-injector
+    target: gits-flashcard-service
+    type: ConnectsTo
+- dapr-sidecar-injector_ConnectsTo_gits-gateway:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: dapr-sidecar-injector
+    target: gits-gateway
+    type: ConnectsTo
+- dapr-sidecar-injector_ConnectsTo_gits-media-service:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: dapr-sidecar-injector
+    target: gits-media-service
+    type: ConnectsTo
+- dapr-sidecar-injector_ConnectsTo_gits-quiz-service:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: dapr-sidecar-injector
+    target: gits-quiz-service
+    type: ConnectsTo
+- dapr-sidecar-injector_ConnectsTo_gits_user_service:
+    description: null
+    operations: []
+    properties: []
+    source: dapr-sidecar-injector
+    target: gits_user_service
+    type: ConnectsTo
+- dapr-sidecar-injector_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: dapr-sidecar-injector
+    target: defaultKubernetesCluster
+    type: HostedOn
+- dapr_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: dapr
+    target: defaultKubernetesCluster
+    type: HostedOn
+- flashcard-service-db-postgresql-data-volume_AttachesTo_flashcard-service-db-postgresql:
+    description: null
+    operations: []
+    properties: []
+    source: flashcard-service-db-postgresql-data-volume
+    target: flashcard-service-db-postgresql
+    type: AttachesTo
+- flashcard-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: flashcard-service-db-postgresql-data-volume
+    target: defaultKubernetesCluster
+    type: HostedOn
+- flashcard-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: flashcard-service-db-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- flashcard-service-db_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: flashcard-service-db
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits-content-service_ConnectsTo_content-service-db:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: gits-content-service
+    target: content-service-db
+    type: ConnectsTo
+- gits-content-service_ConnectsTo_content-service-db-postgresql:
+    description: null
+    operations: []
+    properties: []
+    source: gits-content-service
+    target: content-service-db-postgresql
+    type: ConnectsTo
+- gits-content-service_DependsOn_content-service-db:
+    description: null
+    operations: []
+    properties: []
+    source: gits-content-service
+    target: content-service-db
+    type: DependsOn
+- gits-content-service_DependsOn_dapr:
+    description: null
+    operations: []
+    properties: []
+    source: gits-content-service
+    target: dapr
+    type: DependsOn
+- gits-content-service_DependsOn_keel:
+    description: null
+    operations: []
+    properties: []
+    source: gits-content-service
+    target: keel
+    type: DependsOn
+- gits-content-service_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: gits-content-service
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits-flashcard-service_ConnectsTo_flashcard-service-db:
+    description: null
+    operations: []
+    properties: []
+    source: gits-flashcard-service
+    target: flashcard-service-db
+    type: ConnectsTo
+- gits-flashcard-service_ConnectsTo_flashcard-service-db-postgresql:
+    description: null
+    operations: []
+    properties: []
+    source: gits-flashcard-service
+    target: flashcard-service-db-postgresql
+    type: ConnectsTo
+- gits-flashcard-service_ConnectsTo_gits-content-service:
+    description: null
+    operations: []
+    properties: []
+    source: gits-flashcard-service
+    target: gits-content-service
+    type: ConnectsTo
+- gits-flashcard-service_ConnectsTo_gits-media-service:
+    description: null
+    operations: []
+    properties: []
+    source: gits-flashcard-service
+    target: gits-media-service
+    type: ConnectsTo
+- gits-flashcard-service_ConnectsTo_gits-quiz-service:
+    description: null
+    operations: []
+    properties: []
+    source: gits-flashcard-service
+    target: gits-quiz-service
+    type: ConnectsTo
+- gits-flashcard-service_ConnectsTo_gits-skilllevel-service:
+    description: null
+    operations: []
+    properties: []
+    source: gits-flashcard-service
+    target: gits-skilllevel-service
+    type: ConnectsTo
+- gits-flashcard-service_ConnectsTo_gits_user_service:
+    description: null
+    operations: []
+    properties: []
+    source: gits-flashcard-service
+    target: gits_user_service
+    type: ConnectsTo
+- gits-flashcard-service_DependsOn_dapr:
+    description: null
+    operations: []
+    properties: []
+    source: gits-flashcard-service
+    target: dapr
+    type: DependsOn
+- gits-flashcard-service_DependsOn_flashcard-service-db:
+    description: null
+    operations: []
+    properties: []
+    source: gits-flashcard-service
+    target: flashcard-service-db
+    type: DependsOn
+- gits-flashcard-service_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: gits-flashcard-service
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits-gateway_ConnectsTo_gits-content-service:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: gits-gateway
+    target: gits-content-service
+    type: ConnectsTo
+- gits-gateway_ConnectsTo_gits-flashcard-service:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: gits-gateway
+    target: gits-flashcard-service
+    type: ConnectsTo
+- gits-gateway_ConnectsTo_gits-media-service:
+    description: null
+    operations: []
+    properties: []
+    source: gits-gateway
+    target: gits-media-service
+    type: ConnectsTo
+- gits-gateway_ConnectsTo_gits-quiz-service:
+    description: null
+    operations: []
+    properties: []
+    source: gits-gateway
+    target: gits-quiz-service
+    type: ConnectsTo
+- gits-gateway_ConnectsTo_gits-skilllevel-service:
+    description: null
+    operations: []
+    properties: []
+    source: gits-gateway
+    target: gits-skilllevel-service
+    type: ConnectsTo
+- gits-gateway_ConnectsTo_gits_user_service:
+    description: null
+    operations: []
+    properties: []
+    source: gits-gateway
+    target: gits_user_service
+    type: ConnectsTo
+- gits-gateway_ConnectsTo_keycloak:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: gits-gateway
+    target: keycloak
+    type: ConnectsTo
+- gits-gateway_DependsOn_dapr:
+    description: null
+    operations: []
+    properties: []
+    source: gits-gateway
+    target: dapr
+    type: DependsOn
+- gits-gateway_DependsOn_keel:
+    description: null
+    operations: []
+    properties: []
+    source: gits-gateway
+    target: keel
+    type: DependsOn
+- gits-gateway_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: gits-gateway
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits-media-service_ConnectsTo_media-service-db:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: gits-media-service
+    target: media-service-db
+    type: ConnectsTo
+- gits-media-service_ConnectsTo_minio:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: gits-media-service
+    target: minio
+    type: ConnectsTo
+- gits-media-service_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: gits-media-service
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits-quiz-service_ConnectsTo_gits-content-service:
+    description: null
+    operations: []
+    properties: []
+    source: gits-quiz-service
+    target: gits-content-service
+    type: ConnectsTo
+- gits-quiz-service_ConnectsTo_quiz-service-db:
+    description: null
+    operations: []
+    properties: []
+    source: gits-quiz-service
+    target: quiz-service-db
+    type: ConnectsTo
+- gits-quiz-service_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: gits-quiz-service
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits-skilllevel-service_ConnectsTo_gits-content-service:
+    description: null
+    operations: []
+    properties: []
+    source: gits-skilllevel-service
+    target: gits-content-service
+    type: ConnectsTo
+- gits-skilllevel-service_ConnectsTo_skilllevel-service-db:
+    description: null
+    operations: []
+    properties: []
+    source: gits-skilllevel-service
+    target: skilllevel-service-db
+    type: ConnectsTo
+- gits-skilllevel-service_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: gits-skilllevel-service
+    target: defaultKubernetesCluster
+    type: HostedOn
+- gits_user_service_ConnectsTo_keycloak:
+    description: null
+    operations: []
+    properties: []
+    source: gits_user_service
+    target: keycloak
+    type: ConnectsTo
+- gits_user_service_ConnectsTo_user_service_db:
+    description: null
+    operations: []
+    properties: []
+    source: gits_user_service
+    target: user_service_db
+    type: ConnectsTo
+- gits_user_service_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: gits_user_service
+    target: defaultKubernetesCluster
+    type: HostedOn
+- keel_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: keel
+    target: defaultKubernetesCluster
+    type: HostedOn
+- keycloak-postgresql-data-volume_AttachesTo_keycloak-postgresql:
+    description: null
+    operations: []
+    properties: []
+    source: keycloak-postgresql-data-volume
+    target: keycloak-postgresql
+    type: AttachesTo
+- keycloak-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: keycloak-postgresql-data-volume
+    target: defaultKubernetesCluster
+    type: HostedOn
+- keycloak-postgresql_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: keycloak-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- keycloak_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: keycloak
+    target: defaultKubernetesCluster
+    type: HostedOn
+- media-service-db-postgresql-data-volume_AttachesTo_media-service-db-postgresql:
+    description: null
+    operations: []
+    properties:
+    - location: /bitnami/postgresql
+    source: media-service-db-postgresql-data-volume
+    target: media-service-db-postgresql
+    type: AttachesTo
+- media-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: media-service-db-postgresql-data-volume
+    target: defaultKubernetesCluster
+    type: HostedOn
+- media-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: media-service-db-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- media-service-db_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: media-service-db
+    target: defaultKubernetesCluster
+    type: HostedOn
+- minio-console_ConnectsTo_minio:
+    description: null
+    operations: []
+    properties: []
+    source: minio-console
+    target: minio
+    type: ConnectsTo
+- minio-console_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: minio-console
+    target: defaultKubernetesCluster
+    type: HostedOn
+- minio_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: minio
+    target: defaultKubernetesCluster
+    type: HostedOn
+- quiz-service-db-postgresql-data-volume_AttachesTo_quiz-service-db-postgresql:
+    description: null
+    operations: []
+    properties: []
+    source: quiz-service-db-postgresql-data-volume
+    target: quiz-service-db-postgresql
+    type: AttachesTo
+- quiz-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: quiz-service-db-postgresql-data-volume
+    target: defaultKubernetesCluster
+    type: HostedOn
+- quiz-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: quiz-service-db-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- quiz-service-db_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: quiz-service-db
+    target: defaultKubernetesCluster
+    type: HostedOn
+- redis-master-redis-data-volume_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: redis-master-redis-data-volume
+    target: defaultKubernetesCluster
+    type: HostedOn
+- redis-master_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: redis-master
+    target: defaultKubernetesCluster
+    type: HostedOn
+- redis-redis-data-volume_AttachesTo_redis-replicas:
+    description: null
+    operations: []
+    properties: []
+    source: redis-redis-data-volume
+    target: redis-replicas
+    type: AttachesTo
+- redis-redis-data-volume_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: redis-redis-data-volume
+    target: defaultKubernetesCluster
+    type: HostedOn
+- redis-replicas_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: redis-replicas
+    target: defaultKubernetesCluster
+    type: HostedOn
+- redis_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: redis
+    target: defaultKubernetesCluster
+    type: HostedOn
+- reward-service-db-postgresql-data-volume_AttachesTo_reward-service-db-postgresql:
+    description: null
+    operations: []
+    properties: []
+    source: reward-service-db-postgresql-data-volume
+    target: reward-service-db-postgresql
+    type: AttachesTo
+- reward-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: reward-service-db-postgresql-data-volume
+    target: defaultKubernetesCluster
+    type: HostedOn
+- reward-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: reward-service-db-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- skilllevel-service-db-postgresql-data-volume_AttachesTo_skilllevel-service-db-postgresql:
+    description: null
+    operations: []
+    properties: []
+    source: skilllevel-service-db-postgresql-data-volume
+    target: skilllevel-service-db-postgresql
+    type: AttachesTo
+- skilllevel-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: skilllevel-service-db-postgresql-data-volume
+    target: defaultKubernetesCluster
+    type: HostedOn
+- skilllevel-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: skilllevel-service-db-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- skilllevel-service-db_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: skilllevel-service-db
+    target: defaultKubernetesCluster
+    type: HostedOn
+- user-service-db-postgresql-data-volume_AttachesTo_user-service-db-postgresql:
+    description: null
+    operations: []
+    properties: []
+    source: user-service-db-postgresql-data-volume
+    target: user-service-db-postgresql
+    type: AttachesTo
+- user-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: user-service-db-postgresql-data-volume
+    target: defaultKubernetesCluster
+    type: HostedOn
+- user-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+    artifacts: []
+    description: null
+    operations: []
+    properties: []
+    source: user-service-db-postgresql
+    target: defaultKubernetesCluster
+    type: HostedOn
+- user_service_db_HostedOn_defaultKubernetesCluster:
+    description: null
+    operations: []
+    properties: []
+    source: user_service_db
+    target: defaultKubernetesCluster
+    type: HostedOn

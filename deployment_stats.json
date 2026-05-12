@@ -1,0 +1,149 @@
+{
+  "root": "/app/Evaluation/Evaluation",
+  "deploy_files_total": 142,
+  "deploy_files_filtered": 125,
+  "cases": {
+    "OTEL-Shop-Ansible": {
+      "file_count": 78,
+      "size_kb": 92.5,
+      "ext_distribution": {
+        ".yaml": 74,
+        ".json": 1,
+        ".ini": 1,
+        ".yml": 2
+      }
+    },
+    "Meitrex": {
+      "file_count": 17,
+      "size_kb": 40.13,
+      "ext_distribution": {
+        "": 1,
+        ".tf": 16
+      }
+    },
+    "T2Store-Microservices": {
+      "file_count": 14,
+      "size_kb": 28.98,
+      "ext_distribution": {
+        ".yaml": 11,
+        ".tf": 3
+      }
+    },
+    "OTEL-Shop-Terraform": {
+      "file_count": 9,
+      "size_kb": 76.68,
+      "ext_distribution": {
+        ".tf": 1,
+        ".json": 1,
+        ".ini": 1,
+        ".yaml": 4,
+        ".yml": 2
+      }
+    },
+    "T2Store-Modulith": {
+      "file_count": 6,
+      "size_kb": 8.63,
+      "ext_distribution": {
+        ".yaml": 3,
+        ".tf": 3
+      }
+    },
+    "OTEL-Shop-Kubernetes": {
+      "file_count": 1,
+      "size_kb": 330.45,
+      "ext_distribution": {
+        ".yaml": 1
+      }
+    }
+  },
+  "largest_files": [
+    {
+      "size_kb": 330.45,
+      "path": "/app/Evaluation/Evaluation/OTEL-Shop-Kubernetes/deploymentModel/opentelemetry-demo.yaml"
+    },
+    {
+      "size_kb": 45.96,
+      "path": "/app/Evaluation/Evaluation/OTEL-Shop-Ansible/deploymentModel/roles/grafana/files/grafana.ini"
+    },
+    {
+      "size_kb": 45.96,
+      "path": "/app/Evaluation/Evaluation/OTEL-Shop-Terraform/deploymentModel/files/grafana/grafana.ini"
+    },
+    {
+      "size_kb": 22.94,
+      "path": "/app/Evaluation/Evaluation/OTEL-Shop-Terraform/deploymentModel/main.tf"
+    },
+    {
+      "size_kb": 4.57,
+      "path": "/app/Evaluation/Evaluation/Meitrex/deploymentModel/media_service.tf"
+    },
+    {
+      "size_kb": 4.4,
+      "path": "/app/Evaluation/Evaluation/Meitrex/deploymentModel/gateway.tf"
+    },
+    {
+      "size_kb": 3.89,
+      "path": "/app/Evaluation/Evaluation/Meitrex/deploymentModel/user_service.tf"
+    },
+    {
+      "size_kb": 3.8,
+      "path": "/app/Evaluation/Evaluation/T2Store-Microservices/deploymentModel/k8/cdcservice.yaml"
+    },
+    {
+      "size_kb": 3.71,
+      "path": "/app/Evaluation/Evaluation/Meitrex/deploymentModel/course_service.tf"
+    },
+    {
+      "size_kb": 3.32,
+      "path": "/app/Evaluation/Evaluation/Meitrex/deploymentModel/skill_level_service.tf"
+    },
+    {
+      "size_kb": 3.25,
+      "path": "/app/Evaluation/Evaluation/Meitrex/deploymentModel/reward_service.tf"
+    },
+    {
+      "size_kb": 3.25,
+      "path": "/app/Evaluation/Evaluation/OTEL-Shop-Ansible/deploymentModel/roles/otelcol/files/otelcol-config.yml"
+    },
+    {
+      "size_kb": 3.25,
+      "path": "/app/Evaluation/Evaluation/OTEL-Shop-Terraform/deploymentModel/files/otelcollector/otelcol-config.yml"
+    },
+    {
+      "size_kb": 3.22,
+      "path": "/app/Evaluation/Evaluation/Meitrex/deploymentModel/quiz_service.tf"
+    },
+    {
+      "size_kb": 3.18,
+      "path": "/app/Evaluation/Evaluation/OTEL-Shop-Ansible/deploymentModel/main.yaml"
+    },
+    {
+      "size_kb": 2.99,
+      "path": "/app/Evaluation/Evaluation/Meitrex/deploymentModel/flashcard_service.tf"
+    },
+    {
+      "size_kb": 2.96,
+      "path": "/app/Evaluation/Evaluation/Meitrex/deploymentModel/content_service.tf"
+    },
+    {
+      "size_kb": 2.93,
+      "path": "/app/Evaluation/Evaluation/T2Store-Modulith/deploymentModel/k8/backend.yaml"
+    },
+    {
+      "size_kb": 2.71,
+      "path": "/app/Evaluation/Evaluation/T2Store-Microservices/deploymentModel/k8/inventory.yaml"
+    },
+    {
+      "size_kb": 2.6,
+      "path": "/app/Evaluation/Evaluation/T2Store-Microservices/deploymentModel/k8/payment.yaml"
+    }
+  ],
+  "ext_distribution_global": {
+    "": 1,
+    ".tf": 23,
+    ".yaml": 93,
+    ".json": 2,
+    ".ini": 2,
+    ".yml": 4
+  }
+}

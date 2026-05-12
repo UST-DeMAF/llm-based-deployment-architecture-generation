@@ -1,0 +1,2561 @@
+---
+properties: []
+components: 
+  - defaultKubernetesCluster:
+      type: "DefaultKubernetesCluster"
+      description: null
+      properties: []
+      operations: []
+      artifacts: []
+  - opentelemetry-demo-grafana:
+      type: "grafana-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - GF_SECURITY_ADMIN_USER: "YWRtaW4="
+        - GF_SECURITY_ADMIN_PASSWORD: "YWRtaW4="
+        - GF_INSTALL_PLUGINS: "grafana-opensearch-datasource"
+        - GF_PATHS_DATA: "/var/lib/grafana/"
+        - GF_PATHS_LOGS: "/var/log/grafana"
+        - GF_PATHS_PLUGINS: "/var/lib/grafana/plugins"
+        - GF_PATHS_PROVISIONING: "/etc/grafana/provisioning"
+        - containerPort_grafana: 3000
+        - containerPort_gossip-tcp: 9094
+        - containerPort_gossip-udp: 9094
+        - exposedPort_service: "80:3000"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "docker.io/grafana/grafana:11.1.0"
+            fileURI: "https://hub.docker.com/r/grafana/grafana"
+  - opentelemetry-demo-jaeger:
+      type: "all-in-one-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - METRICS_STORAGE_TYPE: "prometheus"
+        - SPAN_STORAGE_TYPE: "memory"
+        - COLLECTOR_ZIPKIN_HOST_PORT: ":9411"
+        - JAEGER_DISABLED: "false"
+        - COLLECTOR_OTLP_ENABLED: "true"
+        - containerPort_5775: 5775
+        - containerPort_6831: 6831
+        - containerPort_6832: 6832
+        - containerPort_5778: 5778
+        - containerPort_16686: 16686
+        - containerPort_16685: 16685
+        - containerPort_9411: 9411
+        - containerPort_4317: 4317
+        - containerPort_4318: 4318
+        - exposedPort_zk-compact-trft: "5775:5775"
+        - exposedPort_config-rest: "5778:5778"
+        - exposedPort_jg-compact-trft: "6831:6831"
+        - exposedPort_jg-binary-trft: "6832:6832"
+        - exposedPort_http-zipkin: "9411:9411"
+        - exposedPort_otlp-grpc: "4317:4317"
+        - exposedPort_otlp-http: "4318:4318"
+        - exposedPort_http-query: "16686:16686"
+        - exposedPort_grpc-query: "16685:16685"
+        - exposedPort_c-tchan-trft: "14267:14267"
+        - exposedPort_grpc-http: "14250:14250"
+        - exposedPort_http-c-binary-trft: "14268:14268"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "jaegertracing/all-in-one:1.53.0"
+            fileURI: "https://hub.docker.com/r/jaegertracing/all-in-one"
+  - opentelemetry-demo-otelcol:
+      type: "opentelemetry-collector-contrib-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - GOMEMLIMIT: "160MiB"
+        - containerPort_jaeger-compact: 6831
+        - containerPort_jaeger-grpc: 14250
+        - containerPort_jaeger-thrift: 14268
+        - containerPort_metrics: 8888
+        - containerPort_otlp: 4317
+        - containerPort_otlp-http: 4318
+        - containerPort_prometheus: 9464
+        - containerPort_zipkin: 9411
+        - exposedPort_jaeger-compact: "6831:6831"
+        - exposedPort_jaeger-grpc: "14250:14250"
+        - exposedPort_jaeger-thrift: "14268:14268"
+        - exposedPort_metrics: "8888:8888"
+        - exposedPort_otlp: "4317:4317"
+        - exposedPort_otlp-http: "4318:4318"
+        - exposedPort_prometheus: "9464:9464"
+        - exposedPort_zipkin: "9411:9411"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "otel/opentelemetry-collector-contrib:0.105.0"
+            fileURI: "https://hub.docker.com/r/otel/opentelemetry-collector-contrib"
+  - opentelemetry-demo-prometheus-server:
+      type: "prometheus-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - containerPort: 9090
+        - exposedPort_http: "9090:9090"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "quay.io/prometheus/prometheus:v2.53.1"
+            fileURI: "quay.io/prometheus/prometheus:v2.53.1"
+  - opentelemetry-demo-accountingservice:
+      type: "accountingservice-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - KAFKA_SERVICE_ADDR: "opentelemetry-demo-kafka:9092"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-accountingservice"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-accountingservice"
+  - opentelemetry-demo-adservice:
+      type: "adservice-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - AD_SERVICE_PORT: "8080"
+        - FLAGD_HOST: "opentelemetry-demo-flagd"
+        - FLAGD_PORT: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4318"
+        - OTEL_LOGS_EXPORTER: "otlp"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8080
+        - exposedPort_tcp-service: "8080:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-adservice"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-adservice"
+  - opentelemetry-demo-cartservice:
+      type: "cartservice-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - CART_SERVICE_PORT: "8080"
+        - ASPNETCORE_URLS: "http://*:8080"
+        - VALKEY_ADDR: "opentelemetry-demo-valkey:6379"
+        - FLAGD_HOST: "opentelemetry-demo-flagd"
+        - FLAGD_PORT: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8080
+        - exposedPort_tcp-service: "8080:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-cartservice"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-cartservice"
+  - opentelemetry-demo-checkoutservice:
+      type: "checkoutservice-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - CHECKOUT_SERVICE_PORT: "8080"
+        - CART_SERVICE_ADDR: "opentelemetry-demo-cartservice:8080"
+        - CURRENCY_SERVICE_ADDR: "opentelemetry-demo-currencyservice:8080"
+        - EMAIL_SERVICE_ADDR: "http://opentelemetry-demo-emailservice:8080"
+        - PAYMENT_SERVICE_ADDR: "opentelemetry-demo-paymentservice:8080"
+        - PRODUCT_CATALOG_SERVICE_ADDR: "opentelemetry-demo-productcatalogservice:8080"
+        - SHIPPING_SERVICE_ADDR: "opentelemetry-demo-shippingservice:8080"
+        - KAFKA_SERVICE_ADDR: "opentelemetry-demo-kafka:9092"
+        - FLAGD_HOST: "opentelemetry-demo-flagd"
+        - FLAGD_PORT: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8080
+        - exposedPort_tcp-service: "8080:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-checkoutservice"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-checkoutservice"
+  - opentelemetry-demo-currencyservice:
+      type: "currencyservice-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - CURRENCY_SERVICE_PORT: "8080"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4317"
+        - VERSION: "1.11.1"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8080
+        - exposedPort_tcp-service: "8080:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-currencyservice"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-currencyservice"
+  - opentelemetry-demo-emailservice:
+      type: "emailservice-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - EMAIL_SERVICE_PORT: "8080"
+        - APP_ENV: "production"
+        - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "http://opentelemetry-demo-otelcol:4318/v1/traces"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8080
+        - exposedPort_tcp-service: "8080:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-emailservice"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-emailservice"
+  - opentelemetry-demo-flagd:
+      type: "flagd-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - FLAGD_METRICS_EXPORTER: "otel"
+        - FLAGD_OTEL_COLLECTOR_URI: "opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8013
+        - exposedPort_tcp-service: "8013:8013"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-feature/flagd:v0.11.2"
+            fileURI: "ghcr.io/open-feature/flagd:v0.11.2"
+  - opentelemetry-demo-frauddetectionservice:
+      type: "frauddetectionservice-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - KAFKA_SERVICE_ADDR: "opentelemetry-demo-kafka:9092"
+        - FLAGD_HOST: "opentelemetry-demo-flagd"
+        - FLAGD_PORT: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4318"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-frauddetectionservice"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-frauddetectionservice"
+  - opentelemetry-demo-frontend:
+      type: "frontend-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - FRONTEND_PORT: "8080"
+        - FRONTEND_ADDR: ":8080"
+        - AD_SERVICE_ADDR: "opentelemetry-demo-adservice:8080"
+        - CART_SERVICE_ADDR: "opentelemetry-demo-cartservice:8080"
+        - CHECKOUT_SERVICE_ADDR: "opentelemetry-demo-checkoutservice:8080"
+        - CURRENCY_SERVICE_ADDR: "opentelemetry-demo-currencyservice:8080"
+        - PRODUCT_CATALOG_SERVICE_ADDR: "opentelemetry-demo-productcatalogservice:8080"
+        - RECOMMENDATION_SERVICE_ADDR: "opentelemetry-demo-recommendationservice:8080"
+        - SHIPPING_SERVICE_ADDR: "opentelemetry-demo-shippingservice:8080"
+        - FLAGD_HOST: "opentelemetry-demo-flagd"
+        - FLAGD_PORT: "8013"
+        - OTEL_COLLECTOR_HOST: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4317"
+        - WEB_OTEL_SERVICE_NAME: "frontend-web"
+        - PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "http://localhost:8080/otlp-http/v1/traces"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8080
+        - exposedPort_tcp-service: "8080:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-frontend"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-frontend"
+  - opentelemetry-demo-frontendproxy:
+      type: "frontendproxy-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - ENVOY_PORT: "8080"
+        - FLAGD_HOST: "opentelemetry-demo-flagd"
+        - FLAGD_PORT: "8013"
+        - FRONTEND_HOST: "opentelemetry-demo-frontend"
+        - FRONTEND_PORT: "8080"
+        - GRAFANA_SERVICE_HOST: "opentelemetry-demo-grafana"
+        - GRAFANA_SERVICE_PORT: "80"
+        - IMAGE_PROVIDER_HOST: "opentelemetry-demo-imageprovider"
+        - IMAGE_PROVIDER_PORT: "8081"
+        - JAEGER_SERVICE_HOST: "opentelemetry-demo-jaeger-query"
+        - JAEGER_SERVICE_PORT: "16686"
+        - LOCUST_WEB_HOST: "opentelemetry-demo-loadgenerator"
+        - LOCUST_WEB_PORT: "8089"
+        - OTEL_COLLECTOR_HOST: "opentelemetry-demo-otelcol"
+        - OTEL_COLLECTOR_PORT_GRPC: "4317"
+        - OTEL_COLLECTOR_PORT_HTTP: "4318"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8080
+        - exposedPort_tcp-service: "8080:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-frontendproxy"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-frontendproxy"
+  - opentelemetry-demo-imageprovider:
+      type: "imageprovider-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - IMAGE_PROVIDER_PORT: "8081"
+        - OTEL_COLLECTOR_PORT_GRPC: "4317"
+        - OTEL_COLLECTOR_HOST: "opentelemetry-demo-otelcol"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8081
+        - exposedPort_tcp-service: "8081:8081"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-imageprovider"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-imageprovider"
+  - opentelemetry-demo-kafka:
+      type: "kafka-MessageBroker"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://opentelemetry-demo-kafka:9092"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4318"
+        - KAFKA_HEAP_OPTS: "-Xmx400M -Xms400M"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_plaintext: 9092
+        - containerPort_controller: 9093
+        - exposedPort_plaintext: "9092:9092"
+        - exposedPort_controller: "9093:9093"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-kafka"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-kafka"
+  - opentelemetry-demo-mongo:
+      type: "mongo-DatabaseSystem"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - MONGO_INITDB_ROOT_USERNAME: "mongo"
+        - MONGO_INITDB_ROOT_PASSWORD: "mongo_product_catalog"
+        - containerPort_plaintext: 27017
+        - exposedPort_plaintext: "27017:27017"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "mongo:8.0.0-rc9"
+            fileURI: "https://hub.docker.com/_/mongo"
+  - opentelemetry-demo-loadgenerator:
+      type: "loadgenerator-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - LOCUST_WEB_PORT: "8089"
+        - LOCUST_USERS: "10"
+        - LOCUST_SPAWN_RATE: "1"
+        - LOCUST_HOST: "http://opentelemetry-demo-frontendproxy:8080"
+        - LOCUST_HEADLESS: "false"
+        - LOCUST_AUTOSTART: "true"
+        - LOCUST_BROWSER_TRAFFIC_ENABLED: "true"
+        - PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: "python"
+        - FLAGD_HOST: "opentelemetry-demo-flagd"
+        - FLAGD_PORT: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8089
+        - exposedPort_tcp-service: "8089:8089"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-loadgenerator"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-loadgenerator"
+  - opentelemetry-demo-paymentservice:
+      type: "paymentservice-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - PAYMENT_SERVICE_PORT: "8080"
+        - FLAGD_HOST: "opentelemetry-demo-flagd"
+        - FLAGD_PORT: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8080
+        - exposedPort_tcp-service: "8080:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-paymentservice"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-paymentservice"
+  - opentelemetry-demo-productcatalogservice:
+      type: "productcatalogservice-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - PRODUCT_CATALOG_SERVICE_PORT: "8080"
+        - FLAGD_HOST: "opentelemetry-demo-flagd"
+        - FLAGD_PORT: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - MONGO_USERNAME: "mongo"
+        - MONGO_PASSWORD: "mongo_product_catalog"
+        - MONGO_HOST: "opentelemetry-demo-mongo"
+        - MONGO_PORT: "27017"
+        - containerPort_service: 8080
+        - exposedPort_tcp-service: "8080:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice"
+            fileURI: "ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice"
+  - opentelemetry-demo-quoteservice:
+      type: "quoteservice-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - QUOTE_SERVICE_PORT: "8080"
+        - OTEL_PHP_AUTOLOAD_ENABLED: "true"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4318"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8080
+        - exposedPort_tcp-service: "8080:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-quoteservice"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-quoteservice"
+  - opentelemetry-demo-recommendationservice:
+      type: "recommendationservice-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - RECOMMENDATION_SERVICE_PORT: "8080"
+        - PRODUCT_CATALOG_SERVICE_ADDR: "opentelemetry-demo-productcatalogservice:8080"
+        - OTEL_PYTHON_LOG_CORRELATION: "true"
+        - PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: "python"
+        - FLAGD_HOST: "opentelemetry-demo-flagd"
+        - FLAGD_PORT: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8080
+        - exposedPort_tcp-service: "8080:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-recommendationservice"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-recommendationservice"
+  - opentelemetry-demo-shippingservice:
+      type: "shippingservice-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - SHIPPING_SERVICE_PORT: "8080"
+        - QUOTE_SERVICE_ADDR: "http://opentelemetry-demo-quoteservice:8080"
+        - OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service: 8080
+        - exposedPort_tcp-service: "8080:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "ghcr.io/open-telemetry/demo:1.11.1-shippingservice"
+            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-shippingservice"
+  - opentelemetry-demo-valkey:
+      type: "valkey-DatabaseSystem"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
+        - OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_valkey: 6379
+        - exposedPort_valkey: "6379:6379"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "valkey/valkey:7.2-alpine"
+            fileURI: "https://hub.docker.com/r/valkey/valkey"
+  - otel-demo-opensearch:
+      type: "opensearch-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - discovery.seed_hosts: "opensearch-cluster-master-headless"
+        - cluster.name: "demo-cluster"
+        - network.host: "0.0.0.0"
+        - OPENSEARCH_JAVA_OPTS: "-Xms300m -Xmx300m"
+        - node.roles: "master,ingest,data,remote_cluster_client,"
+        - discovery.type: "single-node"
+        - bootstrap.memory_lock: "true"
+        - DISABLE_INSTALL_DEMO_CONFIG: "true"
+        - DISABLE_SECURITY_PLUGIN: "true"
+        - containerPort_http: 9200
+        - containerPort_transport: 9300
+        - containerPort_metrics: 9600
+        - exposedPort_http: "9200:9200"
+        - exposedPort_transport: "9300:9300"
+        - exposedPort_metrics: "9600:9600"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "opensearchproject/opensearch:2.15.0"
+            fileURI: "https://hub.docker.com/r/opensearchproject/opensearch"
+relations:
+  - opentelemetry-demo-jaeger_ConnectsTo_opentelemetry-demo-prometheus-server:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-jaeger"
+      target: "opentelemetry-demo-prometheus-server"
+      properties: []
+      operations: []
+  - opentelemetry-demo-jaeger_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-jaeger"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-jaeger_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-jaeger"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-accountingservice_ConnectsTo_opentelemetry-demo-kafka:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-accountingservice"
+      target: "opentelemetry-demo-kafka"
+      properties: []
+      operations: []
+  - opentelemetry-demo-accountingservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-accountingservice"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-accountingservice_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-accountingservice"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-adservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-adservice"
+      target: "opentelemetry-demo-flagd"
+      properties: []
+      operations: []
+  - opentelemetry-demo-adservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-adservice"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-adservice_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-adservice"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-cartservice_ConnectsTo_opentelemetry-demo-valkey:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-cartservice"
+      target: "opentelemetry-demo-valkey"
+      properties: []
+      operations: []
+  - opentelemetry-demo-cartservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-cartservice"
+      target: "opentelemetry-demo-flagd"
+      properties: []
+      operations: []
+  - opentelemetry-demo-cartservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-cartservice"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-cartservice_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-cartservice"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-cartservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-checkoutservice"
+      target: "opentelemetry-demo-cartservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-currencyservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-checkoutservice"
+      target: "opentelemetry-demo-currencyservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-emailservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-checkoutservice"
+      target: "opentelemetry-demo-emailservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-paymentservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-checkoutservice"
+      target: "opentelemetry-demo-paymentservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-productcatalogservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-checkoutservice"
+      target: "opentelemetry-demo-productcatalogservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-shippingservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-checkoutservice"
+      target: "opentelemetry-demo-shippingservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-kafka:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-checkoutservice"
+      target: "opentelemetry-demo-kafka"
+      properties: []
+      operations: []
+  - opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-checkoutservice"
+      target: "opentelemetry-demo-flagd"
+      properties: []
+      operations: []
+  - opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-checkoutservice"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-checkoutservice_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-checkoutservice"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-currencyservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-currencyservice"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-currencyservice_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-currencyservice"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-emailservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-emailservice"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-emailservice_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-emailservice"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-flagd_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-flagd"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-flagd_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-flagd"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frauddetectionservice_ConnectsTo_opentelemetry-demo-kafka:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frauddetectionservice"
+      target: "opentelemetry-demo-kafka"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frauddetectionservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frauddetectionservice"
+      target: "opentelemetry-demo-flagd"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frauddetectionservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frauddetectionservice"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frauddetectionservice_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-frauddetectionservice"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-adservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontend"
+      target: "opentelemetry-demo-adservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-cartservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontend"
+      target: "opentelemetry-demo-cartservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-checkoutservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontend"
+      target: "opentelemetry-demo-checkoutservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-currencyservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontend"
+      target: "opentelemetry-demo-currencyservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-productcatalogservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontend"
+      target: "opentelemetry-demo-productcatalogservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-recommendationservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontend"
+      target: "opentelemetry-demo-recommendationservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-shippingservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontend"
+      target: "opentelemetry-demo-shippingservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-flagd:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontend"
+      target: "opentelemetry-demo-flagd"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontend"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontend_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-frontend"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-flagd:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontendproxy"
+      target: "opentelemetry-demo-flagd"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-frontend:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontendproxy"
+      target: "opentelemetry-demo-frontend"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-grafana:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontendproxy"
+      target: "opentelemetry-demo-grafana"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-imageprovider:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontendproxy"
+      target: "opentelemetry-demo-imageprovider"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-jaeger:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontendproxy"
+      target: "opentelemetry-demo-jaeger"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-loadgenerator:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontendproxy"
+      target: "opentelemetry-demo-loadgenerator"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-frontendproxy"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-frontendproxy_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-frontendproxy"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-imageprovider_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-imageprovider"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-imageprovider_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-imageprovider"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-kafka_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-kafka"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-kafka_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-kafka"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-loadgenerator_ConnectsTo_opentelemetry-demo-frontendproxy:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-loadgenerator"
+      target: "opentelemetry-demo-frontendproxy"
+      properties: []
+      operations: []
+  - opentelemetry-demo-loadgenerator_ConnectsTo_opentelemetry-demo-flagd:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-loadgenerator"
+      target: "opentelemetry-demo-flagd"
+      properties: []
+      operations: []
+  - opentelemetry-demo-loadgenerator_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-loadgenerator"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-loadgenerator_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-loadgenerator"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-paymentservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-paymentservice"
+      target: "opentelemetry-demo-flagd"
+      properties: []
+      operations: []
+  - opentelemetry-demo-paymentservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-paymentservice"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-paymentservice_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-paymentservice"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-productcatalogservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-productcatalogservice"
+      target: "opentelemetry-demo-flagd"
+      properties: []
+      operations: []
+  - opentelemetry-demo-productcatalogservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-productcatalogservice"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-productcatalogservice_ConnectsTo_opentelemetry-demo-mongo:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-productcatalogservice"
+      target: "opentelemetry-demo-mongo"
+      properties: []
+      operations: []
+  - opentelemetry-demo-productcatalogservice_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-productcatalogservice"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-quoteservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-quoteservice"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-quoteservice_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-quoteservice"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-recommendationservice_ConnectsTo_opentelemetry-demo-productcatalogservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-recommendationservice"
+      target: "opentelemetry-demo-productcatalogservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-recommendationservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-recommendationservice"
+      target: "opentelemetry-demo-flagd"
+      properties: []
+      operations: []
+  - opentelemetry-demo-recommendationservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-recommendationservice"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-recommendationservice_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-recommendationservice"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-shippingservice_ConnectsTo_opentelemetry-demo-quoteservice:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-shippingservice"
+      target: "opentelemetry-demo-quoteservice"
+      properties: []
+      operations: []
+  - opentelemetry-demo-shippingservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-shippingservice"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-shippingservice_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-shippingservice"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []  
+  - opentelemetry-demo-otelcol_ConnectsTo_opentelemetry-demo-frontendproxy:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-otelcol"
+      target: "opentelemetry-demo-frontendproxy"
+      properties: []
+      operations: []
+  - opentelemetry-demo-otelcol_ConnectsTo_opentelemetry-demo-valkey:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-otelcol"
+      target: "opentelemetry-demo-valkey"
+      properties: []
+      operations: []
+  - opentelemetry-demo-otelcol_ConnectsTo_otel-demo-opensearch:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-otelcol"
+      target: "otel-demo-opensearch"
+      properties: []
+      operations: []
+  - opentelemetry-demo-otelcol_ConnectsTo_opentelemetry-demo-prometheus-server:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-otelcol"
+      target: "opentelemetry-demo-prometheus-server"
+      properties: []
+      operations: []
+  - opentelemetry-demo-otelcol_ConnectsTo_opentelemetry-demo-jaeger:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-otelcol"
+      target: "opentelemetry-demo-jaeger"
+      properties: []
+      operations: []
+  - opentelemetry-demo-otelcol_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-otelcol"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: [] 
+  - opentelemetry-demo-prometheus-server_ConnectsTo_opentelemetry-demo-otelcol:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-prometheus-server"
+      target: "opentelemetry-demo-otelcol"
+      properties: []
+      operations: []
+  - opentelemetry-demo-prometheus-server_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-prometheus-server"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: [] 
+  - opentelemetry-demo-grafana_ConnectsTo_opentelemetry-demo-prometheus-server:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-grafana"
+      target: "opentelemetry-demo-prometheus-server"
+      properties: []
+      operations: []
+  - opentelemetry-demo-grafana_ConnectsTo_opentelemetry-demo-jaeger:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-grafana"
+      target: "opentelemetry-demo-jaeger"
+      properties: []
+      operations: []
+  - opentelemetry-demo-grafana_ConnectsTo_otel-demo-opensearch:
+      type: "ConnectsTo"
+      description: null
+      source: "opentelemetry-demo-grafana"
+      target: "otel-demo-opensearch"
+      properties: []
+      operations: []
+  - opentelemetry-demo-grafana_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-grafana"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: [] 
+  - opentelemetry-demo-mongo_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-mongo"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - opentelemetry-demo-valkey_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "opentelemetry-demo-valkey"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+  - otel-demo-opensearch_HostedOn_defaultKubernetesCluster:
+      type: "HostedOn"
+      description: null
+      source: "otel-demo-opensearch"
+      target: "defaultKubernetesCluster"
+      properties: []
+      operations: []
+component_types:
+  - BaseType:
+      extends: "-"
+      description: null
+      properties: []
+      operations: []
+  - ContainerPlatform:
+      extends: "BaseType"
+      description: null
+      properties: []
+      operations: []
+  - KubernetesCluster:
+      extends: "ContainerPlatform"
+      description: null
+      properties: []
+      operations: []
+  - DefaultKubernetesCluster:
+      extends: "KubernetesCluster"
+      description: null
+      properties: []
+      operations: []
+  - SoftwareApplication:
+      extends: "BaseType"
+      description: null
+      properties: []
+      operations: []
+  - grafana-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - GF_SECURITY_ADMIN_USER:
+            type: "STRING"
+            required: true
+            default_value: "YWRtaW4="
+        - GF_SECURITY_ADMIN_PASSWORD:
+            type: "STRING"
+            required: true
+            default_value: "YWRtaW4="
+        - GF_INSTALL_PLUGINS:
+            type: "STRING"
+            required: true
+            default_value: "grafana-opensearch-datasource"
+        - GF_PATHS_DATA:
+            type: "STRING"
+            required: true
+            default_value: "/var/lib/grafana/"
+        - GF_PATHS_LOGS:
+            type: "STRING"
+            required: true
+            default_value: "/var/log/grafana"
+        - GF_PATHS_PLUGINS:
+            type: "STRING"
+            required: true
+            default_value: "/var/lib/grafana/plugins"
+        - GF_PATHS_PROVISIONING:
+            type: "STRING"
+            required: true
+            default_value: "/etc/grafana/provisioning"
+        - containerPort_grafana:
+            type: "INTEGER"
+            required: true
+            default_value: 3000
+        - containerPort_gossip-tcp:
+            type: "INTEGER"
+            required: true
+            default_value: 9094
+        - containerPort_gossip-udp:
+            type: "INTEGER"
+            required: true
+            default_value: 9094
+        - exposedPort_service:
+            type: "STRING"
+            required: true
+            default_value: "80:3000"
+      operations: []
+  - all-in-one-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - METRICS_STORAGE_TYPE:
+            type: "STRING"
+            required: true
+            default_value: "prometheus"
+        - SPAN_STORAGE_TYPE:
+            type: "STRING"
+            required: true
+            default_value: "memory"
+        - COLLECTOR_ZIPKIN_HOST_PORT:
+            type: "STRING"
+            required: true
+            default_value: ":9411"
+        - JAEGER_DISABLED:
+            type: "STRING"
+            required: true
+            default_value: "false"
+        - COLLECTOR_OTLP_ENABLED:
+            type: "STRING"
+            required: true
+            default_value: "true"
+        - containerPort_5775:
+            type: "INTEGER"
+            required: true
+            default_value: 5775
+        - containerPort_6831:
+            type: "INTEGER"
+            required: true
+            default_value: 6831
+        - containerPort_6832:
+            type: "INTEGER"
+            required: true
+            default_value: 6832
+        - containerPort_5778:
+            type: "INTEGER"
+            required: true
+            default_value: 5778
+        - containerPort_16686:
+            type: "INTEGER"
+            required: true
+            default_value: 16686
+        - containerPort_16685:
+            type: "INTEGER"
+            required: true
+            default_value: 16685
+        - containerPort_9411:
+            type: "INTEGER"
+            required: true
+            default_value: 9411
+        - containerPort_4317:
+            type: "INTEGER"
+            required: true
+            default_value: 4317
+        - containerPort_4318:
+            type: "INTEGER"
+            required: true
+            default_value: 4318
+        - exposedPort_zk-compact-trft:
+            type: "STRING"
+            required: true
+            default_value: "5775:5775"
+        - exposedPort_config-rest:
+            type: "STRING"
+            required: true
+            default_value: "5778:5778"
+        - exposedPort_jg-compact-trft:
+            type: "STRING"
+            required: true
+            default_value: "6831:6831"
+        - exposedPort_jg-binary-trft:
+            type: "STRING"
+            required: true
+            default_value: "6832:6832"
+        - exposedPort_http-zipkin:
+            type: "STRING"
+            required: true
+            default_value: "9411:9411"
+        - exposedPort_otlp-grpc:
+            type: "STRING"
+            required: true
+            default_value: "4317:4317"
+        - exposedPort_otlp-http:
+            type: "STRING"
+            required: true
+            default_value: "4318:4318"
+        - exposedPort_http-query:
+            type: "STRING"
+            required: true
+            default_value: "16686:16686"
+        - exposedPort_grpc-query:
+            type: "STRING"
+            required: true
+            default_value: "16685:16685"
+        - exposedPort_c-tchan-trft:
+            type: "STRING"
+            required: true
+            default_value: "14267:14267"
+        - exposedPort_http-c-binary-trft:
+            type: "STRING"
+            required: true
+            default_value: "14268:14268"
+        - exposedPort_grpc-http:
+            type: "STRING"
+            required: true
+            default_value: "14250:14250"
+      operations: []
+  - opentelemetry-collector-contrib-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - GOMEMLIMIT:
+            type: "STRING"
+            required: true
+            default_value: "160MiB"
+        - containerPort_jaeger-compact:
+            type: "INTEGER"
+            required: true
+            default_value: 6831
+        - containerPort_jaeger-grpc:
+            type: "INTEGER"
+            required: true
+            default_value: 14250
+        - containerPort_jaeger-thrift:
+            type: "INTEGER"
+            required: true
+            default_value: 14268
+        - containerPort_metrics:
+            type: "INTEGER"
+            required: true
+            default_value: 8888
+        - containerPort_otlp:
+            type: "INTEGER"
+            required: true
+            default_value: 4317
+        - containerPort_otlp-http:
+            type: "INTEGER"
+            required: true
+            default_value: 4318
+        - containerPort_prometheus:
+            type: "INTEGER"
+            required: true
+            default_value: 9464
+        - containerPort_zipkin:
+            type: "INTEGER"
+            required: true
+            default_value: 9411
+        - exposedPort_jaeger-compact:
+            type: "STRING"
+            required: true
+            default_value: "6831:6831"
+        - exposedPort_jaeger-grpc:
+            type: "STRING"
+            required: true
+            default_value: "14250:14250"
+        - exposedPort_jaeger-thrift:
+            type: "STRING"
+            required: true
+            default_value: "14268:14268"
+        - exposedPort_metrics:
+            type: "STRING"
+            required: true
+            default_value: "8888:8888"
+        - exposedPort_otlp:
+            type: "STRING"
+            required: true
+            default_value: "4317:4317"
+        - exposedPort_otlp-http:
+            type: "STRING"
+            required: true
+            default_value: "4318:4318"
+        - exposedPort_prometheus:
+            type: "STRING"
+            required: true
+            default_value: "9464:9464"
+        - exposedPort_zipkin:
+            type: "STRING"
+            required: true
+            default_value: "9411:9411"
+      operations: []
+  - prometheus-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - containerPort:
+            type: "INTEGER"
+            required: true
+            default_value: 9090
+        - exposedPort_http:
+            type: "STRING"
+            required: true
+            default_value: "9090:9090"
+      operations: []
+  - accountingservice-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - KAFKA_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-kafka:9092"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+      operations: []
+  - adservice-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - AD_SERVICE_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8080"
+        - FLAGD_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-flagd"
+        - FLAGD_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4318"
+        - OTEL_LOGS_EXPORTER:
+            type: "STRING"
+            required: true
+            default_value: "otlp"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8080:8080"
+      operations: []
+  - cartservice-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - CART_SERVICE_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8080"
+        - ASPNETCORE_URLS:
+            type: "STRING"
+            required: true
+            default_value: "http://*:8080"
+        - VALKEY_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-valkey:6379"
+        - FLAGD_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-flagd"
+        - FLAGD_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8080:8080"
+      operations: []
+  - checkoutservice-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - CHECKOUT_SERVICE_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8080"
+        - CART_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-cartservice:8080"
+        - CURRENCY_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-currencyservice:8080"
+        - EMAIL_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-emailservice:8080"
+        - PAYMENT_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-paymentservice:8080"
+        - PRODUCT_CATALOG_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-productcatalogservice:8080"
+        - SHIPPING_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-shippingservice:8080"
+        - KAFKA_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-kafka:9092"
+        - FLAGD_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-flagd"
+        - FLAGD_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8080:8080"
+      operations: []
+  - currencyservice-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - CURRENCY_SERVICE_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8080"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4317"
+        - VERSION:
+            type: "STRING"
+            required: true
+            default_value: "1.11.1"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8080:8080"
+      operations: []
+  - emailservice-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - EMAIL_SERVICE_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8080"
+        - APP_ENV:
+            type: "STRING"
+            required: true
+            default_value: "production"
+        - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4318/v1/traces"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8080:8080"
+      operations: []
+  - flagd-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - FLAGD_METRICS_EXPORTER:
+            type: "STRING"
+            required: true
+            default_value: "otel"
+        - FLAGD_OTEL_COLLECTOR_URI:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8013
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8013:8013"
+      operations: []
+  - frauddetectionservice-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - KAFKA_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-kafka:9092"
+        - FLAGD_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-flagd"
+        - FLAGD_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4318"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+      operations: []
+  - frontend-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - FRONTEND_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8080"
+        - FRONTEND_ADDR:
+            type: "STRING"
+            required: true
+            default_value: ":8080"
+        - AD_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-adservice:8080"
+        - CART_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-cartservice:8080"
+        - CHECKOUT_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-checkoutservice:8080"
+        - CURRENCY_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-currencyservice:8080"
+        - PRODUCT_CATALOG_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-productcatalogservice:8080"
+        - RECOMMENDATION_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-recommendationservice:8080"
+        - SHIPPING_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-shippingservice:8080"
+        - FLAGD_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-flagd"
+        - FLAGD_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8013"
+        - OTEL_COLLECTOR_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4317"
+        - WEB_OTEL_SERVICE_NAME:
+            type: "STRING"
+            required: true
+            default_value: "frontend-web"
+        - PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://localhost:8080/otlp-http/v1/traces"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8080:8080"
+      operations: []
+  - frontendproxy-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - ENVOY_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8080"
+        - FLAGD_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-flagd"
+        - FLAGD_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8013"
+        - FRONTEND_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-frontend"
+        - FRONTEND_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8080"
+        - GRAFANA_SERVICE_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-grafana"
+        - GRAFANA_SERVICE_PORT:
+            type: "STRING"
+            required: true
+            default_value: "80"
+        - IMAGE_PROVIDER_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-imageprovider"
+        - IMAGE_PROVIDER_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8081"
+        - JAEGER_SERVICE_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-jaeger-query"
+        - JAEGER_SERVICE_PORT:
+            type: "STRING"
+            required: true
+            default_value: "16686"
+        - LOCUST_WEB_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-loadgenerator"
+        - LOCUST_WEB_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8089"
+        - OTEL_COLLECTOR_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_COLLECTOR_PORT_GRPC:
+            type: "STRING"
+            required: true
+            default_value: "4317"
+        - OTEL_COLLECTOR_PORT_HTTP:
+            type: "STRING"
+            required: true
+            default_value: "4318"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8080:8080"
+      operations: []
+  - imageprovider-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - IMAGE_PROVIDER_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8081"
+        - OTEL_COLLECTOR_PORT_GRPC:
+            type: "STRING"
+            required: true
+            default_value: "4317"
+        - OTEL_COLLECTOR_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8081
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8081:8081"
+      operations: []
+  - loadgenerator-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - LOCUST_WEB_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8089"
+        - LOCUST_USERS:
+            type: "STRING"
+            required: true
+            default_value: "10"
+        - LOCUST_SPAWN_RATE:
+            type: "STRING"
+            required: true
+            default_value: "1"
+        - LOCUST_HOST:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-frontendproxy:8080"
+        - LOCUST_HEADLESS:
+            type: "STRING"
+            required: true
+            default_value: "false"
+        - LOCUST_AUTOSTART:
+            type: "STRING"
+            required: true
+            default_value: "true"
+        - LOCUST_BROWSER_TRAFFIC_ENABLED:
+            type: "STRING"
+            required: true
+            default_value: "true"
+        - PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION:
+            type: "STRING"
+            required: true
+            default_value: "python"
+        - FLAGD_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-flagd"
+        - FLAGD_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8089
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8089:8089"
+      operations: []
+  - paymentservice-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - PAYMENT_SERVICE_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8080"
+        - FLAGD_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-flagd"
+        - FLAGD_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8080:8080"
+      operations: []
+  - productcatalogservice-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - PRODUCT_CATALOG_SERVICE_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8080"
+        - FLAGD_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-flagd"
+        - FLAGD_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - MONGO_USERNAME:
+            type: "STRING"
+            required: true
+            default_value: "mongo"
+        - MONGO_PASSWORD:
+            type: "STRING"
+            required: true
+            default_value: "mongo_product_catalog"
+        - MONGO_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-mongo"
+        - MONGO_PORT:
+            type: "STRING"
+            required: true
+            default_value: "27017"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8080:8080"
+      operations: []
+  - quoteservice-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - QUOTE_SERVICE_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8080"
+        - OTEL_PHP_AUTOLOAD_ENABLED:
+            type: "STRING"
+            required: true
+            default_value: "true"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4318"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8080:8080"
+      operations: []
+  - recommendationservice-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - RECOMMENDATION_SERVICE_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8080"
+        - PRODUCT_CATALOG_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-productcatalogservice:8080"
+        - OTEL_PYTHON_LOG_CORRELATION:
+            type: "STRING"
+            required: true
+            default_value: "true"
+        - PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION:
+            type: "STRING"
+            required: true
+            default_value: "python"
+        - FLAGD_HOST:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-flagd"
+        - FLAGD_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8013"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8080:8080"
+      operations: []
+  - shippingservice-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - SHIPPING_SERVICE_PORT:
+            type: "STRING"
+            required: true
+            default_value: "8080"
+        - QUOTE_SERVICE_ADDR:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-quoteservice:8080"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4317"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_service:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort_tcp-service:
+            type: "STRING"
+            required: true
+            default_value: "8080:8080"
+      operations: []
+  - opensearch-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - discovery.seed_hosts:
+            type: "STRING"
+            required: true
+            default_value: "opensearch-cluster-master-headless"
+        - cluster.name:
+            type: "STRING"
+            required: true
+            default_value: "demo-cluster"
+        - network.host:
+            type: "STRING"
+            required: true
+            default_value: "0.0.0.0"
+        - OPENSEARCH_JAVA_OPTS:
+            type: "STRING"
+            required: true
+            default_value: "-Xms300m -Xmx300m"
+        - node.roles:
+            type: "STRING"
+            required: true
+            default_value: "master,ingest,data,remote_cluster_client,"
+        - discovery.type:
+            type: "STRING"
+            required: true
+            default_value: "single-node"
+        - bootstrap.memory_lock:
+            type: "STRING"
+            required: true
+            default_value: "true"
+        - DISABLE_INSTALL_DEMO_CONFIG:
+            type: "STRING"
+            required: true
+            default_value: "true"
+        - DISABLE_SECURITY_PLUGIN:
+            type: "STRING"
+            required: true
+            default_value: "true"
+        - containerPort_http:
+            type: "INTEGER"
+            required: true
+            default_value: 9200
+        - containerPort_transport:
+            type: "INTEGER"
+            required: true
+            default_value: 9300
+        - containerPort_metrics:
+            type: "INTEGER"
+            required: true
+            default_value: 9600
+        - exposedPort_http:
+            type: "STRING"
+            required: true
+            default_value: "9200:9200"
+        - exposedPort_transport:
+            type: "STRING"
+            required: true
+            default_value: "9300:9300"
+        - exposedPort_metrics:
+            type: "STRING"
+            required: true
+            default_value: "9600:9600"
+      operations: []
+  - DatabaseSystem:
+      extends: "SoftwareApplication"
+      description: null
+      properties: []
+      operations: []
+  - mongo-DatabaseSystem:
+      extends: "DatabaseSystem"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - MONGO_INITDB_ROOT_USERNAME:
+            type: "STRING"
+            required: true
+            default_value: "mongo"
+        - MONGO_INITDB_ROOT_PASSWORD:
+            type: "STRING"
+            required: true
+            default_value: "mongo_product_catalog"
+        - containerPort_plaintext:
+            type: "INTEGER"
+            required: true
+            default_value: 27017
+        - exposedPort_plaintext:
+            type: "STRING"
+            required: true
+            default_value: "27017:27017"
+      operations: []
+  - valkey-DatabaseSystem:
+      extends: "DatabaseSystem"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_valkey:
+            type: "INTEGER"
+            required: true
+            default_value: 6379
+        - exposedPort_valkey:
+            type: "STRING"
+            required: true
+            default_value: "6379:6379"
+      operations: []
+  - MessageBroker:
+      extends: "SoftwareApplication"
+      description: null
+      properties: []
+      operations: []
+  - kafka-MessageBroker:
+      extends: "MessageBroker"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - OTEL_COLLECTOR_NAME:
+            type: "STRING"
+            required: true
+            default_value: "opentelemetry-demo-otelcol"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: true
+            default_value: "cumulative"
+        - KAFKA_ADVERTISED_LISTENERS:
+            type: "STRING"
+            required: true
+            default_value: "PLAINTEXT://opentelemetry-demo-kafka:9092"
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "http://opentelemetry-demo-otelcol:4318"
+        - KAFKA_HEAP_OPTS:
+            type: "STRING"
+            required: true
+            default_value: "-Xmx400M -Xms400M"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: true
+            default_value: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - containerPort_plaintext:
+            type: "INTEGER"
+            required: true
+            default_value: 9092
+        - containerPort_controller:
+            type: "INTEGER"
+            required: true
+            default_value: 9093
+        - exposedPort_plaintext:
+            type: "STRING"
+            required: true
+            default_value: "9092:9092"
+        - exposedPort_controller:
+            type: "STRING"
+            required: true
+            default_value: "9093:9093"
+      operations: []
+relation_types:
+  - DependsOn:
+      extends: "-"
+      description: null
+      properties: []
+      operations: []
+  - HostedOn:
+      extends: "DependsOn"
+      description: null
+      properties: []
+      operations: []
+  - ConnectsTo:
+      extends: "DependsOn"
+      description: null
+      properties: []
+      operations: []
+  - AttachesTo:
+      extends: "DependsOn"
+      description: null
+      properties:
+        - location:
+            type: "STRING"
+            required: true
+            default_value: ""
+      operations: []

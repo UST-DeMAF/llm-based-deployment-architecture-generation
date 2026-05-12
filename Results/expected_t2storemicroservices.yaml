@@ -1,0 +1,1727 @@
+---
+properties: []
+components: 
+  - MicrosoftAzure:
+      type: "CloudProvider"
+      description: null
+      properties: []
+      operations: []
+      artifacts: []
+  - t2store:
+      type: "azurerm_kubernetes_cluster"
+      description: null
+      properties:
+        - name: "t2store-aks1"
+        - location: "West Europe"
+        - resource_group_name: "t2store-resources"
+        - dns_prefix: "t2storeaks1"
+        - default_node_pool.name: "default_node"
+        - default_node_pool.node_count: "1"
+        - default_node_pool.vm_size: "standard_b4ms"
+        - identity.type: "SystemAssigned"
+        - tags: "{\"Environment\":\"Production\"}"
+      operations: []
+      artifacts: []
+  - mongo-cart-mongodb:
+      type: "mongodb-DatabaseSystem"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - BITNAMI_DEBUG: "false"
+        - ALLOW_EMPTY_PASSWORD: "yes"
+        - MONGODB_SYSTEM_LOG_VERBOSITY: "0"
+        - MONGODB_DISABLE_SYSTEM_LOG: "no"
+        - MONGODB_DISABLE_JAVASCRIPT: "no"
+        - MONGODB_ENABLE_JOURNAL: "yes"
+        - MONGODB_PORT_NUMBER: "27017"
+        - MONGODB_ENABLE_IPV6: "no"
+        - MONGODB_ENABLE_DIRECTORY_PER_DB: "no"
+        - containerPort_mongodb: 27017
+        - exposedPort_mongodb: "27017:27017"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "docker.io/bitnami/mongodb:8.0.11-debian-12-r0"
+            fileURI: "https://hub.docker.com/r/bitnami/mongodb"
+  - mongo-cart-mongodb-datadir-volume:
+      type: "Storage"
+      description: null
+      properties:
+        - storage_size: "8Gi"
+      operations: []
+      artifacts: []
+  - mongo-order-mongodb:
+      type: "mongodb-DatabaseSystem"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - BITNAMI_DEBUG: "false"
+        - ALLOW_EMPTY_PASSWORD: "yes"
+        - MONGODB_SYSTEM_LOG_VERBOSITY: "0"
+        - MONGODB_DISABLE_SYSTEM_LOG: "no"
+        - MONGODB_DISABLE_JAVASCRIPT: "no"
+        - MONGODB_ENABLE_JOURNAL: "yes"
+        - MONGODB_PORT_NUMBER: "27017"
+        - MONGODB_ENABLE_IPV6: "no"
+        - MONGODB_ENABLE_DIRECTORY_PER_DB: "no"
+        - containerPort_mongodb: 27017
+        - exposedPort_mongodb: "27017:27017"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "docker.io/bitnami/mongodb:8.0.11-debian-12-r0"
+            fileURI: "https://hub.docker.com/r/bitnami/mongodb"
+  - mongo-order-mongodb-datadir-volume:
+      type: "Storage"
+      description: null
+      properties:
+        - storage_size: "8Gi"
+      operations: []
+      artifacts: []
+  - kafka:
+      type: "kafka-MessageBroker"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - BITNAMI_DEBUG: "false"
+        - KAFKA_CFG_ZOOKEEPER_CONNECT: "kafka-zookeeper"
+        - KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+        - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,CLIENT:PLAINTEXT"
+        - KAFKA_CFG_LISTENERS: "INTERNAL://:9093,CLIENT://:9092"
+        - KAFKA_CFG_ADVERTISED_LISTENERS: "INTERNAL://$(MY_POD_NAME).kafka-headless.default.svc.cluster.local:9093,CLIENT://$(MY_POD_NAME).kafka-headless.default.svc.cluster.local:9092"
+        - ALLOW_PLAINTEXT_LISTENER: "yes"
+        - KAFKA_ZOOKEEPER_PROTOCOL: "PLAINTEXT"
+        - KAFKA_VOLUME_DIR: "/bitnami/kafka"
+        - KAFKA_LOG_DIR: "/opt/bitnami/kafka/logs"
+        - KAFKA_CFG_DELETE_TOPIC_ENABLE: "false"
+        - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+        - KAFKA_HEAP_OPTS: "-Xmx1024m -Xms1024m"
+        - KAFKA_CFG_LOG_FLUSH_INTERVAL_MESSAGES: "10000"
+        - KAFKA_CFG_LOG_FLUSH_INTERVAL_MS: "1000"
+        - KAFKA_CFG_LOG_RETENTION_BYTES: "1073741824"
+        - KAFKA_CFG_LOG_RETENTION_CHECK_INTERVAL_MS: "300000"
+        - KAFKA_CFG_LOG_RETENTION_HOURS: "168"
+        - KAFKA_CFG_MESSAGE_MAX_BYTES: "1000012"
+        - KAFKA_CFG_LOG_SEGMENT_BYTES: "1073741824"
+        - KAFKA_CFG_LOG_DIRS: "/bitnami/kafka/data"
+        - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR: "1"
+        - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+        - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+        - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+        - KAFKA_CFG_NUM_IO_THREADS: "8"
+        - KAFKA_CFG_NUM_NETWORK_THREADS: "3"
+        - KAFKA_CFG_NUM_PARTITIONS: "1"
+        - KAFKA_CFG_NUM_RECOVERY_THREADS_PER_DATA_DIR: "1"
+        - KAFKA_CFG_SOCKET_RECEIVE_BUFFER_BYTES: "102400"
+        - KAFKA_CFG_SOCKET_REQUEST_MAX_BYTES: "104857600"
+        - KAFKA_CFG_SOCKET_SEND_BUFFER_BYTES: "102400"
+        - KAFKA_CFG_ZOOKEEPER_CONNECTION_TIMEOUT_MS: "6000"
+        - KAFKA_CFG_AUTHORIZER_CLASS_NAME: ""
+        - KAFKA_CFG_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
+        - KAFKA_CFG_SUPER_USERS: "User:admin"
+        - containerPort_kafka-client: 9092
+        - containerPort_kafka-internal: 9093
+        - exposedPort_tcp-client: "9092:9092"
+        - exposedPort_tcp-internal: "9093:9093"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "docker.io/bitnami/kafka:3.2.3-debian-11-r1"
+            fileURI: "https://hub.docker.com/r/bitnami/kafka"
+  - kafka-data-volume:
+      type: "Storage"
+      description: null
+      properties:
+        - storage_size: "8Gi"
+      operations: []
+      artifacts: []
+  - kafka-zookeeper:
+      type: "zookeeper-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - BITNAMI_DEBUG: "false"
+        - ZOO_DATA_LOG_DIR: ""
+        - ZOO_PORT_NUMBER: "2181"
+        - ZOO_TICK_TIME: "2000"
+        - ZOO_INIT_LIMIT: "10"
+        - ZOO_SYNC_LIMIT: "5"
+        - ZOO_PRE_ALLOC_SIZE: "65536"
+        - ZOO_SNAPCOUNT: "100000"
+        - ZOO_MAX_CLIENT_CNXNS: "60"
+        - ZOO_4LW_COMMANDS_WHITELIST: "srvr, mntr, ruok"
+        - ZOO_LISTEN_ALLIPS_ENABLED: "no"
+        - ZOO_AUTOPURGE_INTERVAL: "0"
+        - ZOO_AUTOPURGE_RETAIN_COUNT: "3"
+        - ZOO_MAX_SESSION_TIMEOUT: "40000"
+        - ZOO_SERVERS: "kafka-zookeeper-0.kafka-zookeeper-headless.default.svc.cluster.local:2888:3888::1"
+        - ZOO_ENABLE_AUTH: "no"
+        - ZOO_ENABLE_QUORUM_AUTH: "no"
+        - ZOO_HEAP_SIZE: "1024"
+        - ZOO_LOG_LEVEL: "ERROR"
+        - ALLOW_ANONYMOUS_LOGIN: "yes"
+        - containerPort_client: 2181
+        - containerPort_follower: 2888
+        - containerPort_election: 3888
+        - exposedPort_tcp-client: "2181:2181"
+        - exposedPort_tcp-follower: "2888:2888"
+        - exposedPort_tcp-election: "3888:3888"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "docker.io/bitnami/zookeeper:3.8.0-debian-11-r36"
+            fileURI: "https://hub.docker.com/r/bitnami/zookeeper"
+  - kafka-zookeeper-data-volume:
+      type: "Storage"
+      description: null
+      properties:
+        - storage_size: "8Gi"
+      operations: []
+      artifacts: []
+  - cart:
+      type: "cart-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "Always"
+        - MONGO_HOST: "mongo-cart-mongodb"
+        - T2_CART_TTL: "0"
+        - T2_CART_TASKRATE: "0"
+        - T2_JAEGER_ENABLED: "FALSE"
+        - T2_JAEGER_HOST: "simplest-agent"
+        - containerPort: 8080
+        - exposedPort: "80:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "t2project/cart:main"
+            fileURI: "https://hub.docker.com/r/t2project/cart"
+  - cdcservice:
+      type: "eventuate-cdc-service-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "Always"
+        - JAVA_OPTS: "-Xmx64m"
+        - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+        - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: "kafka-zookeeper:2181"
+        - EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE: "eventuate-tram"
+        - EVENTUATE_CDC_PIPELINE_PIPELINE1_READER: "reader1"
+        - EVENTUATE_CDC_PIPELINE_PIPELINE2_TYPE: "eventuate-tram"
+        - EVENTUATE_CDC_PIPELINE_PIPELINE2_READER: "reader2"
+        - EVENTUATE_CDC_READER_READER1_TYPE: "postgres-wal"
+        - EVENTUATE_CDC_READER_READER1_DATASOURCEURL: "jdbc:postgresql://postgres-orchestrator/eventuate"
+        - EVENTUATE_CDC_READER_READER1_DATASOURCEUSERNAME: "eventuate"
+        - EVENTUATE_CDC_READER_READER1_DATASOURCEPASSWORD: "eventuate"
+        - EVENTUATE_CDC_READER_READER1_DATASOURCEDRIVERCLASSNAME: "org.postgresql.Driver"
+        - EVENTUATE_CDC_READER_READER1_LEADERSHIPLOCKPATH: "/eventuate/cdc/leader/orchestrator"
+        - EVENTUATE_CDC_READER_READER1_OUTBOXID: "1"
+        - EVENTUATE_CDC_READER_READER2_TYPE: "postgres-wal"
+        - EVENTUATE_CDC_READER_READER2_DATASOURCEURL: "jdbc:postgresql://postgres-inventory/inventory"
+        - EVENTUATE_CDC_READER_READER2_DATASOURCEUSERNAME: "inventory"
+        - EVENTUATE_CDC_READER_READER2_DATASOURCEPASSWORD: "inventory"
+        - EVENTUATE_CDC_READER_READER2_DATASOURCEDRIVERCLASSNAME: "org.postgresql.Driver"
+        - EVENTUATE_CDC_READER_READER2_LEADERSHIPLOCKPATH: "/eventuate/cdc/leader/inventory_service"
+        - EVENTUATE_CDC_READER_READER2_OUTBOXID: "2"
+        - containerPort: 8080
+        - exposedPort_8099: "8099:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "eventuateio/eventuate-cdc-service:0.16.0.RELEASE"
+            fileURI: "https://hub.docker.com/r/eventuateio/eventuate-cdc-service"
+  - creditinstitute:
+      type: "creditinstitute-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "Always"
+        - T2_JAEGER_ENABLED: "FALSE"
+        - T2_JAEGER_HOST: "simplest-agent"
+        - containerPort: 8080
+        - exposedPort: "80:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "t2project/creditinstitute:main"
+            fileURI: "https://hub.docker.com/r/t2project/creditinstitute"
+  - inventory:
+      type: "inventory-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "Always"
+        - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+        - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: "kafka-zookeeper:2181"
+        - T2_INVENTORY_SIZE: "25"
+        - T2_INVENTORY_TASKRATE: "0"
+        - T2_INVENTORY_TTL: "0"
+        - T2_INVENTORY_SET_UNITS_TO_MAX: "FALSE"
+        - SPRING_DATASOURCE_DRIVER_CLASS_NAME: "org.postgresql.Driver"
+        - SPRING_DATASOURCE_PASSWORD: "inventory"
+        - SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-inventory/inventory"
+        - SPRING_DATASOURCE_USERNAME: "inventory"
+        - SPRING_PROFILES_ACTIVE: "saga"
+        - T2_JAEGER_ENABLED: "FALSE"
+        - T2_JAEGER_HOST: "simplest-agent"
+        - containerPort: 8080
+        - exposedPort: "80:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "t2project/inventory:main"
+            fileURI: "https://hub.docker.com/r/t2project/inventory"
+  - orchestrator:
+      type: "orchestrator-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "Always"
+        - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+        - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: "kafka-zookeeper:2181"
+        - SPRING_DATASOURCE_DRIVER_CLASS_NAME: "org.postgresql.Driver"
+        - SPRING_DATASOURCE_PASSWORD: "eventuate"
+        - SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-orchestrator/eventuate"
+        - SPRING_DATASOURCE_USERNAME: "eventuate"
+        - T2_JAEGER_ENABLED: "FALSE"
+        - T2_JAEGER_HOST: "simplest-agent"
+        - containerPort: 8080
+        - exposedPort: "80:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "t2project/orchestrator:main"
+            fileURI: "https://hub.docker.com/r/t2project/orchestrator"
+  - order:
+      type: "order-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "Always"
+        - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+        - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: "kafka-zookeeper:2181"
+        - MONGO_HOST: "mongo-order-mongodb"
+        - SPRING_DATASOURCE_DRIVER_CLASS_NAME: "org.postgresql.Driver"
+        - SPRING_DATASOURCE_PASSWORD: "eventuate"
+        - SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-orchestrator/eventuate"
+        - SPRING_DATASOURCE_USERNAME: "eventuate"
+        - T2_JAEGER_ENABLED: "FALSE"
+        - T2_JAEGER_HOST: "simplest-agent"
+        - containerPort: 8080
+        - exposedPort: "80:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "t2project/order:main"
+            fileURI: "https://hub.docker.com/r/t2project/order"
+  - payment:
+      type: "payment-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "Always"
+        - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+        - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: "kafka-zookeeper:2181"
+        - SPRING_DATASOURCE_DRIVER_CLASS_NAME: "org.postgresql.Driver"
+        - SPRING_DATASOURCE_PASSWORD: "eventuate"
+        - SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-orchestrator/eventuate"
+        - SPRING_DATASOURCE_USERNAME: "eventuate"
+        - T2_PAYMENT_PROVIDER_ENABLED: "TRUE"
+        - T2_PAYMENT_PROVIDER_DUMMY_URL: "http://creditinstitute/pay"
+        - T2_PAYMENT_PROVIDER_TIMEOUT: "5"
+        - T2_JAEGER_ENABLED: "FALSE"
+        - T2_JAEGER_HOST: "simplest-agent"
+        - containerPort: 8080
+        - exposedPort: "80:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "t2project/payment:main"
+            fileURI: "https://hub.docker.com/r/t2project/payment"
+  - postgres-inventory:
+      type: "postgres-DatabaseSystem"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - POSTGRES_DB: "inventory"
+        - POSTGRES_PASSWORD: "inventory"
+        - POSTGRES_USER: "inventory"
+        - USE_DB_ID: "true"
+        - containerPort: 5432
+        - exposedPort: "5432:5432"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "eventuateio/eventuate-tram-sagas-postgres:0.23.0.RELEASE"
+            fileURI: "https://hub.docker.com/r/eventuateio/eventuate-tram-sagas-postgres"
+  - postgres-inventory-datadir-volume:
+      type: "Storage"
+      description: null
+      properties:
+        - storage_size: "1Gi"
+      operations: []
+      artifacts: []
+  - postgres-orchestrator:
+      type: "postgres-DatabaseSystem"
+      description: null
+      properties:
+        - imagePullPolicy: "IfNotPresent"
+        - POSTGRES_DB: "eventuate"
+        - POSTGRES_PASSWORD: "eventuate"
+        - POSTGRES_USER: "eventuate"
+        - USE_DB_ID: "true"
+        - containerPort: 5432
+        - exposedPort: "5432:5432"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "eventuateio/eventuate-tram-sagas-postgres:0.23.0.RELEASE"
+            fileURI: "https://hub.docker.com/r/eventuateio/eventuate-tram-sagas-postgres"
+  - postgres-orchestrator-datadir-volume:
+      type: "Storage"
+      description: null
+      properties:
+        - storage_size: "1Gi"
+      operations: []
+      artifacts: []
+  - ui:
+      type: "ui-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "Always"
+        - T2_UIBACKEND_URL: "http://uibackend"
+        - containerPort: 8080
+        - exposedPort: "80:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "t2project/ui:main"
+            fileURI: "https://hub.docker.com/r/t2project/ui"
+  - uibackend:
+      type: "uibackend-SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy: "Always"
+        - T2_ORCHESTRATOR_URL: "http://orchestrator/order"
+        - T2_CART_URL: "http://cart/cart"
+        - T2_INVENTORY_URL: "http://inventory/inventory"
+        - T2_RESERVATION_ENDPOINT: "reservation"
+        - T2_COMPUTATION_SIMULATOR_ENABLED: "FALSE"
+        - T2_COMPUTATION_SIMULATOR_URL: "http://computation-simulator/compute"
+        - T2_JAEGER_ENABLED: "FALSE"
+        - T2_JAEGER_HOST: "simplest-agent"
+        - containerPort: 8080
+        - exposedPort: "80:8080"
+      operations: []
+      artifacts:
+        - docker_image:
+            name: "t2project/uibackend:main"
+            fileURI: "https://hub.docker.com/r/t2project/uibackend"
+relations:
+  - mongo-cart-mongodb-datadir-mount:
+      type: "AttachesTo"
+      description: null
+      source: "mongo-cart-mongodb-datadir-volume"
+      target: "mongo-cart-mongodb"
+      properties:
+        - location: "/bitnami/mongodb"
+      operations: [] 
+  - mongo-order-mongodb-datadir-mount:
+      type: "AttachesTo"
+      description: null
+      source: "mongo-order-mongodb-datadir-volume"
+      target: "mongo-order-mongodb"
+      properties:
+        - location: "/bitnami/mongodb"
+      operations: [] 
+  - kafka-data-mount:
+      type: "AttachesTo"
+      description: null
+      source: "kafka-data-volume"
+      target: "kafka"
+      properties:
+        - location: "/bitnami/kafka"
+      operations: [] 
+  - kafka-zookeeper-data-mount:
+      type: "AttachesTo"
+      description: null
+      source: "kafka-zookeeper-data-volume"
+      target: "kafka-zookeeper"
+      properties:
+        - location: "/bitnami/zookeeper"
+      operations: [] 
+  - postgres-inventory-datadir-mount:
+      type: "AttachesTo"
+      description: null
+      source: "postgres-inventory-datadir-volume"
+      target: "postgres-inventory"
+      properties:
+        - location: "/var/lib/postgresql/data"
+      operations: []
+  - postgres-orchestrator-datadir-mount:
+      type: "AttachesTo"
+      description: null
+      source: "postgres-orchestrator-datadir-volume"
+      target: "postgres-orchestrator"
+      properties:
+        - location: "/var/lib/postgresql/data"
+      operations: []
+  - kafka_ConnectsTo_kafka-zookeeper:
+      type: "ConnectsTo"
+      description: null
+      source: "kafka"
+      target: "kafka-zookeeper"
+      properties: []
+      operations: []
+  - cart_ConnectsTo_mongo-cart-mongodb:
+      type: "ConnectsTo"
+      description: null
+      source: "cart"
+      target: "mongo-cart-mongodb"
+      properties: []
+      operations: []
+  - cdcservice_ConnectsTo_kafka:
+      type: "ConnectsTo"
+      description: null
+      source: "cdcservice"
+      target: "kafka"
+      properties: []
+      operations: []
+  - cdcservice_ConnectsTo_kafka-zookeeper:
+      type: "ConnectsTo"
+      description: null
+      source: "cdcservice"
+      target: "kafka-zookeeper"
+      properties: []
+      operations: []
+  - cdcservice_ConnectsTo_postgres-orchestrator:
+      type: "ConnectsTo"
+      description: null
+      source: "cdcservice"
+      target: "postgres-orchestrator"
+      properties: []
+      operations: []
+  - cdcservice_ConnectsTo_postgres-inventory:
+      type: "ConnectsTo"
+      description: null
+      source: "cdcservice"
+      target: "postgres-inventory"
+      properties: []
+      operations: []
+  - inventory_ConnectsTo_kafka:
+      type: "ConnectsTo"
+      description: null
+      source: "inventory"
+      target: "kafka"
+      properties: []
+      operations: []
+  - inventory_ConnectsTo_kafka-zookeeper:
+      type: "ConnectsTo"
+      description: null
+      source: "inventory"
+      target: "kafka-zookeeper"
+      properties: []
+      operations: []
+  - inventory_ConnectsTo_postgres-inventory:
+      type: "ConnectsTo"
+      description: null
+      source: "inventory"
+      target: "postgres-inventory"
+      properties: []
+      operations: []
+  - orchestrator_ConnectsTo_kafka:
+      type: "ConnectsTo"
+      description: null
+      source: "orchestrator"
+      target: "kafka"
+      properties: []
+      operations: []
+  - orchestrator_ConnectsTo_kafka-zookeeper:
+      type: "ConnectsTo"
+      description: null
+      source: "orchestrator"
+      target: "kafka-zookeeper"
+      properties: []
+      operations: []
+  - orchestrator_ConnectsTo_postgres-orchestrator:
+      type: "ConnectsTo"
+      description: null
+      source: "orchestrator"
+      target: "postgres-orchestrator"
+      properties: []
+      operations: []
+  - order_ConnectsTo_kafka:
+      type: "ConnectsTo"
+      description: null
+      source: "order"
+      target: "kafka"
+      properties: []
+      operations: []
+  - order_ConnectsTo_kafka-zookeeper:
+      type: "ConnectsTo"
+      description: null
+      source: "order"
+      target: "kafka-zookeeper"
+      properties: []
+      operations: []
+  - order_ConnectsTo_mongo-order-mongodb:
+      type: "ConnectsTo"
+      description: null
+      source: "order"
+      target: "mongo-order-mongodb"
+      properties: []
+      operations: []
+  - order_ConnectsTo_postgres-orchestrator:
+      type: "ConnectsTo"
+      description: null
+      source: "order"
+      target: "postgres-orchestrator"
+      properties: []
+      operations: []
+  - payment_ConnectsTo_kafka:
+      type: "ConnectsTo"
+      description: null
+      source: "payment"
+      target: "kafka"
+      properties: []
+      operations: []
+  - payment_ConnectsTo_kafka-zookeeper:
+      type: "ConnectsTo"
+      description: null
+      source: "payment"
+      target: "kafka-zookeeper"
+      properties: []
+      operations: []
+  - payment_ConnectsTo_postgres-orchestrator:
+      type: "ConnectsTo"
+      description: null
+      source: "payment"
+      target: "postgres-orchestrator"
+      properties: []
+      operations: []
+  - payment_ConnectsTo_creditinstitute:
+      type: "ConnectsTo"
+      description: null
+      source: "payment"
+      target: "creditinstitute"
+      properties: []
+      operations: []
+  - ui_ConnectsTo_uibackend:
+      type: "ConnectsTo"
+      description: null
+      source: "ui"
+      target: "uibackend"
+      properties: []
+      operations: []
+  - uibackend_ConnectsTo_orchestrator:
+      type: "ConnectsTo"
+      description: null
+      source: "uibackend"
+      target: "orchestrator"
+      properties: []
+      operations: []
+  - uibackend_ConnectsTo_cart:
+      type: "ConnectsTo"
+      description: null
+      source: "uibackend"
+      target: "cart"
+      properties: []
+      operations: []
+  - uibackend_ConnectsTo_inventory:
+      type: "ConnectsTo"
+      description: null
+      source: "uibackend"
+      target: "inventory"
+      properties: []
+      operations: []
+  - mongo-cart-mongodb_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "mongo-cart-mongodb"
+      target: "t2store"
+      properties: []
+      operations: []
+  - mongo-cart-mongodb-datadir-volume_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "mongo-cart-mongodb-datadir-volume"
+      target: "t2store"
+      properties: []
+      operations: []
+  - mongo-order-mongodb_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "mongo-order-mongodb"
+      target: "t2store"
+      properties: []
+      operations: []
+  - mongo-order-mongodb-datadir-volume_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "mongo-order-mongodb-datadir-volume"
+      target: "t2store"
+      properties: []
+      operations: []
+  - kafka_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "kafka"
+      target: "t2store"
+      properties: []
+      operations: []
+  - kafka-data-volume_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "kafka-data-volume"
+      target: "t2store"
+      properties: []
+      operations: []
+  - kafka-zookeeper_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "kafka-zookeeper"
+      target: "t2store"
+      properties: []
+      operations: []
+  - kafka-zookeeper-data-volume_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "kafka-zookeeper-data-volume"
+      target: "t2store"
+      properties: []
+      operations: []
+  - cart_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "cart"
+      target: "t2store"
+      properties: []
+      operations: []
+  - cdcservice_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "cdcservice"
+      target: "t2store"
+      properties: []
+      operations: []
+  - creditinstitute_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "creditinstitute"
+      target: "t2store"
+      properties: []
+      operations: []
+  - inventory_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "inventory"
+      target: "t2store"
+      properties: []
+      operations: []
+  - orchestrator_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "orchestrator"
+      target: "t2store"
+      properties: []
+      operations: []
+  - order_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "order"
+      target: "t2store"
+      properties: []
+      operations: []
+  - payment_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "payment"
+      target: "t2store"
+      properties: []
+      operations: []
+  - postgres-inventory_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "postgres-inventory"
+      target: "t2store"
+      properties: []
+      operations: []
+  - postgres-inventory-datadir-volume_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "postgres-inventory-datadir-volume"
+      target: "t2store"
+      properties: []
+      operations: []
+  - postgres-orchestrator_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "postgres-orchestrator"
+      target: "t2store"
+      properties: []
+      operations: []
+  - postgres-orchestrator-datadir-volume_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "postgres-orchestrator-datadir-volume"
+      target: "t2store"
+      properties: []
+      operations: []
+  - ui_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "ui"
+      target: "t2store"
+      properties: []
+      operations: []
+  - uibackend_HostedOn_t2store:
+      type: "HostedOn"
+      description: null
+      source: "uibackend"
+      target: "t2store"
+      properties: []
+      operations: []
+  - t2store_HostedOn_MicrosoftAzure:
+      type: "HostedOn"
+      description: null
+      source: "t2store"
+      target: "MicrosoftAzure"
+      properties: []
+      operations: []
+component_types:
+  - BaseType:
+      extends: "-"
+      description: null
+      properties: []
+      operations: []
+  - CloudProvider:
+      extends: "BaseType"
+      description: null
+      properties: []
+      operations: []
+  - ContainerPlatform:
+      extends: "BaseType"
+      description: null
+      properties: []
+      operations: []
+  - KubernetesCluster:
+      extends: "ContainerPlatform"
+      description: null
+      properties: []
+      operations: []
+  - azurerm_kubernetes_cluster:
+      extends: "KubernetesCluster"
+      description: null
+      properties:
+        - name:
+            type: "STRING"
+            required: false
+            default_value: "t2store-aks1"
+        - location:
+            type: "STRING"
+            required: false
+            default_value: "West Europe"
+        - resource_group_name:
+            type: "STRING"
+            required: false
+            default_value: "t2store-resources"
+        - dns_prefix:
+            type: "STRING"
+            required: false
+            default_value: "t2storeaks1"
+        - default_node_pool.name:
+            type: "STRING"
+            required: false
+            default_value: "default_node"
+        - default_node_pool.node_count:
+            type: "STRING"
+            required: false
+            default_value: "1"
+        - default_node_pool.vm_size:
+            type: "STRING"
+            required: false
+            default_value: "standard_b4ms"
+        - identity.type:
+            type: "STRING"
+            required: false
+            default_value: "SystemAssigned"
+        - tags:
+            type: "STRING"
+            required: false
+            default_value: "{\"Environment\":\"Production\"}"
+      operations: []
+  - SoftwareApplication:
+      extends: "BaseType"
+      description: null
+      properties: []
+      operations: []
+  - cart-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "Always"
+        - MONGO_HOST:
+            type: "STRING"
+            required: true
+            default_value: "mongo-cart-mongodb"
+        - T2_CART_TTL:
+            type: "STRING"
+            required: true
+            default_value: "0"
+        - T2_CART_TASKRATE:
+            type: "STRING"
+            required: true
+            default_value: "0"
+        - T2_JAEGER_ENABLED:
+            type: "STRING"
+            required: true
+            default_value: "FALSE"
+        - T2_JAEGER_HOST:
+            type: "STRING"
+            required: true
+            default_value: "simplest-agent"
+        - containerPort:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort:
+            type: "STRING"
+            required: true
+            default_value: "80:8080"
+      operations: []
+  - eventuate-cdc-service-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "Always"
+        - JAVA_OPTS:
+            type: "STRING"
+            required: true
+            default_value: "-Xmx64m"
+        - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS:
+            type: "STRING"
+            required: true
+            default_value: "kafka:9092"
+        - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING:
+            type: "STRING"
+            required: true
+            default_value: "kafka-zookeeper:2181"
+        - EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE:
+            type: "STRING"
+            required: true
+            default_value: "eventuate-tram"
+        - EVENTUATE_CDC_PIPELINE_PIPELINE1_READER:
+            type: "STRING"
+            required: true
+            default_value: "reader1"
+        - EVENTUATE_CDC_PIPELINE_PIPELINE2_TYPE:
+            type: "STRING"
+            required: true
+            default_value: "eventuate-tram"
+        - EVENTUATE_CDC_PIPELINE_PIPELINE2_READER:
+            type: "STRING"
+            required: true
+            default_value: "reader2"
+        - EVENTUATE_CDC_READER_READER1_TYPE:
+            type: "STRING"
+            required: true
+            default_value: "postgres-wal"
+        - EVENTUATE_CDC_READER_READER1_DATASOURCEURL:
+            type: "STRING"
+            required: true
+            default_value: "jdbc:postgresql://postgres-orchestrator/eventuate"
+        - EVENTUATE_CDC_READER_READER1_DATASOURCEUSERNAME:
+            type: "STRING"
+            required: true
+            default_value: "eventuate"
+        - EVENTUATE_CDC_READER_READER1_DATASOURCEPASSWORD:
+            type: "STRING"
+            required: true
+            default_value: "eventuate"
+        - EVENTUATE_CDC_READER_READER1_DATASOURCEDRIVERCLASSNAME:
+            type: "STRING"
+            required: true
+            default_value: "org.postgresql.Driver"
+        - EVENTUATE_CDC_READER_READER1_LEADERSHIPLOCKPATH:
+            type: "STRING"
+            required: true
+            default_value: "/eventuate/cdc/leader/orchestrator"
+        - EVENTUATE_CDC_READER_READER1_OUTBOXID:
+            type: "STRING"
+            required: true
+            default_value: "1"
+        - EVENTUATE_CDC_READER_READER2_TYPE:
+            type: "STRING"
+            required: true
+            default_value: "postgres-wal"
+        - EVENTUATE_CDC_READER_READER2_DATASOURCEURL:
+            type: "STRING"
+            required: true
+            default_value: "jdbc:postgresql://postgres-inventory/inventory"
+        - EVENTUATE_CDC_READER_READER2_DATASOURCEUSERNAME:
+            type: "STRING"
+            required: true
+            default_value: "inventory"
+        - EVENTUATE_CDC_READER_READER2_DATASOURCEPASSWORD:
+            type: "STRING"
+            required: true
+            default_value: "inventory"
+        - EVENTUATE_CDC_READER_READER2_DATASOURCEDRIVERCLASSNAME:
+            type: "STRING"
+            required: true
+            default_value: "org.postgresql.Driver"
+        - EVENTUATE_CDC_READER_READER2_LEADERSHIPLOCKPATH:
+            type: "STRING"
+            required: true
+            default_value: "/eventuate/cdc/leader/inventory_service"
+        - EVENTUATE_CDC_READER_READER2_OUTBOXID:
+            type: "STRING"
+            required: true
+            default_value: "2"
+        - containerPort:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort_8099:
+            type: "STRING"
+            required: true
+            default_value: "8099:8080"
+      operations: []
+  - creditinstitute-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "Always"
+        - T2_JAEGER_ENABLED:
+            type: "STRING"
+            required: true
+            default_value: "FALSE"
+        - T2_JAEGER_HOST:
+            type: "STRING"
+            required: true
+            default_value: "simplest-agent"
+        - containerPort:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort:
+            type: "STRING"
+            required: true
+            default_value: "80:8080"
+      operations: []
+  - inventory-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "Always"
+        - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS:
+            type: "STRING"
+            required: true
+            default_value: "kafka:9092"
+        - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING:
+            type: "STRING"
+            required: true
+            default_value: "kafka-zookeeper:2181"
+        - T2_INVENTORY_SIZE:
+            type: "STRING"
+            required: true
+            default_value: "25"
+        - T2_INVENTORY_TASKRATE:
+            type: "STRING"
+            required: true
+            default_value: "0"
+        - T2_INVENTORY_TTL:
+            type: "STRING"
+            required: true
+            default_value: "0"
+        - T2_INVENTORY_SET_UNITS_TO_MAX:
+            type: "STRING"
+            required: true
+            default_value: "FALSE"
+        - SPRING_DATASOURCE_DRIVER_CLASS_NAME:
+            type: "STRING"
+            required: true
+            default_value: "org.postgresql.Driver"
+        - SPRING_DATASOURCE_PASSWORD:
+            type: "STRING"
+            required: true
+            default_value: "inventory"
+        - SPRING_DATASOURCE_URL:
+            type: "STRING"
+            required: true
+            default_value: "jdbc:postgresql://postgres-inventory/inventory"
+        - SPRING_DATASOURCE_USERNAME:
+            type: "STRING"
+            required: true
+            default_value: "inventory"
+        - SPRING_PROFILES_ACTIVE:
+            type: "STRING"
+            required: true
+            default_value: "saga"
+        - T2_JAEGER_ENABLED:
+            type: "STRING"
+            required: true
+            default_value: "FALSE"
+        - T2_JAEGER_HOST:
+            type: "STRING"
+            required: true
+            default_value: "simplest-agent"
+        - containerPort:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort:
+            type: "STRING"
+            required: true
+            default_value: "80:8080"
+      operations: []
+  - orchestrator-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "Always"
+        - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS:
+            type: "STRING"
+            required: true
+            default_value: "kafka:9092"
+        - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING:
+            type: "STRING"
+            required: true
+            default_value: "kafka-zookeeper:2181"
+        - SPRING_DATASOURCE_DRIVER_CLASS_NAME:
+            type: "STRING"
+            required: true
+            default_value: "org.postgresql.Driver"
+        - SPRING_DATASOURCE_PASSWORD:
+            type: "STRING"
+            required: true
+            default_value: "eventuate"
+        - SPRING_DATASOURCE_URL:
+            type: "STRING"
+            required: true
+            default_value: "jdbc:postgresql://postgres-orchestrator/eventuate"
+        - SPRING_DATASOURCE_USERNAME:
+            type: "STRING"
+            required: true
+            default_value: "eventuate"
+        - T2_JAEGER_ENABLED:
+            type: "STRING"
+            required: true
+            default_value: "FALSE"
+        - T2_JAEGER_HOST:
+            type: "STRING"
+            required: true
+            default_value: "simplest-agent"
+        - containerPort:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort:
+            type: "STRING"
+            required: true
+            default_value: "80:8080"
+      operations: []
+  - order-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "Always"
+        - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS:
+            type: "STRING"
+            required: true
+            default_value: "kafka:9092"
+        - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING:
+            type: "STRING"
+            required: true
+            default_value: "kafka-zookeeper:2181"
+        - MONGO_HOST:
+            type: "STRING"
+            required: true
+            default_value: "mongo-order-mongodb"
+        - SPRING_DATASOURCE_DRIVER_CLASS_NAME:
+            type: "STRING"
+            required: true
+            default_value: "org.postgresql.Driver"
+        - SPRING_DATASOURCE_PASSWORD:
+            type: "STRING"
+            required: true
+            default_value: "eventuate"
+        - SPRING_DATASOURCE_URL:
+            type: "STRING"
+            required: true
+            default_value: "jdbc:postgresql://postgres-orchestrator/eventuate"
+        - SPRING_DATASOURCE_USERNAME:
+            type: "STRING"
+            required: true
+            default_value: "eventuate"
+        - T2_JAEGER_ENABLED:
+            type: "STRING"
+            required: true
+            default_value: "FALSE"
+        - T2_JAEGER_HOST:
+            type: "STRING"
+            required: true
+            default_value: "simplest-agent"
+        - containerPort:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort:
+            type: "STRING"
+            required: true
+            default_value: "80:8080"
+      operations: []
+  - payment-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "Always"
+        - EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS:
+            type: "STRING"
+            required: true
+            default_value: "kafka:9092"
+        - EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING:
+            type: "STRING"
+            required: true
+            default_value: "kafka-zookeeper:2181"
+        - SPRING_DATASOURCE_DRIVER_CLASS_NAME:
+            type: "STRING"
+            required: true
+            default_value: "org.postgresql.Driver"
+        - SPRING_DATASOURCE_PASSWORD:
+            type: "STRING"
+            required: true
+            default_value: "eventuate"
+        - SPRING_DATASOURCE_URL:
+            type: "STRING"
+            required: true
+            default_value: "jdbc:postgresql://postgres-orchestrator/eventuate"
+        - SPRING_DATASOURCE_USERNAME:
+            type: "STRING"
+            required: true
+            default_value: "eventuate"
+        - T2_PAYMENT_PROVIDER_ENABLED:
+            type: "STRING"
+            required: true
+            default_value: "TRUE"
+        - T2_PAYMENT_PROVIDER_DUMMY_URL:
+            type: "STRING"
+            required: true
+            default_value: "http://creditinstitute/pay"
+        - T2_PAYMENT_PROVIDER_TIMEOUT:
+            type: "STRING"
+            required: true
+            default_value: "5"
+        - T2_JAEGER_ENABLED:
+            type: "STRING"
+            required: true
+            default_value: "FALSE"
+        - T2_JAEGER_HOST:
+            type: "STRING"
+            required: true
+            default_value: "simplest-agent"
+        - containerPort:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort:
+            type: "STRING"
+            required: true
+            default_value: "80:8080"
+      operations: []
+  - ui-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "Always"
+        - T2_UIBACKEND_URL:
+            type: "STRING"
+            required: true
+            default_value: "http://uibackend"
+        - containerPort:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort:
+            type: "STRING"
+            required: true
+            default_value: "80:8080"
+      operations: []
+  - uibackend-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "Always"
+        - T2_ORCHESTRATOR_URL:
+            type: "STRING"
+            required: true
+            default_value: "http://orchestrator/order"
+        - T2_CART_URL:
+            type: "STRING"
+            required: true
+            default_value: "http://cart/cart"
+        - T2_INVENTORY_URL:
+            type: "STRING"
+            required: true
+            default_value: "http://inventory/inventory"
+        - T2_RESERVATION_ENDPOINT:
+            type: "STRING"
+            required: true
+            default_value: "reservation"
+        - T2_COMPUTATION_SIMULATOR_ENABLED:
+            type: "STRING"
+            required: true
+            default_value: "FALSE"
+        - T2_COMPUTATION_SIMULATOR_URL:
+            type: "STRING"
+            required: true
+            default_value: "http://computation-simulator/compute"
+        - T2_JAEGER_ENABLED:
+            type: "STRING"
+            required: true
+            default_value: "FALSE"
+        - T2_JAEGER_HOST:
+            type: "STRING"
+            required: true
+            default_value: "simplest-agent"
+        - containerPort:
+            type: "INTEGER"
+            required: true
+            default_value: 8080
+        - exposedPort:
+            type: "STRING"
+            required: true
+            default_value: "80:8080"
+      operations: []
+  - DatabaseSystem:
+      extends: "SoftwareApplication"
+      description: null
+      properties: []
+      operations: []
+  - mongodb-DatabaseSystem:
+      extends: "DatabaseSystem"
+      description: null
+      properties:
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - BITNAMI_DEBUG:
+            type: "STRING"
+            required: true
+            default_value: "false"
+        - ALLOW_EMPTY_PASSWORD:
+            type: "STRING"
+            required: true
+            default_value: "yes"
+        - MONGODB_SYSTEM_LOG_VERBOSITY:
+            type: "STRING"
+            required: true
+            default_value: "0"
+        - MONGODB_DISABLE_SYSTEM_LOG:
+            type: "STRING"
+            required: true
+            default_value: "no"
+        - MONGODB_DISABLE_JAVASCRIPT:
+            type: "STRING"
+            required: true
+            default_value: "no"
+        - MONGODB_ENABLE_JOURNAL:
+            type: "STRING"
+            required: true
+            default_value: "yes"
+        - MONGODB_PORT_NUMBER:
+            type: "STRING"
+            required: true
+            default_value: "27017"
+        - MONGODB_ENABLE_IPV6:
+            type: "STRING"
+            required: true
+            default_value: "no"
+        - MONGODB_ENABLE_DIRECTORY_PER_DB:
+            type: "STRING"
+            required: true
+            default_value: "no"
+        - containerPort_mongodb:
+            type: "INTEGER"
+            required: true
+            default_value: 27017
+        - exposedPort_mongodb:
+            type: "STRING"
+            required: true
+            default_value: "27017:27017"
+      operations: []
+  - postgres-DatabaseSystem:
+      extends: "DatabaseSystem"
+      description: null
+      properties:
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - POSTGRES_DB:
+            type: "STRING"
+            required: true
+            default_value: "inventory"
+        - POSTGRES_PASSWORD:
+            type: "STRING"
+            required: true
+            default_value: "inventory"
+        - POSTGRES_USER:
+            type: "STRING"
+            required: true
+            default_value: "inventory"
+        - USE_DB_ID:
+            type: "STRING"
+            required: true
+            default_value: "true"
+        - containerPort:
+            type: "INTEGER"
+            required: true
+            default_value: 5432
+        - exposedPort:
+            type: "STRING"
+            required: true
+            default_value: "5432:5432"
+      operations: []
+  - MessageBroker:
+      extends: "SoftwareApplication"
+      description: null
+      properties: []
+      operations: []
+  - kafka-MessageBroker:
+      extends: "MessageBroker"
+      description: null
+      properties:
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - BITNAMI_DEBUG:
+            type: "STRING"
+            required: true
+            default_value: "false"
+        - KAFKA_CFG_ZOOKEEPER_CONNECT:
+            type: "STRING"
+            required: true
+            default_value: "kafka-zookeeper"
+        - KAFKA_INTER_BROKER_LISTENER_NAME:
+            type: "STRING"
+            required: true
+            default_value: "INTERNAL"
+        - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP:
+            type: "STRING"
+            required: true
+            default_value: "INTERNAL:PLAINTEXT,CLIENT:PLAINTEXT"
+        - KAFKA_CFG_LISTENERS:
+            type: "STRING"
+            required: true
+            default_value: "INTERNAL://:9093,CLIENT://:9092"
+        - KAFKA_CFG_ADVERTISED_LISTENERS:
+            type: "STRING"
+            required: true
+            default_value: "INTERNAL://$(MY_POD_NAME).kafka-headless.default.svc.cluster.local:9093,CLIENT://$(MY_POD_NAME).kafka-headless.default.svc.cluster.local:9092"
+        - ALLOW_PLAINTEXT_LISTENER:
+            type: "STRING"
+            required: true
+            default_value: "yes"
+        - KAFKA_ZOOKEEPER_PROTOCOL:
+            type: "STRING"
+            required: true
+            default_value: "PLAINTEXT"
+        - KAFKA_VOLUME_DIR:
+            type: "STRING"
+            required: true
+            default_value: "/bitnami/kafka"
+        - KAFKA_LOG_DIR:
+            type: "STRING"
+            required: true
+            default_value: "/opt/bitnami/kafka/logs"
+        - KAFKA_CFG_DELETE_TOPIC_ENABLE:
+            type: "STRING"
+            required: true
+            default_value: "false"
+        - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE:
+            type: "STRING"
+            required: true
+            default_value: "true"
+        - KAFKA_HEAP_OPTS:
+            type: "STRING"
+            required: true
+            default_value: "-Xmx1024m -Xms1024m"
+        - KAFKA_CFG_LOG_FLUSH_INTERVAL_MESSAGES:
+            type: "STRING"
+            required: true
+            default_value: "10000"
+        - KAFKA_CFG_LOG_FLUSH_INTERVAL_MS:
+            type: "STRING"
+            required: true
+            default_value: "1000"
+        - KAFKA_CFG_LOG_RETENTION_BYTES:
+            type: "STRING"
+            required: true
+            default_value: "1073741824"
+        - KAFKA_CFG_LOG_RETENTION_CHECK_INTERVAL_MS:
+            type: "STRING"
+            required: true
+            default_value: "300000"
+        - KAFKA_CFG_LOG_RETENTION_HOURS:
+            type: "STRING"
+            required: true
+            default_value: "168"
+        - KAFKA_CFG_MESSAGE_MAX_BYTES:
+            type: "STRING"
+            required: true
+            default_value: "1000012"
+        - KAFKA_CFG_LOG_SEGMENT_BYTES:
+            type: "STRING"
+            required: true
+            default_value: "1073741824"
+        - KAFKA_CFG_LOG_DIRS:
+            type: "STRING"
+            required: true
+            default_value: "/bitnami/kafka/data"
+        - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR:
+            type: "STRING"
+            required: true
+            default_value: "1"
+        - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR:
+            type: "STRING"
+            required: true
+            default_value: "1"
+        - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR:
+            type: "STRING"
+            required: true
+            default_value: "1"
+        - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR:
+            type: "STRING"
+            required: true
+            default_value: "1"
+        - KAFKA_CFG_NUM_IO_THREADS:
+            type: "STRING"
+            required: true
+            default_value: "8"
+        - KAFKA_CFG_NUM_NETWORK_THREADS:
+            type: "STRING"
+            required: true
+            default_value: "3"
+        - KAFKA_CFG_NUM_PARTITIONS:
+            type: "STRING"
+            required: true
+            default_value: "1"
+        - KAFKA_CFG_NUM_RECOVERY_THREADS_PER_DATA_DIR:
+            type: "STRING"
+            required: true
+            default_value: "1"
+        - KAFKA_CFG_SOCKET_RECEIVE_BUFFER_BYTES:
+            type: "STRING"
+            required: true
+            default_value: "102400"
+        - KAFKA_CFG_SOCKET_REQUEST_MAX_BYTES:
+            type: "STRING"
+            required: true
+            default_value: "104857600"
+        - KAFKA_CFG_SOCKET_SEND_BUFFER_BYTES:
+            type: "STRING"
+            required: true
+            default_value: "102400"
+        - KAFKA_CFG_ZOOKEEPER_CONNECTION_TIMEOUT_MS:
+            type: "STRING"
+            required: true
+            default_value: "6000"
+        - KAFKA_CFG_AUTHORIZER_CLASS_NAME:
+            type: "STRING"
+            required: true
+            default_value: ""
+        - KAFKA_CFG_ALLOW_EVERYONE_IF_NO_ACL_FOUND:
+            type: "STRING"
+            required: true
+            default_value: "true"
+        - KAFKA_CFG_SUPER_USERS:
+            type: "STRING"
+            required: true
+            default_value: "User:admin"
+        - containerPort_kafka-client:
+            type: "INTEGER"
+            required: true
+            default_value: 9092
+        - containerPort_kafka-internal:
+            type: "INTEGER"
+            required: true
+            default_value: 9093
+        - exposedPort_tcp-client:
+            type: "STRING"
+            required: true
+            default_value: "9092:9092"
+        - exposedPort_tcp-internal:
+            type: "STRING"
+            required: true
+            default_value: "9093:9093"
+      operations: []
+  - zookeeper-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties:
+        - imagePullPolicy:
+            type: "STRING"
+            required: false
+            default_value: "IfNotPresent"
+        - BITNAMI_DEBUG:
+            type: "STRING"
+            required: true
+            default_value: "false"
+        - ZOO_DATA_LOG_DIR:
+            type: "STRING"
+            required: true
+            default_value: ""
+        - ZOO_PORT_NUMBER:
+            type: "STRING"
+            required: true
+            default_value: "2181"
+        - ZOO_TICK_TIME:
+            type: "STRING"
+            required: true
+            default_value: "2000"
+        - ZOO_INIT_LIMIT:
+            type: "STRING"
+            required: true
+            default_value: "10"
+        - ZOO_SYNC_LIMIT:
+            type: "STRING"
+            required: true
+            default_value: "5"
+        - ZOO_PRE_ALLOC_SIZE:
+            type: "STRING"
+            required: true
+            default_value: "65536"
+        - ZOO_SNAPCOUNT:
+            type: "STRING"
+            required: true
+            default_value: "100000"
+        - ZOO_MAX_CLIENT_CNXNS:
+            type: "STRING"
+            required: true
+            default_value: "60"
+        - ZOO_4LW_COMMANDS_WHITELIST:
+            type: "STRING"
+            required: true
+            default_value: "srvr, mntr, ruok"
+        - ZOO_LISTEN_ALLIPS_ENABLED:
+            type: "STRING"
+            required: true
+            default_value: "no"
+        - ZOO_AUTOPURGE_INTERVAL:
+            type: "STRING"
+            required: true
+            default_value: "0"
+        - ZOO_AUTOPURGE_RETAIN_COUNT:
+            type: "STRING"
+            required: true
+            default_value: "3"
+        - ZOO_MAX_SESSION_TIMEOUT:
+            type: "STRING"
+            required: true
+            default_value: "40000"
+        - ZOO_SERVERS:
+            type: "STRING"
+            required: true
+            default_value: "kafka-zookeeper-0.kafka-zookeeper-headless.default.svc.cluster.local:2888:3888::1"
+        - ZOO_ENABLE_AUTH:
+            type: "STRING"
+            required: true
+            default_value: "no"
+        - ZOO_ENABLE_QUORUM_AUTH:
+            type: "STRING"
+            required: true
+            default_value: "no"
+        - ZOO_HEAP_SIZE:
+            type: "STRING"
+            required: true
+            default_value: "1024"
+        - ZOO_LOG_LEVEL:
+            type: "STRING"
+            required: true
+            default_value: "ERROR"
+        - ALLOW_ANONYMOUS_LOGIN:
+            type: "STRING"
+            required: true
+            default_value: "yes"
+        - containerPort_client:
+            type: "INTEGER"
+            required: true
+            default_value: 2181
+        - containerPort_follower:
+            type: "INTEGER"
+            required: true
+            default_value: 2888
+        - containerPort_election:
+            type: "INTEGER"
+            required: true
+            default_value: 3888
+        - exposedPort_tcp-client:
+            type: "STRING"
+            required: true
+            default_value: "2181:2181"
+        - exposedPort_tcp-follower:
+            type: "STRING"
+            required: true
+            default_value: "2888:2888"
+        - exposedPort_tcp-election:
+            type: "STRING"
+            required: true
+            default_value: "3888:3888"
+      operations: []
+  - Storage:
+      extends: "BaseType"
+      description: null
+      properties:
+        - storage_size:
+            type: "STRING"
+            required: true
+            default_value: ""
+      operations: []
+relation_types:
+  - DependsOn:
+      extends: "-"
+      description: null
+      properties: []
+      operations: []
+  - HostedOn:
+      extends: "DependsOn"
+      description: null
+      properties: []
+      operations: []
+  - ConnectsTo:
+      extends: "DependsOn"
+      description: null
+      properties: []
+      operations: []
+  - AttachesTo:
+      extends: "DependsOn"
+      description: null
+      properties:
+        - location:
+            type: "STRING"
+            required: true
+            default_value: ""
+      operations: []

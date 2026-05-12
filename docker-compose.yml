@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11436:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+
+  api:
+    build: .
+    container_name: rag_api
+    ports:
+      - "8080:8080"
+    environment:
+      - OLLAMA_URL=http://ollama:11434/api/generate
+      - OLLAMA_HOST=http://ollama:11434
+    depends_on:
+      - ollama
+    volumes:
+      - .:/app/project_folder
+      
+
+volumes:
+  ollama_models:
